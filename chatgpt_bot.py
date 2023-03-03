@@ -1,5 +1,7 @@
 import tkinter as tk
 import openai
+import markdown
+from html.parser import HTMLParser
 # import prompt_completion_chat_Chinese
 # openai.api_key = "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"
 
@@ -22,9 +24,9 @@ class AIToolBackEnd:
       messages = self.g_history_messages
       )
       self.g_history_messages.append(response.choices[0]['message']) # 新增 completion
-      self.update_result_text()
+      self.ui_output_update()
 
-   def update_result_text(self):
+   def ui_output_update(self):
       message_content_total = ''
       msg_cnt = 0
       for msg in self.g_history_messages:
@@ -36,15 +38,17 @@ class AIToolBackEnd:
             role_msg = '用户'
          elif msg['role'] == 'assistant':
             role_msg = 'chatGPT'
-
          msg_role_with_content = role_msg + ':\n' + msg['content']
          message_content_total += msg_role_with_content
          message_content_total += '\n'
          message_content_total += '\n'
-
+      self.update_result_text(message_content_total)
+   
+   def update_result_text(self, message_total):
+      # html = markdown.markdown(message_total)
       result_text.config(state="normal")
       result_text.delete("1.0", "end")
-      result_text.insert("end", message_content_total)
+      result_text.insert("end", message_total)
       result_text.config(state="disabled")
 
    def update_key(self):
@@ -56,7 +60,7 @@ class AIToolBackEnd:
    def reset_coversation(self):
       print("reset conversation.")
       self.g_history_messages = [{"role": "system", "content": "你是一个得力的助手, 你叫chatgpt, 你是基于GPT3.5开发的"},]
-      self.update_result_text()
+      self.ui_output_update()
 
 if __name__ == "__main__":
    ai_tool_backend = AIToolBackEnd()
