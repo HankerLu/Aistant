@@ -5,12 +5,31 @@ from enum import Enum
 from tkinterhtml import HtmlFrame
 import threading
 import time
-# import prompt_completion_chat_Chinese
-# openai.api_key = "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"
+from timeout_decorator import timeout, TimeoutError
+import concurrent.futures as futures
+
+# def timeout(timelimit):
+#     def decorator(func):
+#         def decorated(*args, **kwargs):
+#             with futures.ThreadPoolExecutor(max_workers=1) as executor:
+#                 future = executor.submit(func, *args, **kwargs)
+#                 try:
+#                     result = future.result(timelimit)
+#                 except futures.TimeoutError:
+#                     print('Timeout!')
+#                     raise TimeoutError from None
+#                 else:
+#                     print("Exec Done")
+#                 executor._threads.clear()
+#                 futures.thread._threads_queues.clear()
+#                 return result
+#         return decorated
+#     return decorator
 
 class OpenAIReqStatus(Enum):
    REQ_STATUS_IDLE = 0
    REQ_STATUS_EXEC = 1
+   REQ_STATUS_TIMEOUT = 2
 
 class AIToolBackEnd:
    def __init__(self):
@@ -24,15 +43,20 @@ class AIToolBackEnd:
       self.thread_chat_completion = threading.Thread(target = self.chat_completion_req_thread_exec)
       self.thread_chat_completion.start()
 
+   # @timeout(5)
+   def openai_chat_completion_api_req(self):
+      response = openai.ChatCompletion.create(
+      model="gpt-3.5-turbo",
+      messages = self.g_history_messages
+      )
+      return response
+
    def chat_completion_req_thread_exec(self):
       print("chat bot start chat_completion_req_thread_exec.")
       while self.thread_chat_completion_do_run:
          time.sleep(0.1)
          if self.g_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_EXEC:
-            response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages = self.g_history_messages
-            )
+            response = self.openai_chat_completion_api_req()
             self.g_history_messages.append(response.choices[0]['message']) # 新增 completion
             self.ui_output_update()
             self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_IDLE)
@@ -43,7 +67,7 @@ class AIToolBackEnd:
       user_question['content'] = prompt
       self.g_history_messages.append(user_question) # 新增 prompt
 
-      if self.g_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_IDLE:
+      if self.g_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_IDLE or self.g_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_TIMEOUT:
          self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_EXEC)
       # response = openai.ChatCompletion.create(
       # model="gpt-3.5-turbo",
@@ -89,12 +113,18 @@ class AIToolBackEnd:
       self.g_history_messages = [{"role": "system", "content": "你是一个得力的助手, 你叫chatgpt, 你是基于GPT3.5开发的"},]
       self.ui_output_update()
 
+   def cancel_openai_req(self):
+      print("cancel openai req.")
+      self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_IDLE)
+
    def get_openai_req_status_str(self):
       ret_str = "未知状态"
       if self.g_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_IDLE:
          ret_str = "无请求"
       elif self.g_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_EXEC:
          ret_str = "请求中"
+      elif self.g_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_TIMEOUT:
+             ret_str = "请求超时"
       return ret_str
 
    def update_openai_req_status(self, status):
@@ -132,7 +162,11 @@ if __name__ == "__main__":
    submit_button.pack()
 
    # 重置对话按钮
-   reset_coversation_button = tk.Button(window, text="重置按钮", command = ai_tool_backend.reset_coversation)
+   reset_coversation_button = tk.Button(window, text="重置对话", command = ai_tool_backend.reset_coversation)
+   reset_coversation_button.pack()
+
+   # 取消请求按钮
+   reset_coversation_button = tk.Button(window, text="取消请求", command = ai_tool_backend.cancel_openai_req)
    reset_coversation_button.pack()
 
    # 对话展示展示框
