@@ -124,6 +124,9 @@ class AIToolBackEnd:
       # print("Input: " + str(text))
       # final_save_name = str(text) + '.txt'
       file_path = filedialog.asksaveasfilename(defaultextension='.txt')
+      if file_path == '':
+         print("save_conversation_name_input no file")
+         return
       with open(file_path, 'w') as file:
          text = result_text.get('1.0', 'end-1c') # 获取 Text 组件的文本内容
          file.write(text)
@@ -170,20 +173,24 @@ if __name__ == "__main__":
    input_field.pack()
 
    # prompt 提交按钮
-   submit_button = tk.Button(window, text="发送", command = ai_tool_backend.on_submit)
+   submit_button = tk.Button(window, text="发送", width=40, command = ai_tool_backend.on_submit)
    submit_button.pack()
+   # submit_button.grid(row=0, column=0)
 
    # 重置对话按钮
-   reset_coversation_button = tk.Button(window, text="重置对话", command = ai_tool_backend.reset_coversation)
+   reset_coversation_button = tk.Button(window, text="清空对话", width=40, command = ai_tool_backend.reset_coversation)
    reset_coversation_button.pack()
+   # reset_coversation_button.grid(row=0, column=1)
 
    # 取消请求按钮
-   cancel_req_button = tk.Button(window, text="取消请求", command = ai_tool_backend.cancel_openai_req)
+   cancel_req_button = tk.Button(window, text="取消请求", width=40, command = ai_tool_backend.cancel_openai_req)
    cancel_req_button.pack()
+   # cancel_req_button.grid(row=1, column=0)
 
    # 保存对话按钮
    save_coversation_button = tk.Button(window, text="保存对话", command = ai_tool_backend.save_conversation_name_input)
-   save_coversation_button.pack()
+   save_coversation_button.pack(side="bottom", fill="both")
+   # save_coversation_button.grid(row=1, column=1)
 
    # 对话展示展示框
    result_text = tk.Text(window, state="normal", width=160, height=60)
