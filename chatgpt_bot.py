@@ -4,6 +4,7 @@ import markdown
 from enum import Enum
 from tkinterhtml import HtmlFrame
 import threading
+import time
 # import prompt_completion_chat_Chinese
 # openai.api_key = "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"
 
@@ -11,21 +12,22 @@ class OpenAIReqStatus(Enum):
    REQ_STATUS_IDLE = 0
    REQ_STATUS_EXEC = 1
 
-   
 class AIToolBackEnd:
    def __init__(self):
       print("chat bot v2.0")
       self.g_model_name = "gpt-3.5-turbo"
       self.g_history_messages = [         
                {"role": "system", "content": "你是一个得力的助手, 你叫chatgpt, 你是基于GPT3.5开发的"},]
-      self.g_chat_completion_req_status = OpenAIReqStatus.REQ_STATUS_IDLE
+      self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_IDLE)
 
-      thread_chat_completion = threading.Thread(target = self.chat_completion_req_thread_exec)
-      thread_chat_completion.start()
+      self.thread_chat_completion_do_run = True
+      self.thread_chat_completion = threading.Thread(target = self.chat_completion_req_thread_exec)
+      self.thread_chat_completion.start()
 
    def chat_completion_req_thread_exec(self):
       print("chat bot start chat_completion_req_thread_exec.")
-      while True:
+      while self.thread_chat_completion_do_run:
+         time.sleep(0.1)
          if self.g_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_EXEC:
             response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
@@ -33,7 +35,7 @@ class AIToolBackEnd:
             )
             self.g_history_messages.append(response.choices[0]['message']) # 新增 completion
             self.ui_output_update()
-            self.g_chat_completion_req_status = OpenAIReqStatus.REQ_STATUS_IDLE
+            self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_IDLE)
 
    def on_submit(self):
       prompt = input_field.get()
@@ -42,7 +44,7 @@ class AIToolBackEnd:
       self.g_history_messages.append(user_question) # 新增 prompt
 
       if self.g_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_IDLE:
-         self.g_chat_completion_req_status = OpenAIReqStatus.REQ_STATUS_EXEC
+         self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_EXEC)
       # response = openai.ChatCompletion.create(
       # model="gpt-3.5-turbo",
       # messages = self.g_history_messages
@@ -87,9 +89,32 @@ class AIToolBackEnd:
       self.g_history_messages = [{"role": "system", "content": "你是一个得力的助手, 你叫chatgpt, 你是基于GPT3.5开发的"},]
       self.ui_output_update()
 
+   def get_openai_req_status_str(self):
+      ret_str = "未知状态"
+      if self.g_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_IDLE:
+         ret_str = "无请求"
+      elif self.g_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_EXEC:
+         ret_str = "请求中"
+      return ret_str
+
+   def update_openai_req_status(self, status):
+      print("update_openai_req_status", status)
+      self.g_chat_completion_req_status = status
+      # str_status = self.get_openai_req_status_str()
+      # self.update_req_status_label.config(text = str_status)
+      # self.update_label_callback()
+
+   def set_openai_req_thread_do_run(self, do_run):
+      self.thread_chat_completion_do_run = do_run
+
+# class AIToolFrontEnd:
+#    def __init__(self):
+
+
 if __name__ == "__main__":
-   ai_tool_backend = AIToolBackEnd()
    
+   ai_tool_backend = AIToolBackEnd()
+
    window = tk.Tk()
    window.title("ChatGPT 本地对话机器人 v2.0")
 
@@ -117,7 +142,22 @@ if __name__ == "__main__":
    result_text = tk.Text(window, state="normal", width=160, height=60)
    result_text.pack()
 
-   # result_text = HtmlFrame(window)
-   # result_text.pack()
+   # 请求状态展示文本
+   req_status_label = tk.Label(window, text = "加载中")
+   req_status_label.pack()
+
+   update_label_do_run = True
+   def update_status_label_thread_exec():
+      while update_label_do_run:
+         time.sleep(0.1)
+         str_status = ai_tool_backend.get_openai_req_status_str() 
+         req_status_label.config(text = str_status)
+
+   label_update_thread = threading.Thread(target=update_status_label_thread_exec)
+   label_update_thread.start()
 
    window.mainloop()
+
+   update_label_do_run = False
+   ai_tool_backend.set_openai_req_thread_do_run = False
+
