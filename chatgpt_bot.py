@@ -107,9 +107,6 @@ class AIToolBackEnd:
    def set_openai_req_thread_do_run(self, do_run):
       self.thread_chat_completion_do_run = do_run
 
-# class AIToolFrontEnd:
-#    def __init__(self):
-
 
 if __name__ == "__main__":
    
@@ -159,5 +156,5 @@ if __name__ == "__main__":
    window.mainloop()
 
    update_label_do_run = False
-   ai_tool_backend.set_openai_req_thread_do_run = False
+   ai_tool_backend.set_openai_req_thread_do_run(False)
 
