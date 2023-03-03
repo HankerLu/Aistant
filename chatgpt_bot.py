@@ -5,9 +5,11 @@ from enum import Enum
 from tkinterhtml import HtmlFrame
 import threading
 import time
-from timeout_decorator import timeout, TimeoutError
-import concurrent.futures as futures
+from tkinter import simpledialog
+from tkinter import filedialog
 
+# from timeout_decorator import timeout, TimeoutError
+# import concurrent.futures as futures
 # def timeout(timelimit):
 #     def decorator(func):
 #         def decorated(*args, **kwargs):
@@ -117,6 +119,16 @@ class AIToolBackEnd:
       print("cancel openai req.")
       self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_IDLE)
 
+   def save_conversation_name_input(self):
+      # text = simpledialog.askstring("Input", "请输入保存文件名:")
+      # print("Input: " + str(text))
+      # final_save_name = str(text) + '.txt'
+      file_path = filedialog.asksaveasfilename(defaultextension='.txt')
+      with open(file_path, 'w') as file:
+         text = result_text.get('1.0', 'end-1c') # 获取 Text 组件的文本内容
+         file.write(text)
+
+
    def get_openai_req_status_str(self):
       ret_str = "未知状态"
       if self.g_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_IDLE:
@@ -166,8 +178,12 @@ if __name__ == "__main__":
    reset_coversation_button.pack()
 
    # 取消请求按钮
-   reset_coversation_button = tk.Button(window, text="取消请求", command = ai_tool_backend.cancel_openai_req)
-   reset_coversation_button.pack()
+   cancel_req_button = tk.Button(window, text="取消请求", command = ai_tool_backend.cancel_openai_req)
+   cancel_req_button.pack()
+
+   # 保存对话按钮
+   save_coversation_button = tk.Button(window, text="保存对话", command = ai_tool_backend.save_conversation_name_input)
+   save_coversation_button.pack()
 
    # 对话展示展示框
    result_text = tk.Text(window, state="normal", width=160, height=60)
