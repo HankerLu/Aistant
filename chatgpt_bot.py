@@ -1,17 +1,39 @@
 import tkinter as tk
 import openai
 import markdown
-from html.parser import HTMLParser
+from enum import Enum
+from tkinterhtml import HtmlFrame
+import threading
 # import prompt_completion_chat_Chinese
 # openai.api_key = "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"
 
+class OpenAIReqStatus(Enum):
+   REQ_STATUS_IDLE = 0
+   REQ_STATUS_EXEC = 1
 
+   
 class AIToolBackEnd:
    def __init__(self):
       print("chat bot v2.0")
       self.g_model_name = "gpt-3.5-turbo"
       self.g_history_messages = [         
                {"role": "system", "content": "你是一个得力的助手, 你叫chatgpt, 你是基于GPT3.5开发的"},]
+      self.g_chat_completion_req_status = OpenAIReqStatus.REQ_STATUS_IDLE
+
+      thread_chat_completion = threading.Thread(target = self.chat_completion_req_thread_exec)
+      thread_chat_completion.start()
+
+   def chat_completion_req_thread_exec(self):
+      print("chat bot start chat_completion_req_thread_exec.")
+      while True:
+         if self.g_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_EXEC:
+            response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages = self.g_history_messages
+            )
+            self.g_history_messages.append(response.choices[0]['message']) # 新增 completion
+            self.ui_output_update()
+            self.g_chat_completion_req_status = OpenAIReqStatus.REQ_STATUS_IDLE
 
    def on_submit(self):
       prompt = input_field.get()
@@ -19,12 +41,14 @@ class AIToolBackEnd:
       user_question['content'] = prompt
       self.g_history_messages.append(user_question) # 新增 prompt
 
-      response = openai.ChatCompletion.create(
-      model="gpt-3.5-turbo",
-      messages = self.g_history_messages
-      )
-      self.g_history_messages.append(response.choices[0]['message']) # 新增 completion
-      self.ui_output_update()
+      if self.g_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_IDLE:
+         self.g_chat_completion_req_status = OpenAIReqStatus.REQ_STATUS_EXEC
+      # response = openai.ChatCompletion.create(
+      # model="gpt-3.5-turbo",
+      # messages = self.g_history_messages
+      # )
+      # self.g_history_messages.append(response.choices[0]['message']) # 新增 completion
+      # self.ui_output_update()
 
    def ui_output_update(self):
       message_content_total = ''
@@ -46,6 +70,7 @@ class AIToolBackEnd:
    
    def update_result_text(self, message_total):
       # html = markdown.markdown(message_total)
+      # result_text.set_content(html)
       result_text.config(state="normal")
       result_text.delete("1.0", "end")
       result_text.insert("end", message_total)
@@ -91,5 +116,8 @@ if __name__ == "__main__":
    # 对话展示展示框
    result_text = tk.Text(window, state="normal", width=160, height=60)
    result_text.pack()
+
+   # result_text = HtmlFrame(window)
+   # result_text.pack()
 
    window.mainloop()
