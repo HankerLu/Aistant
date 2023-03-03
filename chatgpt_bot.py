@@ -68,21 +68,27 @@ if __name__ == "__main__":
    window = tk.Tk()
    window.title("ChatGPT 本地对话机器人 v2.0")
 
+   # API_KEY 更新输入框
    key_update_field = tk.Entry(window, width=80)
    key_update_field.pack()
 
+   # API_KEY 更新按钮
    key_update_button = tk.Button(window, text="API_KEY", command = ai_tool_backend.update_key)
    key_update_button.pack()
 
+   # prompt 输入框
    input_field = tk.Entry(window, width=140)
    input_field.pack()
 
+   # prompt 提交按钮
    submit_button = tk.Button(window, text="发送", command = ai_tool_backend.on_submit)
    submit_button.pack()
 
+   # 重置对话按钮
    reset_coversation_button = tk.Button(window, text="重置按钮", command = ai_tool_backend.reset_coversation)
    reset_coversation_button.pack()
 
+   # 对话展示展示框
    result_text = tk.Text(window, state="normal", width=160, height=60)
    result_text.pack()
 
