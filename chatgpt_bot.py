@@ -47,6 +47,7 @@ class AIToolBackEnd:
 
    # @timeout(5)
    def openai_chat_completion_api_req(self):
+      print(openai.api_key)
       response = openai.ChatCompletion.create(
       model="gpt-3.5-turbo",
       messages = self.g_history_messages
