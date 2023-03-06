@@ -27,7 +27,7 @@
           <item>
            <widget class="QGroupBox" name="groupBox_2">
             <property name="title">
-             <string>GroupBox</string>
+             <string/>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
              <item>
@@ -69,7 +69,7 @@
                <x>0</x>
                <y>0</y>
                <width>1251</width>
-               <height>923</height>
+               <height>926</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
