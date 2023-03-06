@@ -21,12 +21,12 @@ class Aistant_UI_Agent:
         self.ui.action_6.triggered.connect(self.action_key_manage_exec)
 
     def action_chatgpt_slot_exec(self):
-        print("action_chatgpt_slot_exec.")
-        self.ui.stackedWidget.setCurrentIndex(1)
+        print("action_chatgpt_slot_exec. self.ui.stackedWidget.setCurrentIndex(0).")
+        self.ui.stackedWidget.setCurrentIndex(0)
 
     def action_key_manage_exec(self):
         print("action_key_manage_exec")
-        self.ui.stackedWidget.setCurrentIndex(2)
+        self.ui.stackedWidget.setCurrentIndex(1)
 
     def Aistant_UI_show(self):
         self.mainwin.show()

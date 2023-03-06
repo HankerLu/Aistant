@@ -40,14 +40,14 @@
                  <item>
                   <widget class="QPushButton" name="pushButton_4">
                    <property name="text">
-                    <string>PushButton</string>
+                    <string>发送</string>
                    </property>
                   </widget>
                  </item>
                  <item>
                   <widget class="QPushButton" name="pushButton_5">
                    <property name="text">
-                    <string>PushButton</string>
+                    <string>取消</string>
                    </property>
                   </widget>
                  </item>
@@ -81,14 +81,14 @@
                 <item>
                  <widget class="QPushButton" name="pushButton_6">
                   <property name="text">
-                   <string>PushButton</string>
+                   <string>保存对话</string>
                   </property>
                  </widget>
                 </item>
                 <item>
                  <widget class="QPushButton" name="pushButton_7">
                   <property name="text">
-                   <string>PushButton</string>
+                   <string>清空对话</string>
                   </property>
                  </widget>
                 </item>
