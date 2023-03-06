@@ -13,7 +13,7 @@ class Aistant_Chat_Core():
         print(" Aistant Aistant_Chat_Core init.")
         self.aistant_chat_model_name = "gpt-3.5-turbo"
         self.aistant_role_setting = {"role": "system", "content": "你是一个得力的助手, 你叫chatgpt, 你是基于GPT3.5开发的"}
-        self.aistant_history_messages = [ self.aistant_role_setting,]
+        self.aistant_history_messages = [self.aistant_role_setting,]
 
         self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_IDLE)
 
@@ -65,15 +65,6 @@ class Aistant_Chat_Core():
                 message_content_total += '\n'
         self.set_display_txt_output_callback(message_content_total)
 
-    # def update_result_text(self, message_total):
-    #     # html = markdown.markdown(message_total)
-    #     # result_text.set_content(html)
-    #     result_text.config(state="normal")
-    #     result_text.delete("1.0", "end")
-    #     result_text.insert("end", message_total)
-    #     result_text.config(state="disabled")
-
-
 #callback release
     def chat_core_button_submit_exec(self):
         prompt_text = self.get_text_edit_input_callback()
@@ -85,9 +76,11 @@ class Aistant_Chat_Core():
 
         if self.aistant_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_IDLE or self.aistant_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_TIMEOUT:
             self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_EXEC)
-            # response = self.openai_chat_completion_api_req()
-            # self.aistant_history_messages.append(response.choices[0]['message']) # 新增 completion
-            # self.ui_output_update()
+
+    def chat_core_button_clear_exec(self):
+        print("chat core button clear.")
+        self.aistant_history_messages = [self.aistant_role_setting,]
+        self.ui_output_update()
 
 #callback consume
     def chat_core_set_get_input_text_cb_ptr(self, get_txt_input):

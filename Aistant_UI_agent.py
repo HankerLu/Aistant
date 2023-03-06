@@ -50,6 +50,7 @@ class Aistant_UI_Agent:
 
     def aitant_ui_activate_button(self):
         self.ui.pushButton_4.clicked.connect(self.chat_submit_callback)
+        self.ui.pushButton_7.clicked.connect(self.chat_clear_callback)
 
     def Aistant_UI_show(self):
         self.mainwin.show()
@@ -68,4 +69,6 @@ class Aistant_UI_Agent:
     def aistant_ui_set_chat_submit_cb_ptr(self, chat_submit_cb):
         # print("aistant_ui_set_chat_submit_callback", chat_submit_cb)
         self.chat_submit_callback = chat_submit_cb
+    def aistant_ui_set_chat_clear_cb_ptr(self, chat_clear_cb):
+        self.chat_clear_callback = chat_clear_cb
 
