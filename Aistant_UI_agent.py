@@ -1,6 +1,16 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import Aistant_UI
 import sys
+from PyQt5.QtCore import QObject, pyqtSignal
+
+class Writer(QObject):
+    write_signal = pyqtSignal(str)
+
+    def __init__(self, parent=None):
+        super().__init__(parent=parent)
+
+    def write_to_browser(self, text):
+        self.write_signal.emit(text)
 
 # 连接操作：
 # 1.连接前端和自定义槽函数
@@ -19,6 +29,9 @@ class Aistant_UI_Agent:
 
         self.ui.action_chatgpt.triggered.connect(self.action_chatgpt_slot_exec)
         self.ui.action_6.triggered.connect(self.action_key_manage_exec)
+
+        self.textBrower_writer = Writer()
+        self.textBrower_writer.write_signal.connect(self.ui.textBrowser.setText)
 
     def chat_page_button_submit(self):
         print("chat_page_button_submit", self.ui.textEdit.toPlainText())
@@ -42,11 +55,17 @@ class Aistant_UI_Agent:
         self.mainwin.show()
         sys.exit(self.app.exec_())
 
+# callback release
     def aistant_ui_get_input_textedit_exec(self):
         # print("aistant_ui_get_input_textedit_exec")
         return self.ui.textEdit.toPlainText()
 
+    def aistant_ui_display_txt_output_exec(self, txt_display):
+        # self.ui.textBrowser.setText(txt_display)
+        self.textBrower_writer.write_to_browser(txt_display)
+
+# callback consume
     def aistant_ui_set_chat_submit_cb_ptr(self, chat_submit_cb):
-        print("aistant_ui_set_chat_submit_callback", chat_submit_cb)
+        # print("aistant_ui_set_chat_submit_callback", chat_submit_cb)
         self.chat_submit_callback = chat_submit_cb
 
