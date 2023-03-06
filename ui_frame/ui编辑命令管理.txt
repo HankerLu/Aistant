@@ -1,0 +1,1 @@
+pyuic5 -x chatbot_gui.ui -o chatbot_gui.py

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1255</width>
+    <height>861</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QStackedWidget" name="stackedWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="page"/>
+      <widget class="QWidget" name="page_2"/>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1255</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>496</x>
+      <y>298</y>
+      <width>120</width>
+      <height>72</height>
+     </rect>
+    </property>
+    <property name="tearOffEnabled">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>开始</string>
+    </property>
+    <addaction name="action_11"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="geometry">
+     <rect>
+      <x>576</x>
+      <y>298</y>
+      <width>120</width>
+      <height>94</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>设置</string>
+    </property>
+    <addaction name="action_6"/>
+    <addaction name="action_10"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>帮助</string>
+    </property>
+    <addaction name="action_8"/>
+    <addaction name="action_9"/>
+   </widget>
+   <widget class="QMenu" name="menu_5">
+    <property name="title">
+     <string>功能</string>
+    </property>
+    <addaction name="action_chatgpt"/>
+    <addaction name="actionA"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_5"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="action_6">
+   <property name="text">
+    <string>密钥管理</string>
+   </property>
+  </action>
+  <action name="action_8">
+   <property name="text">
+    <string>使用说明</string>
+   </property>
+  </action>
+  <action name="action_9">
+   <property name="text">
+    <string>关于...</string>
+   </property>
+  </action>
+  <action name="action_10">
+   <property name="text">
+    <string>对话策略</string>
+   </property>
+  </action>
+  <action name="action_11">
+   <property name="text">
+    <string>打开文件</string>
+   </property>
+  </action>
+  <action name="action_chatgpt">
+   <property name="text">
+    <string>AI对话</string>
+   </property>
+  </action>
+  <action name="actionA">
+   <property name="text">
+    <string>A绘画</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
