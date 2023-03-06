@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page"/>
       <widget class="QWidget" name="page_2"/>
@@ -41,8 +41,8 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>496</x>
-      <y>298</y>
+      <x>530</x>
+      <y>336</y>
       <width>120</width>
       <height>72</height>
      </rect>
@@ -58,8 +58,8 @@
    <widget class="QMenu" name="menu_2">
     <property name="geometry">
      <rect>
-      <x>576</x>
-      <y>298</y>
+      <x>610</x>
+      <y>336</y>
       <width>120</width>
       <height>94</height>
      </rect>
