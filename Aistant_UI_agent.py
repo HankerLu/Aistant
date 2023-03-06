@@ -20,6 +20,9 @@ class Aistant_UI_Agent:
         self.ui.action_chatgpt.triggered.connect(self.action_chatgpt_slot_exec)
         self.ui.action_6.triggered.connect(self.action_key_manage_exec)
 
+    def chat_page_button_submit(self):
+        print("chat_page_button_submit", self.ui.textEdit.toPlainText())
+
     def action_chatgpt_slot_exec(self):
         print("action_chatgpt_slot_exec. self.ui.stackedWidget.setCurrentIndex(0).")
         self.ui.stackedWidget.setCurrentIndex(0)
@@ -28,6 +31,22 @@ class Aistant_UI_Agent:
         print("action_key_manage_exec")
         self.ui.stackedWidget.setCurrentIndex(1)
 
+    def aistant_ui_get_textEdit_input_text(self):
+        print("aistant_ui_get_textEdit", self.ui.textEdit.toPlainText())
+        return self.ui.textEdit.toPlainText()
+
+    def aitant_ui_activate_button(self):
+        self.ui.pushButton_4.clicked.connect(self.chat_submit_callback)
+
     def Aistant_UI_show(self):
         self.mainwin.show()
         sys.exit(self.app.exec_())
+
+    def aistant_ui_get_input_textedit_exec(self):
+        # print("aistant_ui_get_input_textedit_exec")
+        return self.ui.textEdit.toPlainText()
+
+    def aistant_ui_set_chat_submit_cb_ptr(self, chat_submit_cb):
+        print("aistant_ui_set_chat_submit_callback", chat_submit_cb)
+        self.chat_submit_callback = chat_submit_cb
+
