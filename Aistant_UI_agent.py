@@ -2,6 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import Aistant_UI
 import sys
 from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtWidgets import QFileDialog 
 
 class Writer(QObject):
     write_signal = pyqtSignal(str)
@@ -51,6 +52,8 @@ class Aistant_UI_Agent:
     def aitant_ui_activate_button(self):
         self.ui.pushButton_4.clicked.connect(self.chat_submit_callback)
         self.ui.pushButton_7.clicked.connect(self.chat_clear_callback)
+        self.ui.pushButton_5.clicked.connect(self.chat_cancel_callback)
+        self.ui.pushButton_6.clicked.connect(self.chat_save_callback)
 
     def Aistant_UI_show(self):
         self.mainwin.show()
@@ -65,10 +68,23 @@ class Aistant_UI_Agent:
         # self.ui.textBrowser.setText(txt_display)
         self.textBrower_writer.write_to_browser(txt_display)
 
+    def aistant_ui_save_current_chat_exec(self):
+        print("aistant_ui_save_current_chat_exec")
+        filename, _ = QFileDialog.getSaveFileName(self.ui.stackedWidget, "保存对话", "", "文本文件 (*.txt);;所有文件 (*)")
+        if filename:
+            with open(filename, "w") as file:
+                file.write(self.ui.textBrowser.toPlainText())
+
 # callback consume
     def aistant_ui_set_chat_submit_cb_ptr(self, chat_submit_cb):
         # print("aistant_ui_set_chat_submit_callback", chat_submit_cb)
         self.chat_submit_callback = chat_submit_cb
+
     def aistant_ui_set_chat_clear_cb_ptr(self, chat_clear_cb):
         self.chat_clear_callback = chat_clear_cb
 
+    def aistant_ui_set_chat_cancel_cb_ptr(self, chat_cancel_cb):
+        self.chat_cancel_callback = chat_cancel_cb
+
+    def aistant_ui_set_chat_save_cb_ptr(self, chat_save_cb):
+        self.chat_save_callback = chat_save_cb

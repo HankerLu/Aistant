@@ -46,3 +46,41 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
+
+
+from PyQt5.QtWidgets import QApplication, QWidget, QTextBrowser, QLineEdit, QPushButton, QVBoxLayout
+
+class TextEditor(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        # 创建文本浏览器和输入框
+        self.textBrowser = QTextBrowser()
+        self.lineEdit = QLineEdit()
+
+        # 创建保存按钮，并关联点击事件
+        self.saveButton = QPushButton("保存")
+        self.saveButton.clicked.connect(self.saveToFile)
+
+        # 创建布局管理器，并添加控件
+        layout = QVBoxLayout()
+        layout.addWidget(self.textBrowser)
+        layout.addWidget(self.lineEdit)
+        layout.addWidget(self.saveButton)
+
+        # 将布局管理器设置为当前窗口的布局
+        self.setLayout(layout)
+
+    def saveToFile(self):
+        filename, _ = QFileDialog.getSaveFileName(self, "保存文件", "", "文本文件 (*.txt);;所有文件 (*)")
+        if filename:
+            with open(filename, "w") as file:
+                file.write(self.textBrowser.toPlainText())
+
+    def showSaveDialog(self):
+        # 创建弹窗，要求输入文件名
+        text, okPressed = QInputDialog.getText(self, "保存文件", "输入文件名:", QLineEdit.Normal, "")
+        if okPressed and text != "":
+            filename = text + ".txt"
+            with open(filename, "w") as file:
+                file.write(self.textBrowser.toPlainText())

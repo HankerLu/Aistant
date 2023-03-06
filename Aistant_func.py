@@ -63,11 +63,13 @@ class Aistant_Chat_Core():
                 message_content_total += msg_role_with_content
                 message_content_total += '\n'
                 message_content_total += '\n'
-        self.set_display_txt_output_callback(message_content_total)
+        if self.set_display_txt_output_callback != None:
+            self.set_display_txt_output_callback(message_content_total)
 
 #callback release
     def chat_core_button_submit_exec(self):
-        prompt_text = self.get_text_edit_input_callback()
+        if self.get_text_edit_input_callback != None:
+            prompt_text = self.get_text_edit_input_callback()
         print("chat_core_button_submit_exec--", prompt_text)
     #     prompt_text = self.ui_agent.aistant_ui_get_textEdit_input_text()
         user_question = {"role": "user", "content": ""}
@@ -82,9 +84,21 @@ class Aistant_Chat_Core():
         self.aistant_history_messages = [self.aistant_role_setting,]
         self.ui_output_update()
 
+    def chat_core_button_cancel_exec(self):
+        print("chat core button cancel.")
+        self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_IDLE)
+
+    def chat_core_button_save_exec(self):
+        print("chat core button save.")
+        if self.save_current_chat_callback != None:
+            self.save_current_chat_callback()
+
 #callback consume
     def chat_core_set_get_input_text_cb_ptr(self, get_txt_input):
         self.get_text_edit_input_callback = get_txt_input
 
     def chat_core_set_display_response_cb_ptr(self, display_response):
         self.set_display_txt_output_callback = display_response
+
+    def chat_core_set_save_chat_cb_ptr(self, save_chat_txt):
+        self.save_current_chat_callback = save_chat_txt
