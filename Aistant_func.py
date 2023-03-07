@@ -131,6 +131,9 @@ class Aistant_Chat_Core():
         if self.save_current_chat_callback != None:
             self.save_current_chat_callback()
 
+    def chat_core_teminate_thread_exec(self):
+        self.thread_chat_completion_do_run = False
+
 #callback consume
     def chat_core_set_get_input_text_cb_ptr(self, get_txt_input):
         self.get_text_edit_input_callback = get_txt_input

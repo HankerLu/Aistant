@@ -58,6 +58,7 @@ class Aistant_UI_Agent:
         # self.ui.stackedWidget.keyPressEvent = self.aistant_keyPressEvent
         # self.ui.textEdit.keyPressEvent = self.aistant_keyPressEvent
         # self.mainwin.keyPressEvent = self.aistant_keyPressEvent
+        self.mainwin.closeEvent = self.aistant_closeEvent
 
     def chat_page_button_submit(self):
         print("chat_page_button_submit", self.ui.textEdit.toPlainText())
@@ -74,7 +75,7 @@ class Aistant_UI_Agent:
         print("aistant_ui_get_textEdit", self.ui.textEdit.toPlainText())
         return self.ui.textEdit.toPlainText()
 
-    def aitant_ui_activate_button(self):
+    def aistant_ui_activate_button(self):
         self.ui.pushButton_4.clicked.connect(self.chat_submit_callback)
         self.ui.pushButton_7.clicked.connect(self.chat_clear_callback)
         self.ui.pushButton_5.clicked.connect(self.chat_cancel_callback)
@@ -96,6 +97,11 @@ class Aistant_UI_Agent:
 
     def aistant_returnPressEvent(self):
         print("return pressed trig.")
+
+    def aistant_closeEvent(self, event):
+        print("close event trig.")
+        if self.chat_core_teminate_callback != None:
+            self.chat_core_teminate_callback()
 
 # callback release
     def aistant_ui_get_input_textedit_exec(self):
@@ -133,3 +139,6 @@ class Aistant_UI_Agent:
 
     def aistant_ui_set_chat_save_cb_ptr(self, chat_save_cb):
         self.chat_save_callback = chat_save_cb
+
+    def aistant_ui_teminate_chat_core(self, chat_core_teminate_cb):
+        self.chat_core_teminate_callback = chat_core_teminate_cb
