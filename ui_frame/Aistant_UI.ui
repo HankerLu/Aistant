@@ -10,9 +10,6 @@
     <height>1150</height>
    </rect>
   </property>
-  <property name="focusPolicy">
-   <enum>Qt::StrongFocus</enum>
-  </property>
   <property name="windowTitle">
    <string>Aistant</string>
   </property>
@@ -24,9 +21,6 @@
        <number>0</number>
       </property>
       <widget class="QWidget" name="page">
-       <property name="focusPolicy">
-        <enum>Qt::StrongFocus</enum>
-       </property>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_4" stretch="1,7">
@@ -37,10 +31,10 @@
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
              <item>
+              <widget class="QTextEdit" name="textEdit"/>
+             </item>
+             <item>
               <layout class="QVBoxLayout" name="verticalLayout">
-               <item>
-                <widget class="QTextEdit" name="textEdit"/>
-               </item>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_2">
                  <item>

@@ -2,10 +2,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import Aistant_UI
 import sys
 from PyQt5.QtCore import QObject, pyqtSignal
-from PyQt5.QtWidgets import QFileDialog 
+from PyQt5.QtWidgets import QFileDialog, QPlainTextEdit
 from PyQt5.QtGui import QTextCharFormat, QColor
-
-import markdown
+from PyQt5.Qt import Qt
+# import markdown
 class Writer(QObject):
     write_signal = pyqtSignal(str)
 
@@ -55,6 +55,10 @@ class Aistant_UI_Agent:
 
         self.ui.statusbar.showMessage('界面加载完成')
 
+        # self.ui.stackedWidget.keyPressEvent = self.aistant_keyPressEvent
+        # self.ui.textEdit.keyPressEvent = self.aistant_keyPressEvent
+        # self.mainwin.keyPressEvent = self.aistant_keyPressEvent
+
     def chat_page_button_submit(self):
         print("chat_page_button_submit", self.ui.textEdit.toPlainText())
 
@@ -80,6 +84,18 @@ class Aistant_UI_Agent:
         self.mainwin.show()
         sys.exit(self.app.exec_())
 
+    def aistant_keyPressEvent(self, event):
+        print("key pressed trig.", event)
+        if event.key() == Qt.Key_Shift:
+            print("key pressed Key_Shift")
+        elif event.key() == Qt.Key_Enter:
+            print("key pressed Key_Enter")
+
+    def aistant_mousePressEvent(self, event):
+        print("mouse pressed trig.", event)
+
+    def aistant_returnPressEvent(self):
+        print("return pressed trig.")
 
 # callback release
     def aistant_ui_get_input_textedit_exec(self):

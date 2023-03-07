@@ -3,6 +3,7 @@ import openai
 from enum import Enum
 import threading
 import time
+import keyboard
 
 class OpenAIReqStatus(Enum):
    REQ_STATUS_IDLE = 0
@@ -18,8 +19,10 @@ class Aistant_Chat_Core():
         self.aistant_chat_completion_req_status = OpenAIReqStatus.REQ_STATUS_IDLE
 
         self.thread_chat_completion_do_run = True
-        self.thread_chat_completion = threading.Thread(target = self.chat_completion_req_thread_exec)
+        self.thread_chat_completion = threading.Thread(target = self.chat_core_thread_exec)
         self.thread_chat_completion.start()
+        
+        self.core_threa_run_tick = 0
 
     def openai_chat_completion_api_req(self):
         print(openai.api_key)
@@ -33,10 +36,15 @@ class Aistant_Chat_Core():
             response = ''
             return response
 
-    def chat_completion_req_thread_exec(self):
-        print("chat bot start chat_completion_req_thread_exec.")
+    def chat_core_thread_exec(self):
+        print("chat bot start chat_core_thread_exec.")
         while self.thread_chat_completion_do_run:
             time.sleep(0.1)
+            self.core_threa_run_tick +=1
+            if keyboard.is_pressed('enter') and keyboard.is_pressed('shift'):
+                print("New line Command.")
+            elif keyboard.is_pressed('enter'):
+                self.chat_core_button_submit_exec()
             if self.aistant_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_EXEC:
                 response = self.openai_chat_completion_api_req()
                 if response == '':  
@@ -94,6 +102,8 @@ class Aistant_Chat_Core():
     def chat_core_button_submit_exec(self):
         if self.get_text_edit_input_callback != None:
             prompt_text = self.get_text_edit_input_callback()
+            print("---prompt_text: %s"%prompt_text)
+            # if prompt_text == '' or prompt_text == '\r' or prompt_text == '\n' or prompt_text == '\r\n':
             if prompt_text == '':
                 # print("chat_core_button_submit_exec-Empty send prompt message.")
                 self.aistant_chat_update_statusbar("发送消息为空")
