@@ -23,11 +23,15 @@ class Aistant_Chat_Core():
 
     def openai_chat_completion_api_req(self):
         print(openai.api_key)
-        response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages = self.aistant_history_messages
-        )
-        return response
+        try:
+            response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages = self.aistant_history_messages
+            )
+            return response
+        except:
+            response = ''
+            return response
 
     def chat_completion_req_thread_exec(self):
         print("chat bot start chat_completion_req_thread_exec.")
@@ -35,6 +39,9 @@ class Aistant_Chat_Core():
             time.sleep(0.1)
             if self.aistant_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_EXEC:
                 response = self.openai_chat_completion_api_req()
+                if response == '':  
+                    self.aistant_chat_update_statusbar('API请求错误')
+                    continue
                 self.aistant_history_messages.append(response.choices[0]['message']) # 新增 completion
                 self.ui_output_update()
                 # print(response.choices[0]['message'])
@@ -53,8 +60,7 @@ class Aistant_Chat_Core():
     def update_openai_req_status(self, status):
         print("update_openai_req_status", status)
         self.aistant_chat_completion_req_status = status
-        if self.update_statusbar_txt_callback != None:
-            self.update_statusbar_txt_callback(self.get_openai_req_status_str())
+        self.aistant_chat_update_statusbar(self.get_openai_req_status_str())
 
     def set_openai_req_thread_do_run(self, do_run):
         self.thread_chat_completion_do_run = do_run
@@ -78,6 +84,11 @@ class Aistant_Chat_Core():
             message_content_total += '\n'
         if self.set_display_txt_output_callback != None:
             self.set_display_txt_output_callback(message_content_total)
+
+    def aistant_chat_update_statusbar(self, content):
+        if self.update_statusbar_txt_callback != None:
+            self.update_statusbar_txt_callback(content)
+
 
 #callback release
     def chat_core_button_submit_exec(self):
