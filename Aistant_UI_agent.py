@@ -3,6 +3,7 @@ import Aistant_UI
 import sys
 from PyQt5.QtCore import QObject, pyqtSignal
 from PyQt5.QtWidgets import QFileDialog 
+from PyQt5.QtGui import QTextCharFormat, QColor
 
 import markdown
 class Writer(QObject):
@@ -35,6 +36,15 @@ class Aistant_UI_Agent:
         self.textBrower_writer = Writer()
         self.textBrower_writer.write_signal.connect(self.ui.textBrowser.setText)
         # self.textBrower_writer.write_signal.connect(self.ui.textBrowser.setMarkdown)
+        # self.textBrower_writer.write_signal.connect(self.ui.textBrowser.setHtml)
+
+        # 定义一个蓝色hightlight
+        textbrowser_format = QTextCharFormat()
+        textbrowser_format.setForeground(QColor(31, 31, 31))
+        # textbrowser_format.setBackground(QColor(0, 255, 0)) 
+        # self.ui.textBrowser.setStyleSheet("background-color: balck;")
+        self.ui.textBrowser.setStyleSheet("background-color: rgb(210,210,210);")
+        self.ui.textBrowser.setCurrentCharFormat(textbrowser_format)  # 应用高亮格式
 
     def chat_page_button_submit(self):
         print("chat_page_button_submit", self.ui.textEdit.toPlainText())
