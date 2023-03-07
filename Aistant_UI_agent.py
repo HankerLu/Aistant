@@ -38,7 +38,11 @@ class Aistant_UI_Agent:
         # self.textBrower_writer.write_signal.connect(self.ui.textBrowser.setMarkdown)
         # self.textBrower_writer.write_signal.connect(self.ui.textBrowser.setHtml)
 
-        # 定义一个蓝色hightlight
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.ui.textBrowser.setFont(font)
+        self.ui.textEdit.setFont(font)
+
         textbrowser_format = QTextCharFormat()
         textbrowser_format.setForeground(QColor(31, 31, 31))
         # textbrowser_format.setBackground(QColor(0, 255, 0)) 
