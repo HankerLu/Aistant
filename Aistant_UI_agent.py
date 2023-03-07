@@ -4,6 +4,7 @@ import sys
 from PyQt5.QtCore import QObject, pyqtSignal
 from PyQt5.QtWidgets import QFileDialog 
 
+import markdown
 class Writer(QObject):
     write_signal = pyqtSignal(str)
 
@@ -33,6 +34,7 @@ class Aistant_UI_Agent:
 
         self.textBrower_writer = Writer()
         self.textBrower_writer.write_signal.connect(self.ui.textBrowser.setText)
+        # self.textBrower_writer.write_signal.connect(self.ui.textBrowser.setMarkdown)
 
     def chat_page_button_submit(self):
         print("chat_page_button_submit", self.ui.textEdit.toPlainText())
@@ -66,11 +68,15 @@ class Aistant_UI_Agent:
 
     def aistant_ui_display_txt_output_exec(self, txt_display):
         # self.ui.textBrowser.setText(txt_display)
+        # html = markdown.markdown(txt_display)
         self.textBrower_writer.write_to_browser(txt_display)
 
     def aistant_ui_save_current_chat_exec(self):
         print("aistant_ui_save_current_chat_exec")
         filename, _ = QFileDialog.getSaveFileName(self.ui.stackedWidget, "保存对话", "", "文本文件 (*.txt);;所有文件 (*)")
+        if filename == '':
+            print("save_conversation_name_input no file")
+            return
         if filename:
             with open(filename, "w") as file:
                 file.write(self.ui.textBrowser.toPlainText())

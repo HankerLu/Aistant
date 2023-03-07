@@ -55,14 +55,15 @@ class Aistant_Chat_Core():
             if msg_cnt == 1:
                 continue
             role_msg = 'Unknown'
+            print(msg['role'])
             if msg['role'] == 'user':
                 role_msg = '用户'
             elif msg['role'] == 'assistant':
                 role_msg = 'chatGPT'
-                msg_role_with_content = role_msg + ':\n' + msg['content']
-                message_content_total += msg_role_with_content
-                message_content_total += '\n'
-                message_content_total += '\n'
+            msg_role_with_content = role_msg + ':\n' + msg['content']
+            message_content_total += msg_role_with_content
+            message_content_total += '\n'
+            message_content_total += '\n'
         if self.set_display_txt_output_callback != None:
             self.set_display_txt_output_callback(message_content_total)
 
