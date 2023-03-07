@@ -12,7 +12,7 @@ class Writer(QObject):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
 
-    def write_to_browser(self, text):
+    def write_to_display_widget(self, text):
         self.write_signal.emit(text)
 
 # 连接操作：
@@ -38,6 +38,9 @@ class Aistant_UI_Agent:
         # self.textBrower_writer.write_signal.connect(self.ui.textBrowser.setMarkdown)
         # self.textBrower_writer.write_signal.connect(self.ui.textBrowser.setHtml)
 
+        self.statusbar_writer = Writer()
+        self.statusbar_writer.write_signal.connect(self.ui.statusbar.showMessage)
+        
         font = QtGui.QFont()
         font.setPointSize(12)
         self.ui.textBrowser.setFont(font)
@@ -49,6 +52,8 @@ class Aistant_UI_Agent:
         # self.ui.textBrowser.setStyleSheet("background-color: balck;")
         self.ui.textBrowser.setStyleSheet("background-color: rgb(210,210,210);")
         self.ui.textBrowser.setCurrentCharFormat(textbrowser_format)  # 应用高亮格式
+
+        self.ui.statusbar.showMessage('界面加载完成')
 
     def chat_page_button_submit(self):
         print("chat_page_button_submit", self.ui.textEdit.toPlainText())
@@ -83,7 +88,10 @@ class Aistant_UI_Agent:
     def aistant_ui_display_txt_output_exec(self, txt_display):
         # self.ui.textBrowser.setText(txt_display)
         # html = markdown.markdown(txt_display)
-        self.textBrower_writer.write_to_browser(txt_display)
+        self.textBrower_writer.write_to_display_widget(txt_display)
+
+    def aistant_ui_update_statusbar_txt(self, txt_display):
+        self.statusbar_writer.write_to_display_widget(txt_display)
 
     def aistant_ui_save_current_chat_exec(self):
         print("aistant_ui_save_current_chat_exec")

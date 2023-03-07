@@ -15,7 +15,7 @@ class Aistant_Chat_Core():
         self.aistant_role_setting = {"role": "system", "content": "你是一个得力的助手, 你叫chatgpt, 你是基于GPT3.5开发的"}
         self.aistant_history_messages = [self.aistant_role_setting,]
 
-        self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_IDLE)
+        self.aistant_chat_completion_req_status = OpenAIReqStatus.REQ_STATUS_IDLE
 
         self.thread_chat_completion_do_run = True
         self.thread_chat_completion = threading.Thread(target = self.chat_completion_req_thread_exec)
@@ -40,9 +40,21 @@ class Aistant_Chat_Core():
                 # print(response.choices[0]['message'])
                 self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_IDLE)
 
+    def get_openai_req_status_str(self):
+        ret_str = "未知状态"
+        if self.aistant_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_IDLE:
+            ret_str = "无请求"
+        elif self.aistant_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_EXEC:
+            ret_str = "请求中"
+        elif self.aistant_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_TIMEOUT:
+                ret_str = "请求超时"
+        return ret_str
+
     def update_openai_req_status(self, status):
         print("update_openai_req_status", status)
         self.aistant_chat_completion_req_status = status
+        if self.update_statusbar_txt_callback != None:
+            self.update_statusbar_txt_callback(self.get_openai_req_status_str())
 
     def set_openai_req_thread_do_run(self, do_run):
         self.thread_chat_completion_do_run = do_run
@@ -103,3 +115,6 @@ class Aistant_Chat_Core():
 
     def chat_core_set_save_chat_cb_ptr(self, save_chat_txt):
         self.save_current_chat_callback = save_chat_txt
+
+    def chat_core_set_update_statusbar_cb_ptr(self, update_statusbar_callback):
+        self.update_statusbar_txt_callback = update_statusbar_callback

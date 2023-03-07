@@ -14,5 +14,6 @@ if __name__ == "__main__":
     aistant_chat_core.chat_core_set_get_input_text_cb_ptr(aistant_ui.aistant_ui_get_input_textedit_exec)
     aistant_chat_core.chat_core_set_display_response_cb_ptr(aistant_ui.aistant_ui_display_txt_output_exec)
     aistant_chat_core.chat_core_set_save_chat_cb_ptr(aistant_ui.aistant_ui_save_current_chat_exec)
-    
+    aistant_chat_core.chat_core_set_update_statusbar_cb_ptr(aistant_ui.aistant_ui_update_statusbar_txt)
+
     aistant_ui.Aistant_UI_show()
