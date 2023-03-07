@@ -84,11 +84,11 @@ class Ui_MainWindow(object):
         self.menubar.setObjectName("menubar")
         self.menu = QtWidgets.QMenu(self.menubar)
         self.menu.setEnabled(True)
-        self.menu.setGeometry(QtCore.QRect(530, 336, 120, 72))
+        self.menu.setGeometry(QtCore.QRect(389, 156, 120, 72))
         self.menu.setTearOffEnabled(False)
         self.menu.setObjectName("menu")
         self.menu_2 = QtWidgets.QMenu(self.menubar)
-        self.menu_2.setGeometry(QtCore.QRect(610, 336, 120, 94))
+        self.menu_2.setGeometry(QtCore.QRect(469, 156, 120, 94))
         self.menu_2.setObjectName("menu_2")
         self.menu_3 = QtWidgets.QMenu(self.menubar)
         self.menu_3.setObjectName("menu_3")
@@ -130,7 +130,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Aistant"))
         self.pushButton_4.setText(_translate("MainWindow", "发送"))
         self.pushButton_5.setText(_translate("MainWindow", "取消"))
         self.pushButton_6.setText(_translate("MainWindow", "保存对话"))

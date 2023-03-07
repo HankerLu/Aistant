@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Aistant</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
@@ -122,8 +122,8 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>530</x>
-      <y>336</y>
+      <x>389</x>
+      <y>156</y>
       <width>120</width>
       <height>72</height>
      </rect>
@@ -139,8 +139,8 @@
    <widget class="QMenu" name="menu_2">
     <property name="geometry">
      <rect>
-      <x>610</x>
-      <y>336</y>
+      <x>469</x>
+      <y>156</y>
       <width>120</width>
       <height>94</height>
      </rect>
