@@ -80,6 +80,7 @@ class Aistant_UI_Agent:
         self.mainwin.show()
         sys.exit(self.app.exec_())
 
+
 # callback release
     def aistant_ui_get_input_textedit_exec(self):
         # print("aistant_ui_get_input_textedit_exec")

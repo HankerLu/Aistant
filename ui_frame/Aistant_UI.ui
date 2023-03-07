@@ -10,6 +10,9 @@
     <height>1150</height>
    </rect>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::StrongFocus</enum>
+  </property>
   <property name="windowTitle">
    <string>Aistant</string>
   </property>
@@ -21,6 +24,9 @@
        <number>0</number>
       </property>
       <widget class="QWidget" name="page">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_4" stretch="1,7">
@@ -74,7 +80,11 @@
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
               <item>
-               <widget class="QTextBrowser" name="textBrowser"/>
+               <widget class="QTextBrowser" name="textBrowser">
+                <property name="focusPolicy">
+                 <enum>Qt::NoFocus</enum>
+                </property>
+               </widget>
               </item>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -86,9 +96,16 @@
                  </widget>
                 </item>
                 <item>
+                 <widget class="QPushButton" name="pushButton">
+                  <property name="text">
+                   <string>撤回</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QPushButton" name="pushButton_7">
                   <property name="text">
-                   <string>清空对话</string>
+                   <string>清空</string>
                   </property>
                  </widget>
                 </item>
@@ -148,8 +165,8 @@
     <property name="title">
      <string>设置</string>
     </property>
-    <addaction name="action_6"/>
     <addaction name="action_10"/>
+    <addaction name="action_6"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -188,7 +205,7 @@
   </action>
   <action name="action_10">
    <property name="text">
-    <string>对话策略</string>
+    <string>AI对话设置</string>
    </property>
   </action>
   <action name="action_11">

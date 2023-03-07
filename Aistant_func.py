@@ -94,6 +94,10 @@ class Aistant_Chat_Core():
     def chat_core_button_submit_exec(self):
         if self.get_text_edit_input_callback != None:
             prompt_text = self.get_text_edit_input_callback()
+            if prompt_text == '':
+                # print("chat_core_button_submit_exec-Empty send prompt message.")
+                self.aistant_chat_update_statusbar("发送消息为空")
+                return 
         print("chat_core_button_submit_exec--", prompt_text)
     #     prompt_text = self.ui_agent.aistant_ui_get_textEdit_input_text()
         user_question = {"role": "user", "content": ""}
