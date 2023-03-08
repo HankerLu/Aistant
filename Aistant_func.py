@@ -131,6 +131,13 @@ class Aistant_Chat_Core():
         if self.save_current_chat_callback != None:
             self.save_current_chat_callback()
 
+    def chat_core_button_withdraw_exec(self):
+        print("set chat core withdraw.")
+        if len(self.aistant_history_messages) > 2:
+            del self.aistant_history_messages[-1]
+            del self.aistant_history_messages[-1]
+            self.ui_output_update()
+
     def chat_core_teminate_thread_exec(self):
         self.thread_chat_completion_do_run = False
 

@@ -80,6 +80,7 @@ class Aistant_UI_Agent:
         self.ui.pushButton_7.clicked.connect(self.chat_clear_callback)
         self.ui.pushButton_5.clicked.connect(self.chat_cancel_callback)
         self.ui.pushButton_6.clicked.connect(self.chat_save_callback)
+        self.ui.pushButton.clicked.connect(self.chat_withdraw_callback)
 
     def Aistant_UI_show(self):
         self.mainwin.show()
@@ -139,6 +140,9 @@ class Aistant_UI_Agent:
 
     def aistant_ui_set_chat_save_cb_ptr(self, chat_save_cb):
         self.chat_save_callback = chat_save_cb
+
+    def aistant_ui_set_chat_withdraw_cb_ptr(self, chat_withdraw_cb):
+        self.chat_withdraw_callback = chat_withdraw_cb
 
     def aistant_ui_teminate_chat_core(self, chat_core_teminate_cb):
         self.chat_core_teminate_callback = chat_core_teminate_cb
