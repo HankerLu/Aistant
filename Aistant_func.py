@@ -33,6 +33,7 @@ class Aistant_Chat_Core():
             )
             return response
         except:
+            print(response.choices[0]['message'])
             response = ''
             return response
 
