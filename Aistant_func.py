@@ -44,7 +44,8 @@ class Aistant_Chat_Core():
             if keyboard.is_pressed('enter') and keyboard.is_pressed('shift'):
                 print("New line Command.")
             elif keyboard.is_pressed('enter'):
-                self.chat_core_button_submit_exec()
+                print("Key enter press.")
+                # self.chat_core_button_submit_exec()
             if self.aistant_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_EXEC:
                 response = self.openai_chat_completion_api_req()
                 if response == '':  

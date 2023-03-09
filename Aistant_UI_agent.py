@@ -32,6 +32,7 @@ class Aistant_UI_Agent:
 
         self.ui.action_chatgpt.triggered.connect(self.action_chatgpt_slot_exec)
         self.ui.action_6.triggered.connect(self.action_key_manage_exec)
+        self.ui.action_10.triggered.connect(self.action_chat_setting_exec)
 
         self.textBrower_writer = Writer()
         self.textBrower_writer.write_signal.connect(self.ui.textBrowser.setText)
@@ -70,6 +71,10 @@ class Aistant_UI_Agent:
     def action_key_manage_exec(self):
         print("action_key_manage_exec")
         self.ui.stackedWidget.setCurrentIndex(1)
+
+    def action_chat_setting_exec(self):
+        print("action_chat_setting_exec")
+        self.ui.stackedWidget.setCurrentIndex(2)
 
     def aistant_ui_get_textEdit_input_text(self):
         print("aistant_ui_get_textEdit", self.ui.textEdit.toPlainText())
