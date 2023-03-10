@@ -5,6 +5,7 @@ from PyQt5.QtCore import QObject, pyqtSignal
 from PyQt5.QtWidgets import QFileDialog, QPlainTextEdit
 from PyQt5.QtGui import QTextCharFormat, QColor
 from PyQt5.Qt import Qt
+import Aistant_setting_manage
 # import markdown
 class Writer(QObject):
     write_signal = pyqtSignal(str)
@@ -61,6 +62,27 @@ class Aistant_UI_Agent:
         # self.mainwin.keyPressEvent = self.aistant_keyPressEvent
         self.mainwin.closeEvent = self.aistant_closeEvent
 
+#-----------------设置参数-------------------#
+        self.chat_setting = Aistant_setting_manage.Aistant_Chat_Setting()
+
+        model_list = self.chat_setting.aistant_chat_model_type_get_config()
+        for i in range(len(model_list)):
+            c_m_txt = model_list[i]['company'] + '：' + model_list[i]['model']
+            self.ui.comboBox_4.addItem(c_m_txt)
+
+        role_descript_list = self.chat_setting.aistant_select_role_and_descript_get_config()
+        for i in range(len(role_descript_list)):
+            r_d_txt = role_descript_list[i]['role'] + '：' + role_descript_list[i]['brief']
+            # new_r_d_item = Q
+            self.ui.comboBox_3.addItem(r_d_txt)
+
+        self.current_role_descript_idx = self.ui.comboBox_3.currentIndex()
+        descript_txt = role_descript_list[self.current_role_descript_idx]['descripion']
+        self.ui.plainTextEdit.setPlainText(descript_txt)
+        self.ui.comboBox_3.currentIndexChanged.connect(self.update_role_descript)
+
+        # self.chat_setting.aistant_select_role_and_descript_set_config()
+
     def chat_page_button_submit(self):
         print("chat_page_button_submit", self.ui.textEdit.toPlainText())
 
@@ -108,6 +130,12 @@ class Aistant_UI_Agent:
         print("close event trig.")
         if self.chat_core_teminate_callback != None:
             self.chat_core_teminate_callback()
+
+    def update_role_descript(self, text):
+        print("update_role_descript", text)
+        self.current_role_descript_idx = self.ui.comboBox_3.currentIndex()
+        descript_txt = self.chat_setting.aistant_select_role_and_descript_get_config()[self.current_role_descript_idx]['descripion']
+        self.ui.plainTextEdit.setPlainText(descript_txt)
 
 # callback release
     def aistant_ui_get_input_textedit_exec(self):

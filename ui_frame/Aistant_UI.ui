@@ -18,7 +18,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -68,8 +68,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>1251</width>
-               <height>926</height>
+               <width>257</width>
+               <height>120</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -161,9 +161,9 @@
                  <height>1006</height>
                 </rect>
                </property>
-               <layout class="QVBoxLayout" name="verticalLayout_16">
+               <layout class="QVBoxLayout" name="verticalLayout_17">
                 <item>
-                 <layout class="QVBoxLayout" name="verticalLayout_15">
+                 <layout class="QVBoxLayout" name="verticalLayout_16" stretch="0,0,0,1,0,6">
                   <item>
                    <layout class="QVBoxLayout" name="verticalLayout_10">
                     <item>
@@ -218,7 +218,20 @@
                    </layout>
                   </item>
                   <item>
-                   <layout class="QVBoxLayout" name="verticalLayout_8">
+                   <layout class="QVBoxLayout" name="verticalLayout_8"/>
+                  </item>
+                  <item>
+                   <layout class="QVBoxLayout" name="verticalLayout_7" stretch="0,1,0,0">
+                    <item>
+                     <widget class="QLabel" name="label_8">
+                      <property name="text">
+                       <string>默认角色补充描述（你可以基于‘默认角色设定’补充额外的描述和说明）</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPlainTextEdit" name="plainTextEdit"/>
+                    </item>
                     <item>
                      <widget class="QLabel" name="label_3">
                       <property name="font">
@@ -233,12 +246,23 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QComboBox" name="comboBox_2"/>
+                     <widget class="QComboBox" name="comboBox_2">
+                      <item>
+                       <property name="text">
+                        <string>text</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>markdown</string>
+                       </property>
+                      </item>
+                     </widget>
                     </item>
                    </layout>
                   </item>
                   <item>
-                   <layout class="QVBoxLayout" name="verticalLayout_7" stretch="0,0">
+                   <layout class="QVBoxLayout" name="verticalLayout_15">
                     <item>
                      <widget class="QLabel" name="label_4">
                       <property name="font">
@@ -253,7 +277,18 @@
                      </widget>
                     </item>
                     <item>
-                     <widget class="QComboBox" name="comboBox_5"/>
+                     <widget class="QComboBox" name="comboBox_5">
+                      <item>
+                       <property name="text">
+                        <string>关闭高亮</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>开启高亮</string>
+                       </property>
+                      </item>
+                     </widget>
                     </item>
                    </layout>
                   </item>
@@ -324,7 +359,7 @@
                  </layout>
                 </item>
                 <item>
-                 <layout class="QVBoxLayout" name="verticalLayout_6" stretch=""/>
+                 <layout class="QVBoxLayout" name="verticalLayout_6"/>
                 </item>
                </layout>
               </widget>

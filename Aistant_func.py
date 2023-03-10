@@ -13,7 +13,7 @@ class Aistant_Chat_Core():
     def __init__(self):
         print(" Aistant Aistant_Chat_Core init.")
         self.aistant_chat_model_name = "gpt-3.5-turbo"
-        self.aistant_role_setting = {"role": "system", "content": "你是一个得力的助手, 你叫chatgpt, 你是基于GPT3.5开发的"}
+        self.aistant_role_setting = {"role": "system", "content": "我希望你能扮演辩手的角色。"}
         self.aistant_history_messages = [self.aistant_role_setting,]
 
         self.aistant_chat_completion_req_status = OpenAIReqStatus.REQ_STATUS_IDLE
