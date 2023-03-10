@@ -62,7 +62,7 @@ class Aistant_UI_Agent:
         # self.mainwin.keyPressEvent = self.aistant_keyPressEvent
         self.mainwin.closeEvent = self.aistant_closeEvent
 
-#-----------------设置参数-------------------#
+#设置参数
         self.chat_setting = Aistant_setting_manage.Aistant_Chat_Setting()
 
         model_list = self.chat_setting.aistant_chat_model_dict_get_config()
@@ -79,9 +79,26 @@ class Aistant_UI_Agent:
         self.current_role_descript_idx = self.ui.comboBox_3.currentIndex()
         descript_txt = role_descript_list[self.current_role_descript_idx]['descripion']
         self.ui.plainTextEdit.setPlainText(descript_txt)
-        self.ui.comboBox_3.currentIndexChanged.connect(self.update_role_descript)
+        self.ui.comboBox_3.currentIndexChanged.connect(self.aistant_update_role_descript)
 
         # self.chat_setting.aistant_select_role_and_descript_set_config()
+
+#新建及删除对话标签页
+        self.ui.pushButton_3.clicked.connect(self.aistant_create_new_chat_tab_page_exec)
+        self.ui.tabWidget.tabCloseRequested.connect(self.aistant_remove_old_chat_tab_page_exec)
+    
+    def aistant_remove_old_chat_tab_page_exec(self, request_tab_id):
+        print("aistant_remove_old_chat_tab_page_exec. req_id:", request_tab_id)
+        if request_tab_id!= self.ui.tabWidget.indexOf(self.ui.tab_2):
+            print("this is the tab page to be remove")
+            self.ui.tabWidget.removeTab(request_tab_id) 
+
+    def aistant_create_new_chat_tab_page_exec(self):
+        print("aistant_create_new_chat_tab_page")
+        newTab = QtWidgets.QWidget()
+        new_tab_name = "对话" + str(self.ui.tabWidget.count())
+        new_tab_insert_pos = self.ui.tabWidget.count() - 1
+        self.ui.tabWidget.insertTab(new_tab_insert_pos, newTab, new_tab_name) #基于当前名称更新对话标签名
 
     def chat_page_button_submit(self):
         print("chat_page_button_submit", self.ui.textEdit.toPlainText())
@@ -131,8 +148,8 @@ class Aistant_UI_Agent:
         if self.chat_core_teminate_callback != None:
             self.chat_core_teminate_callback()
 
-    def update_role_descript(self, text):
-        print("update_role_descript", text)
+    def aistant_update_role_descript(self, text):
+        print("aistant_update_role_descript", text)
         self.current_role_descript_idx = self.ui.comboBox_3.currentIndex()
         descript_txt = self.chat_setting.aistant_select_role_and_descript_get_config()[self.current_role_descript_idx]['descripion']
         self.ui.plainTextEdit.setPlainText(descript_txt)
