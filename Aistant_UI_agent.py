@@ -65,7 +65,7 @@ class Aistant_UI_Agent:
 #-----------------设置参数-------------------#
         self.chat_setting = Aistant_setting_manage.Aistant_Chat_Setting()
 
-        model_list = self.chat_setting.aistant_chat_model_type_get_config()
+        model_list = self.chat_setting.aistant_chat_model_dict_get_config()
         for i in range(len(model_list)):
             c_m_txt = model_list[i]['company'] + '：' + model_list[i]['model']
             self.ui.comboBox_4.addItem(c_m_txt)

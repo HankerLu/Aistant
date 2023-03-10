@@ -3,20 +3,20 @@
 class Aistant_Chat_Setting():
     def __init__(self):
         print("Aistant_Setting init.")
-        self.chat_model_type = [
-        {'company':'openai', 'model':'gpt-3.5-turbo'},
-        {'company':'openai', 'model':'text-davinci-003'},
-        {'company':'openai', 'model':'text-curie-001'},
-        {'company':'openai', 'model':'text-babbage-001'},
-        {'company':'openai', 'model':'text-ada-001'},
-        {'company':'openai', 'model':'text-davinci-002'},
-        {'company':'openai', 'model':'text-davinci-001'},
-        {'company':'openai', 'model':'davinci-instruct-beta'},
-        {'company':'openai', 'model':'davinci'},
-        {'company':'openai', 'model':'curie-instruct-beta'},
-        {'company':'openai', 'model':'curie'},
-        {'company':'openai', 'model':'babbage'},
-        {'company':'openai', 'model':'ada'}, 
+        self.chat_model_dict = [
+        {'company':'openai', 'model':'gpt-3.5-turbo', 'type': 'chatcompletion'},
+        {'company':'openai', 'model':'text-davinci-003', 'type': 'textcompletion'},
+        {'company':'openai', 'model':'text-curie-001', 'type': 'textcompletion'},
+        {'company':'openai', 'model':'text-babbage-001', 'type': 'textcompletion'},
+        {'company':'openai', 'model':'text-ada-001', 'type': 'textcompletion'},
+        {'company':'openai', 'model':'text-davinci-002', 'type': 'textcompletion'},
+        {'company':'openai', 'model':'text-davinci-001', 'type': 'textcompletion'},
+        {'company':'openai', 'model':'davinci-instruct-beta', 'type': 'textcompletion'},
+        {'company':'openai', 'model':'davinci', 'type': 'textcompletion'},
+        {'company':'openai', 'model':'curie-instruct-beta', 'type': 'textcompletion'},
+        {'company':'openai', 'model':'curie', 'type': 'textcompletion'},
+        {'company':'openai', 'model':'babbage', 'type': 'textcompletion'},
+        {'company':'openai', 'model':'ada', 'type': 'textcompletion'}, 
         ]
         self.role_default_config_dict = [
         {'role':'助手', 'brief':'我希望你能扮演一名得力的助手的角色。',
@@ -33,23 +33,26 @@ class Aistant_Chat_Setting():
 
         self.multi_round_chat_config = True
 
-    def aistant_select_role_and_descript_set_config(self, role_descript_dict):
-        print("Aistant select role and descript set config.")
-        self.role_default_config_dict = role_descript_dict
+# 设置对话角色及描述
+    # def aistant_select_role_and_descript_set_config(self, role_descript_dict):
+    #     print("Aistant select role and descript set config.")
+    #     self.role_default_config_dict = role_descript_dict
 
     def aistant_select_role_and_descript_get_config(self):
         return self.role_default_config_dict
 
+# 设置多轮对话模式
     def aistant_multi_round_chat_set_config(self, enable):
         print("Aistant multi round set config")
         self.multi_round_chat_config = enable
 
     def aistant_multi_round_chat_get_config(self):
         return self.multi_round_chat_config
-    
-    def aistant_chat_model_type_set_config(self, model_dict):
-        self.chat_model_type = model_dict
 
-    def aistant_chat_model_type_get_config(self):
-        return self.chat_model_type
+# 设置对话模型
+    # def aistant_chat_model_dict_set_config(self, model_dict):
+    #     self.chat_model_dict = model_dict
+
+    def aistant_chat_model_dict_get_config(self):
+        return self.chat_model_dict
 
