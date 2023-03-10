@@ -22,7 +22,8 @@ class Writer(QObject):
 class Aistant_Chat_UI_Tab_Agent(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        Aistant_chat_tab_UI.Ui_Form().setupUi(self)
+        self.ui = Aistant_chat_tab_UI.Ui_Form()
+        self.ui.setupUi(self)
 
 
 # 连接操作：
@@ -136,6 +137,15 @@ class Aistant_UI_Agent:
         new_tab_name = "对话" + str(self.ui.tabWidget.count())
         new_tab_insert_pos = self.ui.tabWidget.count() - 1
         self.ui.tabWidget.insertTab(new_tab_insert_pos, new_tab, new_tab_name) #基于当前名称更新对话标签名
+        textbrowser_format = QTextCharFormat()
+        textbrowser_format.setForeground(QColor(31, 31, 31))
+        new_tab.ui.textBrowser_2.setStyleSheet("background-color: rgb(210,210,210);")
+        new_tab.ui.textBrowser_2.setCurrentCharFormat(textbrowser_format)  # 应用高亮格式
+
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        new_tab.ui.textBrowser_2.setFont(font)
+        new_tab.ui.textEdit_2.setFont(font)
 
     def chat_page_button_submit(self):
         print("chat_page_button_submit", self.ui.textEdit.toPlainText())
