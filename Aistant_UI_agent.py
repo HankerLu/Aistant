@@ -1,11 +1,13 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import Aistant_UI
+import Aistant_chat_tab_UI
 import sys
 from PyQt5.QtCore import QObject, pyqtSignal
 from PyQt5.QtWidgets import QFileDialog, QPlainTextEdit
 from PyQt5.QtGui import QTextCharFormat, QColor
 from PyQt5.Qt import Qt
 import Aistant_setting_manage
+
 # import pickle
 # import markdown
 class Writer(QObject):
@@ -16,6 +18,12 @@ class Writer(QObject):
 
     def write_to_display_widget(self, text):
         self.write_signal.emit(text)
+
+class Aistant_Chat_UI_Tab_Agent(QtWidgets.QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        Aistant_chat_tab_UI.Ui_Form().setupUi(self)
+
 
 # 连接操作：
 # 1.连接前端和自定义槽函数
@@ -113,12 +121,14 @@ class Aistant_UI_Agent:
 
     def aistant_create_new_chat_tab_page_exec(self):
         print("aistant_create_new_chat_tab_page")
-        newTab = QtWidgets.QWidget()
-        # oldTab = self.ui.tab_2
-        # newTab = self.copy_widget(oldTab)
+
+        # ui_form = Aistant_chat_tab_UI.Ui_Form()
+        # new_tab = QtWidgets.QWidget()
+        # Aistant_chat_tab_UI.Ui_Form().setupUi(new_tab)
+        new_tab = Aistant_Chat_UI_Tab_Agent(self.ui.tabWidget)
         new_tab_name = "对话" + str(self.ui.tabWidget.count())
         new_tab_insert_pos = self.ui.tabWidget.count() - 1
-        self.ui.tabWidget.insertTab(new_tab_insert_pos, newTab, new_tab_name) #基于当前名称更新对话标签名
+        self.ui.tabWidget.insertTab(new_tab_insert_pos, new_tab, new_tab_name) #基于当前名称更新对话标签名
 
     def chat_page_button_submit(self):
         print("chat_page_button_submit", self.ui.textEdit.toPlainText())
