@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QFileDialog, QPlainTextEdit
 from PyQt5.QtGui import QTextCharFormat, QColor
 from PyQt5.Qt import Qt
 import Aistant_setting_manage
+# import pickle
 # import markdown
 class Writer(QObject):
     write_signal = pyqtSignal(str)
@@ -93,9 +94,28 @@ class Aistant_UI_Agent:
             print("this is the tab page to be remove")
             self.ui.tabWidget.removeTab(request_tab_id) 
 
+    # def copy_widget(self, widget):
+    #     new_widget = QtWidgets.QWidget()
+    #     # 复制 widget 的属性
+    #     new_widget.setObjectName(widget.objectName() + '_copy')
+    #     new_widget.setGeometry(widget.geometry())
+    #     new_widget.setFixedSize(widget.size())
+    #     new_widget.setStyleSheet(widget.styleSheet())
+    #     new_widget.setVisible(widget.isVisible())
+    #     new_widget.setEnabled(widget.isEnabled())
+    #     new_widget.setWindowFlags(widget.windowFlags())
+    #     # 复制 widget 的子控件
+    #     for child in widget.children():
+    #         if isinstance(child, QtWidgets.QWidget):
+    #             new_child = self.copy_widget(child)
+    #             new_widget.layout().addWidget(new_child)
+    #     return new_widget
+
     def aistant_create_new_chat_tab_page_exec(self):
         print("aistant_create_new_chat_tab_page")
         newTab = QtWidgets.QWidget()
+        # oldTab = self.ui.tab_2
+        # newTab = self.copy_widget(oldTab)
         new_tab_name = "对话" + str(self.ui.tabWidget.count())
         new_tab_insert_pos = self.ui.tabWidget.count() - 1
         self.ui.tabWidget.insertTab(new_tab_insert_pos, newTab, new_tab_name) #基于当前名称更新对话标签名
