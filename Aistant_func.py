@@ -13,7 +13,7 @@ class Aistant_Chat_Server():
     def __init__(self):
         print(" Aistant Aistant_Chat_Server init.")
         self.aistant_chat_model_name = "gpt-3.5-turbo"
-        self.aistant_role_setting = {"role": "system", "content": "我希望你能扮演辩手的角色。"}
+        self.aistant_role_setting = {"role": "system", "content": "我希望你能扮演一个得力的助手。"}
         self.aistant_history_messages = [self.aistant_role_setting,]
 
         self.aistant_chat_completion_req_status = OpenAIReqStatus.REQ_STATUS_IDLE
@@ -80,9 +80,10 @@ class Aistant_Chat_Server():
         msg_cnt = 0
         for msg in self.aistant_history_messages:
             msg_cnt = msg_cnt + 1
-            if msg_cnt == 1:
-                continue
             role_msg = 'Unknown'
+            if msg_cnt == 1:
+                role_msg = '用户(设定)'
+                # continue
             print(msg['role'])
             if msg['role'] == 'user':
                 role_msg = '用户'

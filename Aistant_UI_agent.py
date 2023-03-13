@@ -93,7 +93,12 @@ class Aistant_UI_Agent:
             # new_r_d_item = Q
             self.ui.comboBox_3.addItem(r_d_txt)
 
+        # self.ui.comboBox_3.setCurrentIndex(0)
+        # self.current_role_descript_idx = len(role_descript_list) - self.ui.comboBox_3.currentIndex()
+        # ("self.current_role_descript_idx", self.current_role_descript_idx)
+        # self.current_role_descript_idx = 0
         self.current_role_descript_idx = self.ui.comboBox_3.currentIndex()
+        role_brief_txt = role_descript_list[self.current_role_descript_idx]['brief']
         descript_txt = role_descript_list[self.current_role_descript_idx]['descripion']
         self.ui.plainTextEdit.setPlainText(descript_txt)
         self.ui.comboBox_3.currentIndexChanged.connect(self.aistant_update_role_descript)
