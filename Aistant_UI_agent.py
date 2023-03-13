@@ -92,11 +92,18 @@ class Aistant_UI_Agent:
 #设置参数
         self.chat_setting = Aistant_setting_manage.Aistant_Chat_Setting()
 
-        model_list = self.chat_setting.aistant_chat_model_dict_get_config()
-        for i in range(len(model_list)):
-            c_m_txt = model_list[i]['company'] + '：' + model_list[i]['model']
+#模型设置
+        self.aistant_model_list = self.chat_setting.aistant_chat_model_dict_get_config()
+        for i in range(len(self.aistant_model_list)):
+            c_m_txt = self.aistant_model_list[i]['company'] + '：' + self.aistant_model_list[i]['model']
             self.ui.comboBox_4.addItem(c_m_txt)
 
+        self.aistant_current_model_idx = self.ui.comboBox_4.currentIndex()
+        self.aistant_current_model_name = self.aistant_model_list[self.aistant_current_model_idx]['model']
+        self.aistant_current_model_type = self.aistant_model_list[self.aistant_current_model_idx]['type']
+        print("model name and type: ", self.aistant_current_model_type, self.aistant_current_model_name)
+
+#角色设置
         role_descript_list = self.chat_setting.aistant_select_role_and_descript_get_config()
         for i in range(len(role_descript_list)):
             r_d_txt = role_descript_list[i]['role'] + '：' + role_descript_list[i]['brief']
@@ -136,7 +143,6 @@ class Aistant_UI_Agent:
 
 #=========================对话后端=======================================#
         print(" Aistant Aistant_Chat_Server init.")
-        self.aistant_chat_model_name = "gpt-3.5-turbo"
         self.aistant_role_whole_content = role_brief_txt + descript_txt
         self.aistant_role_setting = {"role": "system", "content": self.aistant_role_whole_content}
         self.aistant_history_messages = [self.aistant_role_setting,]
@@ -148,62 +154,34 @@ class Aistant_UI_Agent:
         self.thread_chat_completion.start()
         
         self.core_threa_run_tick = 0
-#========================================================================#
-#新建及删除对话标签页
-        # self.hide_draft_txt_editor_status = True
-        # self.ui.pushButton_3.clicked.connect(self.aistant_create_new_chat_tab_page_exec)
-        # self.ui.tabWidget.tabCloseRequested.connect(self.aistant_remove_old_chat_tab_page_exec)
-        # # self.ui.tabWidget.removeTab(self.ui.tabWidget.indexOf(self.ui.tab_2))
-        
-        # self.close_tab_button = QtWidgets.QToolButton()
-        # self.close_tab_button.setToolTip('Add New Tab')
-        # self.close_tab_button.clicked.connect(self.aistant_create_new_chat_tab_page_exec)
-        # self.close_tab_button.setIcon(QtWidgets.QWidget().style().standardIcon(QtWidgets.QStyle.SP_DialogYesButton))
-        # self.ui.tabWidget.setCornerWidget(self.close_tab_button, QtCore.Qt.TopRightCorner)
+#======================================================================#
 
-    # def aistant_remove_old_chat_tab_page_exec(self, request_tab_id):
-    #     print("aistant_remove_old_chat_tab_page_exec. req_id:", request_tab_id)
-    #     if request_tab_id!= self.ui.tabWidget.indexOf(self.ui.tab_2):
-    #         print("this is the tab page to be remove")
-    #         self.ui.tabWidget.removeTab(request_tab_id) 
-
-    # def aistant_hide_draft_txt_editor(self):
-    #     if self.hide_draft_txt_editor_status == True:
-    #         self.ui.textEdit_3.setVisible(False)
-    #         self.hide_draft_txt_editor_status = False
-    #     else:
-    #         self.ui.textEdit_3.setVisible(True)
-    #         self.hide_draft_txt_editor_status = True
-
-    # def aistant_create_new_chat_tab_page_exec(self):
-    #     print("aistant_create_new_chat_tab_page")
-
-    #     # ui_form = Aistant_chat_tab_UI.Ui_Form()
-    #     # new_tab = QtWidgets.QWidget()
-    #     # Aistant_chat_tab_UI.Ui_Form().setupUi(new_tab)
-    #     new_tab = Aistant_Chat_UI_Tab_Agent(self.ui.tabWidget)
-    #     new_tab_name = "对话" + str(self.ui.tabWidget.count())
-    #     new_tab_insert_pos = self.ui.tabWidget.count() - 1
-    #     self.ui.tabWidget.insertTab(new_tab_insert_pos, new_tab, new_tab_name) #基于当前名称更新对话标签名
-    #     textbrowser_format = QTextCharFormat()
-    #     textbrowser_format.setForeground(QColor(31, 31, 31))
-    #     new_tab.ui.textBrowser.setStyleSheet("background-color: rgb(210,210,210);")
-    #     new_tab.ui.textBrowser.setCurrentCharFormat(textbrowser_format)  # 应用高亮格式
-
-    #     font = QtGui.QFont()
-    #     font.setPointSize(12)
-    #     new_tab.ui.textBrowser.setFont(font)
-    #     new_tab.ui.textEdit_2.setFont(font)
-#------------------------------#
-#========================================================================#
     def openai_chat_completion_api_req(self):
-        print(openai.api_key)
+        print(openai.api_key, ' ', self.aistant_current_model_name)
         try:
-            response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages = self.aistant_history_messages
-            )
-            return response
+            if self.aistant_current_model_type == 'Chat':
+                response = openai.ChatCompletion.create(
+                model = self.aistant_current_model_name,
+                messages = self.aistant_history_messages
+                )
+                return response.choices[0]['message']
+            elif self.aistant_current_model_type == 'Complete':
+                print("openai_chat_completion_api_req.Text Complete request.")
+                response = openai.Completion.create(
+                model="text-davinci-003",
+                prompt="我刚才问了什么问题\n",
+                temperature=0.7,
+                max_tokens=200,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0
+                )
+                return response.choices[0]["text"]
+            else:
+                print("openai_chat_completion_api_req.Unknow request type.")
+                response = ''
+                return response
+
         except:
             print(response.choices[0]['message'])
             response = ''
@@ -220,11 +198,11 @@ class Aistant_UI_Agent:
             #     print("Key enter press.")
             #     # self.chat_core_button_submit_exec()
             if self.aistant_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_EXEC:
-                response = self.openai_chat_completion_api_req()
-                if response == '':  
+                response_content = self.openai_chat_completion_api_req()
+                if response_content == '':  
                     self.aistant_chat_update_statusbar('API请求错误')
                     continue
-                self.aistant_history_messages.append(response.choices[0]['message']) # 新增 completion
+                self.aistant_history_messages.append(response_content) # 新增 completion
                 self.ui_output_update()
                 # print(response.choices[0]['message'])
                 self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_IDLE)

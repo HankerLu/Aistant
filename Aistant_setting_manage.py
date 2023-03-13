@@ -4,19 +4,19 @@ class Aistant_Chat_Setting():
     def __init__(self):
         print("Aistant_Setting init.")
         self.chat_model_dict = [
-        {'company':'openai', 'model':'gpt-3.5-turbo', 'type': 'chatcompletion'},
-        {'company':'openai', 'model':'text-davinci-003', 'type': 'textcompletion'},
-        {'company':'openai', 'model':'text-curie-001', 'type': 'textcompletion'},
-        {'company':'openai', 'model':'text-babbage-001', 'type': 'textcompletion'},
-        {'company':'openai', 'model':'text-ada-001', 'type': 'textcompletion'},
-        {'company':'openai', 'model':'text-davinci-002', 'type': 'textcompletion'},
-        {'company':'openai', 'model':'text-davinci-001', 'type': 'textcompletion'},
-        {'company':'openai', 'model':'davinci-instruct-beta', 'type': 'textcompletion'},
-        {'company':'openai', 'model':'davinci', 'type': 'textcompletion'},
-        {'company':'openai', 'model':'curie-instruct-beta', 'type': 'textcompletion'},
-        {'company':'openai', 'model':'curie', 'type': 'textcompletion'},
-        {'company':'openai', 'model':'babbage', 'type': 'textcompletion'},
-        {'company':'openai', 'model':'ada', 'type': 'textcompletion'}, 
+        {'company':'openai', 'model':'gpt-3.5-turbo', 'type': 'Chat'},
+        {'company':'openai', 'model':'text-davinci-003', 'type': 'Complete'},
+        {'company':'openai', 'model':'text-curie-001', 'type': 'Complete'},
+        {'company':'openai', 'model':'text-babbage-001', 'type': 'Complete'},
+        {'company':'openai', 'model':'text-ada-001', 'type': 'Complete'},
+        {'company':'openai', 'model':'text-davinci-002', 'type': 'Complete'},
+        {'company':'openai', 'model':'text-davinci-001', 'type': 'Complete'},
+        {'company':'openai', 'model':'davinci-instruct-beta', 'type': 'Complete'},
+        {'company':'openai', 'model':'davinci', 'type': 'Complete'},
+        {'company':'openai', 'model':'curie-instruct-beta', 'type': 'Complete'},
+        {'company':'openai', 'model':'curie', 'type': 'Complete'},
+        {'company':'openai', 'model':'babbage', 'type': 'Complete'},
+        {'company':'openai', 'model':'ada', 'type': 'Complete'}, 
         ]
         self.role_default_config_dict = [
         {'role':'助手', 'brief':'我希望你能扮演一名得力的助手的角色。',
