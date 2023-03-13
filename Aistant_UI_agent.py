@@ -273,8 +273,8 @@ class Aistant_UI_Agent:
 
     def chat_core_button_clear_exec(self):
         print("chat core button clear.")
-        self.aistant_role_whole_content = self.role_brief_txt + self.descript_txt
-        self.aistant_role_setting = {"role": "system", "content": self.aistant_role_whole_content}
+        # self.aistant_role_whole_content = self.role_brief_txt + self.descript_txt
+        # self.aistant_role_setting = {"role": "system", "content": self.aistant_role_whole_content}
         self.aistant_history_messages = [self.aistant_role_setting,]
         self.ui_output_update()
 
@@ -384,12 +384,23 @@ class Aistant_UI_Agent:
         print("aistant_ui_get_textEdit", self.ui.textEdit.toPlainText())
         return self.ui.textEdit.toPlainText()
 
+# 保存所有设置
+    def aistant_ui_update_all_setting(self):
+        print("aistant_ui_update_all_setting")
+        self.aistant_role_whole_content = self.role_brief_txt + self.descript_txt
+        self.aistant_role_setting = {"role": "system", "content": self.aistant_role_whole_content}
+        if len(self.aistant_history_messages) >= 1:
+            self.aistant_history_messages[0] = self.aistant_role_setting
+        self.ui_output_update()
+
     def aistant_ui_activate_button(self):
         self.ui.pushButton_4.clicked.connect(self.chat_core_button_submit_exec)
         self.ui.pushButton_7.clicked.connect(self.chat_core_button_clear_exec)
         self.ui.pushButton_5.clicked.connect(self.chat_core_button_cancel_exec)
         self.ui.pushButton_6.clicked.connect(self.chat_core_button_save_exec)
         self.ui.pushButton.clicked.connect(self.chat_core_button_withdraw_exec)
+
+        self.ui.pushButton_2.clicked.connect(self.aistant_ui_update_all_setting)
 
     def Aistant_UI_show(self):
         self.mainwin.show()
@@ -419,6 +430,8 @@ class Aistant_UI_Agent:
         self.current_role_descript_idx = self.ui.comboBox_3.currentIndex()
         self.descript_txt = self.chat_setting.aistant_select_role_and_descript_get_config()[self.current_role_descript_idx]['descripion']
         self.role_brief_txt = self.chat_setting.aistant_select_role_and_descript_get_config()[self.current_role_descript_idx]['brief']
+        # if self.role_brief_txt == '自定义':
+        #     self.role_brief_txt = ''
         self.ui.plainTextEdit.setPlainText(self.descript_txt)
 
 # ------editor 

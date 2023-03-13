@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>AI助手v4.0(By B站:奂奇)</string>
+   <string>AI助手v4.0(By B站: 奂奇)</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
@@ -225,8 +225,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>418</width>
-                 <height>403</height>
+                 <width>1250</width>
+                 <height>983</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -293,7 +293,7 @@
                     <item>
                      <widget class="QLabel" name="label_8">
                       <property name="text">
-                       <string>默认角色补充描述（你可以基于‘默认角色设定’补充额外的描述和说明）</string>
+                       <string>默认角色补充描述（你可以基于‘默认角色设定’补充额外的描述和说明。 当 默认角色设定 为'自定义'时,将完全采用以下填充的内容）</string>
                       </property>
                      </widget>
                     </item>
@@ -475,8 +475,8 @@
    <widget class="QMenu" name="menu_2">
     <property name="geometry">
      <rect>
-      <x>425</x>
-      <y>206</y>
+      <x>349</x>
+      <y>129</y>
       <width>120</width>
       <height>94</height>
      </rect>

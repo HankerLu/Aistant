@@ -153,7 +153,7 @@ class Ui_MainWindow(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName("scrollArea_2")
         self.scrollAreaWidgetContents_2 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 418, 403))
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 1250, 983))
         self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
         self.verticalLayout_17 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout_17.setObjectName("verticalLayout_17")
@@ -286,7 +286,7 @@ class Ui_MainWindow(object):
         self.menu.setTearOffEnabled(False)
         self.menu.setObjectName("menu")
         self.menu_2 = QtWidgets.QMenu(self.menubar)
-        self.menu_2.setGeometry(QtCore.QRect(425, 206, 120, 94))
+        self.menu_2.setGeometry(QtCore.QRect(349, 129, 120, 94))
         self.menu_2.setObjectName("menu_2")
         self.menu_3 = QtWidgets.QMenu(self.menubar)
         self.menu_3.setObjectName("menu_3")
@@ -351,7 +351,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "AI助手v4.0(By B站:奂奇)"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "AI助手v4.0(By B站: 奂奇)"))
         self.label_9.setText(_translate("MainWindow", "标签主题："))
         self.checkBox_2.setText(_translate("MainWindow", "自动生成主题"))
         self.pushButton_4.setText(_translate("MainWindow", "发送"))
@@ -363,7 +363,7 @@ class Ui_MainWindow(object):
         self.label_7.setText(_translate("MainWindow", "功能：对话基本设置"))
         self.label.setText(_translate("MainWindow", "对话模型"))
         self.label_2.setText(_translate("MainWindow", "默认角色设定（仅在gpt-3.5-turbo模型下有效）"))
-        self.label_8.setText(_translate("MainWindow", "默认角色补充描述（你可以基于‘默认角色设定’补充额外的描述和说明）"))
+        self.label_8.setText(_translate("MainWindow", "默认角色补充描述（你可以基于‘默认角色设定’补充额外的描述和说明。 当 默认角色设定 为\'自定义\'时,将完全采用以下填充的内容）"))
         self.label_3.setText(_translate("MainWindow", "对话文本显示格式"))
         self.comboBox_2.setItemText(0, _translate("MainWindow", "text"))
         self.comboBox_2.setItemText(1, _translate("MainWindow", "markdown"))
