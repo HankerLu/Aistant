@@ -99,16 +99,16 @@ class Aistant_UI_Agent:
         # self.chat_setting.aistant_select_role_and_descript_set_config()
 
 #新建及删除对话标签页
-        self.hide_draft_txt_editor_status = True
-        self.ui.pushButton_3.clicked.connect(self.aistant_create_new_chat_tab_page_exec)
-        self.ui.tabWidget.tabCloseRequested.connect(self.aistant_remove_old_chat_tab_page_exec)
-        # self.ui.tabWidget.removeTab(self.ui.tabWidget.indexOf(self.ui.tab_2))
+        # self.hide_draft_txt_editor_status = True
+        # self.ui.pushButton_3.clicked.connect(self.aistant_create_new_chat_tab_page_exec)
+        # self.ui.tabWidget.tabCloseRequested.connect(self.aistant_remove_old_chat_tab_page_exec)
+        # # self.ui.tabWidget.removeTab(self.ui.tabWidget.indexOf(self.ui.tab_2))
         
-        self.close_tab_button = QtWidgets.QToolButton()
-        self.close_tab_button.setToolTip('Add New Tab')
-        self.close_tab_button.clicked.connect(self.aistant_create_new_chat_tab_page_exec)
-        self.close_tab_button.setIcon(QtWidgets.QWidget().style().standardIcon(QtWidgets.QStyle.SP_DialogYesButton))
-        self.ui.tabWidget.setCornerWidget(self.close_tab_button, QtCore.Qt.TopRightCorner)
+        # self.close_tab_button = QtWidgets.QToolButton()
+        # self.close_tab_button.setToolTip('Add New Tab')
+        # self.close_tab_button.clicked.connect(self.aistant_create_new_chat_tab_page_exec)
+        # self.close_tab_button.setIcon(QtWidgets.QWidget().style().standardIcon(QtWidgets.QStyle.SP_DialogYesButton))
+        # self.ui.tabWidget.setCornerWidget(self.close_tab_button, QtCore.Qt.TopRightCorner)
 
     def aistant_remove_old_chat_tab_page_exec(self, request_tab_id):
         print("aistant_remove_old_chat_tab_page_exec. req_id:", request_tab_id)
@@ -259,6 +259,7 @@ class Aistant_UI_Agent:
         self.current_role_descript_idx = self.ui.comboBox_3.currentIndex()
         descript_txt = self.chat_setting.aistant_select_role_and_descript_get_config()[self.current_role_descript_idx]['descripion']
         self.ui.plainTextEdit.setPlainText(descript_txt)
+
 
 # callback release
     def aistant_ui_get_input_textedit_exec(self):
