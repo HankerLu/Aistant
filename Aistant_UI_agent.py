@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import Aistant_UI
-import Aistant_chat_tab_UI
+import Aistant_Chat_Edit
 import sys
 from PyQt5.QtCore import QObject, pyqtSignal
 from PyQt5.QtWidgets import QFileDialog, QPlainTextEdit
@@ -19,11 +19,6 @@ class Writer(QObject):
     def write_to_display_widget(self, text):
         self.write_signal.emit(text)
 
-class Aistant_Chat_UI_Tab_Agent(QtWidgets.QWidget):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.ui = Aistant_chat_tab_UI.Ui_Form()
-        self.ui.setupUi(self)
 
 
 # 连接操作：
@@ -130,7 +125,7 @@ class Aistant_UI_Agent:
         # ui_form = Aistant_chat_tab_UI.Ui_Form()
         # new_tab = QtWidgets.QWidget()
         # Aistant_chat_tab_UI.Ui_Form().setupUi(new_tab)
-        new_tab = Aistant_Chat_UI_Tab_Agent(self.ui.tabWidget)
+        new_tab = Aistant_Chat_Edit.Aistant_Chat_Edit_Tab_Agent(self.ui.tabWidget)
         new_tab_name = "对话" + str(self.ui.tabWidget.count())
         new_tab_insert_pos = self.ui.tabWidget.count() - 1
         self.ui.tabWidget.insertTab(new_tab_insert_pos, new_tab, new_tab_name) #基于当前名称更新对话标签名
@@ -206,9 +201,6 @@ class Aistant_UI_Agent:
         self.ui.pushButton_6.setVisible(True)
         self.ui.pushButton_7.setVisible(True)
 
-    def chat_page_button_submit(self):
-        print("chat_page_button_submit", self.ui.textEdit.toPlainText())
-
     def action_chatgpt_slot_exec(self):
         print("action_chatgpt_slot_exec. self.ui.stackedWidget.setCurrentIndex(0).")
         self.ui.stackedWidget.setCurrentIndex(0)
@@ -272,16 +264,6 @@ class Aistant_UI_Agent:
 
     def aistant_ui_update_statusbar_txt(self, txt_display):
         self.statusbar_writer.write_to_display_widget(txt_display)
-
-    def aistant_ui_save_current_chat_exec(self):
-        print("aistant_ui_save_current_chat_exec")
-        filename, _ = QFileDialog.getSaveFileName(self.ui.stackedWidget, "保存对话", "", "文本文件 (*.txt);;所有文件 (*)")
-        if filename == '':
-            print("save_conversation_name_input no file")
-            return
-        if filename:
-            with open(filename, "w") as file:
-                file.write(self.ui.textBrowser.toPlainText())
 
 # callback consume
     def aistant_ui_set_chat_submit_cb_ptr(self, chat_submit_cb):

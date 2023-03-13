@@ -4,14 +4,22 @@ from enum import Enum
 import threading
 import time
 import keyboard
+import Aistant_chat_tab_UI
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QFileDialog, QPlainTextEdit
 
 class OpenAIReqStatus(Enum):
-   REQ_STATUS_IDLE = 0
-   REQ_STATUS_EXEC = 1
-   REQ_STATUS_TIMEOUT = 2
-class Aistant_Chat_Server():
-    def __init__(self):
-        print(" Aistant Aistant_Chat_Server init.")
+    REQ_STATUS_IDLE = 0
+    REQ_STATUS_EXEC = 1
+    REQ_STATUS_TIMEOUT = 2
+
+class Aistant_Chat_Edit_Tab_Agent(QtWidgets.QWidget):
+    def __init__(self, parent=None):
+        print(" Aistant_Chat_Edit_Tab_Agent")
+        super().__init__(parent)
+        self.ui = Aistant_chat_tab_UI.Ui_Form()
+        self.ui.setupUi(self)    
+        
         self.aistant_chat_model_name = "gpt-3.5-turbo"
         self.aistant_role_setting = {"role": "system", "content": "我希望你能扮演辩手的角色。"}
         self.aistant_history_messages = [self.aistant_role_setting,]
@@ -23,6 +31,20 @@ class Aistant_Chat_Server():
         self.thread_chat_completion.start()
         
         self.core_threa_run_tick = 0
+
+        # aistant_ui.aistant_ui_set_chat_submit_cb_ptr(aistant_chat_core.chat_core_button_submit_exec)
+        # aistant_ui.aistant_ui_set_chat_clear_cb_ptr(aistant_chat_core.chat_core_button_clear_exec)
+        # aistant_ui.aistant_ui_set_chat_cancel_cb_ptr(aistant_chat_core.chat_core_button_cancel_exec)
+        # aistant_ui.aistant_ui_set_chat_save_cb_ptr(aistant_chat_core.chat_core_button_save_exec)
+        # aistant_ui.aistant_ui_set_chat_withdraw_cb_ptr(aistant_chat_core.chat_core_button_withdraw_exec)
+        # aistant_ui.aistant_ui_activate_button()
+        
+        # aistant_ui.aistant_ui_teminate_chat_core(aistant_chat_core.chat_core_teminate_thread_exec)
+
+        # aistant_chat_core.chat_core_set_get_input_text_cb_ptr(aistant_ui.aistant_ui_get_input_textedit_exec)
+        # aistant_chat_core.chat_core_set_display_response_cb_ptr(aistant_ui.aistant_ui_display_txt_output_exec)
+        # aistant_chat_core.chat_core_set_save_chat_cb_ptr(aistant_ui.aistant_ui_save_current_chat_exec)
+        # aistant_chat_core.chat_core_set_update_statusbar_cb_ptr(aistant_ui.aistant_ui_update_statusbar_txt)
 
     def openai_chat_completion_api_req(self):
         print(openai.api_key)
@@ -99,6 +121,18 @@ class Aistant_Chat_Server():
         if self.update_statusbar_txt_callback != None:
             self.update_statusbar_txt_callback(content)
 
+    def chat_page_button_submit(self):
+        print("chat_page_button_submit", self.ui.textEdit.toPlainText())
+
+    def aistant_ui_save_current_chat_exec(self):
+        print("aistant_ui_save_current_chat_exec")
+        filename, _ = QFileDialog.getSaveFileName(self.ui.stackedWidget, "保存对话", "", "文本文件 (*.txt);;所有文件 (*)")
+        if filename == '':
+            print("save_conversation_name_input no file")
+            return
+        if filename:
+            with open(filename, "w") as file:
+                file.write(self.ui.textBrowser.toPlainText())
 
 #callback release
     def chat_core_button_submit_exec(self):
@@ -143,15 +177,17 @@ class Aistant_Chat_Server():
     def chat_core_teminate_thread_exec(self):
         self.thread_chat_completion_do_run = False
 
+
+
 #callback consume
-    def chat_core_set_get_input_text_cb_ptr(self, get_txt_input):
-        self.get_text_edit_input_callback = get_txt_input
+    # def chat_core_set_get_input_text_cb_ptr(self, get_txt_input):
+    #     self.get_text_edit_input_callback = get_txt_input
 
-    def chat_core_set_display_response_cb_ptr(self, display_response):
-        self.set_display_txt_output_callback = display_response
+    # def chat_core_set_display_response_cb_ptr(self, display_response):
+    #     self.set_display_txt_output_callback = display_response
 
-    def chat_core_set_save_chat_cb_ptr(self, save_chat_txt):
-        self.save_current_chat_callback = save_chat_txt
+    # def chat_core_set_save_chat_cb_ptr(self, save_chat_txt):
+    #     self.save_current_chat_callback = save_chat_txt
 
-    def chat_core_set_update_statusbar_cb_ptr(self, update_statusbar_callback):
-        self.update_statusbar_txt_callback = update_statusbar_callback
+    # def chat_core_set_update_statusbar_cb_ptr(self, update_statusbar_callback):
+    #     self.update_statusbar_txt_callback = update_statusbar_callback
