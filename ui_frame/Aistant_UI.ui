@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>AI助手v4.0(By B站: 奂奇)</string>
+   <string>AI助手V4.0(By B站: 奂奇)</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
