@@ -72,6 +72,14 @@ class Aistant_UI_Agent:
         # self.mainwin.keyPressEvent = self.aistant_keyPressEvent
         self.mainwin.closeEvent = self.aistant_closeEvent
 
+#工具栏
+        self.aistant_chat_windows_show_status = True
+        self.ui.action_7.triggered.connect(self.aistant_editor_only_exec)
+
+        self.aistant_edit_window_show_status = True
+        self.ui.action_4.triggered.connect(self.aistant_chat_only_exec)
+
+        self.ui.action_5.triggered.connect(self.aistant_chat_editor_both_exec)
 #设置参数
         self.chat_setting = Aistant_setting_manage.Aistant_Chat_Setting()
 
@@ -111,22 +119,6 @@ class Aistant_UI_Agent:
             print("this is the tab page to be remove")
             self.ui.tabWidget.removeTab(request_tab_id) 
 
-    # def copy_widget(self, widget):
-    #     new_widget = QtWidgets.QWidget()
-    #     # 复制 widget 的属性
-    #     new_widget.setObjectName(widget.objectName() + '_copy')
-    #     new_widget.setGeometry(widget.geometry())
-    #     new_widget.setFixedSize(widget.size())
-    #     new_widget.setStyleSheet(widget.styleSheet())
-    #     new_widget.setVisible(widget.isVisible())
-    #     new_widget.setEnabled(widget.isEnabled())
-    #     new_widget.setWindowFlags(widget.windowFlags())
-    #     # 复制 widget 的子控件
-    #     for child in widget.children():
-    #         if isinstance(child, QtWidgets.QWidget):
-    #             new_child = self.copy_widget(child)
-    #             new_widget.layout().addWidget(new_child)
-    #     return new_widget
     def aistant_hide_draft_txt_editor(self):
         if self.hide_draft_txt_editor_status == True:
             self.ui.textEdit_3.setVisible(False)
@@ -154,6 +146,63 @@ class Aistant_UI_Agent:
         font.setPointSize(12)
         new_tab.ui.textBrowser_2.setFont(font)
         new_tab.ui.textEdit_2.setFont(font)
+
+#-----对话和编辑窗口开关回调-----#
+    def aistant_editor_only_exec(self):
+        print("chat_hide_chat_window")
+        if self.aistant_chat_windows_show_status:
+            self.aistant_hide_chat_window_widgets()
+            self.aistant_chat_windows_show_status = False 
+        if self.aistant_edit_window_show_status == False:
+            self.aistant_show_edit_window_widgets()
+            self.aistant_edit_window_show_status = True
+        # else:
+        #     self.aistant_show_chat_window_widgets()
+        #     self.aistant_chat_windows_show_status = True
+
+    def aistant_chat_only_exec(self):
+        if self.aistant_edit_window_show_status:
+            self.aistant_hide_edit_window_widgets()
+            self.aistant_edit_window_show_status = False
+        if self.aistant_chat_windows_show_status == False:
+            self.aistant_show_chat_window_widgets()
+            self.aistant_chat_windows_show_status = True 
+
+    def aistant_chat_editor_both_exec(self):
+        if self.aistant_edit_window_show_status == False:
+            self.aistant_show_edit_window_widgets()
+            self.aistant_edit_window_show_status = True
+        if self.aistant_chat_windows_show_status == False:
+            self.aistant_show_chat_window_widgets()
+            self.aistant_chat_windows_show_status = True 
+
+    def aistant_hide_edit_window_widgets(self):
+        print("aistant_chat_only_exec")
+        self.ui.textEdit_2.setVisible(False)
+
+    def aistant_show_edit_window_widgets(self):
+        print("aistant_show_edit_window")
+        self.ui.textEdit_2.setVisible(True)
+
+    def aistant_hide_chat_window_widgets(self):
+        self.ui.textEdit.setVisible(False)
+        self.ui.pushButton_4.setVisible(False)
+        self.ui.pushButton_5.setVisible(False)
+        self.ui.groupBox_2.setVisible(False)
+        self.ui.scrollArea.setVisible(False)
+        self.ui.pushButton.setVisible(False)
+        self.ui.pushButton_6.setVisible(False)
+        self.ui.pushButton_7.setVisible(False)
+
+    def aistant_show_chat_window_widgets(self):
+        self.ui.textEdit.setVisible(True)
+        self.ui.pushButton_4.setVisible(True)
+        self.ui.pushButton_5.setVisible(True)
+        self.ui.groupBox_2.setVisible(True)
+        self.ui.scrollArea.setVisible(True)
+        self.ui.pushButton.setVisible(True)
+        self.ui.pushButton_6.setVisible(True)
+        self.ui.pushButton_7.setVisible(True)
 
     def chat_page_button_submit(self):
         print("chat_page_button_submit", self.ui.textEdit.toPlainText())
