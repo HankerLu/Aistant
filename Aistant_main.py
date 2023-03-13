@@ -1,5 +1,4 @@
 import Aistant_UI_agent
-# import Aistant_func
 
 if __name__ == "__main__":
     aistant_ui = Aistant_UI_agent.Aistant_UI_Agent()

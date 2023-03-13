@@ -102,6 +102,8 @@ class Aistant_UI_Agent:
         self.aistant_current_model_name = self.aistant_model_list[self.aistant_current_model_idx]['model']
         self.aistant_current_model_type = self.aistant_model_list[self.aistant_current_model_idx]['type']
         print("model name and type: ", self.aistant_current_model_type, self.aistant_current_model_name)
+        self.ui.comboBox_4.currentIndexChanged.connect(self.aistant_update_model_descript)
+
 
 #角色设置
         role_descript_list = self.chat_setting.aistant_select_role_and_descript_get_config()
@@ -118,9 +120,9 @@ class Aistant_UI_Agent:
         self.role_brief_txt = role_descript_list[self.current_role_descript_idx]['brief']
         self.descript_txt = role_descript_list[self.current_role_descript_idx]['descripion']
         self.ui.plainTextEdit.setPlainText(self.descript_txt)
+        # 设置角色变更更新回调
         self.ui.comboBox_3.currentIndexChanged.connect(self.aistant_update_role_descript)
 
-        # self.chat_setting.aistant_select_role_and_descript_set_config()
 
 #编辑器
         self.aistant_editor_changesSaved = True
@@ -145,7 +147,7 @@ class Aistant_UI_Agent:
         print(" Aistant Aistant_Chat_Server init.")
         self.aistant_role_whole_content = self.role_brief_txt + self.descript_txt
         self.aistant_role_setting = {"role": "system", "content": self.aistant_role_whole_content}
-        self.aistant_history_messages = [self.aistant_role_setting,]
+        self.aistant_chat_history_messages = [self.aistant_role_setting,]
 
         self.aistant_chat_completion_req_status = OpenAIReqStatus.REQ_STATUS_IDLE
 
@@ -163,14 +165,15 @@ class Aistant_UI_Agent:
             if self.aistant_current_model_type == 'Chat':
                 response = openai.ChatCompletion.create(
                 model = self.aistant_current_model_name,
-                messages = self.aistant_history_messages
+                messages = self.aistant_chat_history_messages
                 )
                 return response.choices[0]['message']
             elif self.aistant_current_model_type == 'Complete':
                 print("openai_chat_completion_api_req.Text Complete request.")
+                prompt_in = self.aistant_ui_get_input_textedit_exec() + '\n'
                 response = openai.Completion.create(
-                model="text-davinci-003",
-                prompt="我刚才问了什么问题\n",
+                model = self.aistant_current_model_name,
+                prompt = prompt_in,
                 temperature=0.7,
                 max_tokens=200,
                 top_p=1,
@@ -200,10 +203,11 @@ class Aistant_UI_Agent:
             #     # self.chat_core_button_submit_exec()
             if self.aistant_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_EXEC:
                 response_content = self.openai_chat_completion_api_req()
+                print('-----response_content', response_content)
                 if response_content == '':  
                     self.aistant_chat_update_statusbar('API请求错误')
                     continue
-                self.aistant_history_messages.append(response_content) # 新增 completion
+                self.aistant_chat_history_messages.append(response_content) # 新增 completion
                 self.ui_output_update()
                 # print(response.choices[0]['message'])
                 self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_IDLE)
@@ -229,23 +233,27 @@ class Aistant_UI_Agent:
     def ui_output_update(self):
         message_content_total = ''
         msg_cnt = 0
-        for msg in self.aistant_history_messages:
+        for msg in self.aistant_chat_history_messages:
             msg_cnt = msg_cnt + 1
-            role_msg = 'Unknown'
-            if msg_cnt == 1:
-                role_msg = '用户(设定)'
-                # continue
-            print(msg['role'])
-            if msg['role'] == 'user':
-                role_msg = '用户'
-            elif msg['role'] == 'assistant':
-                role_msg = 'chatGPT'
-            msg_role_with_content = role_msg + ':\n' + msg['content']
-            message_content_total += msg_role_with_content
-            message_content_total += '\n'
-            message_content_total += '\n'
-        if self.aistant_ui_display_txt_output_exec != None:
-            self.aistant_ui_display_txt_output_exec(message_content_total)
+            if self.aistant_current_model_type == 'Chat':
+                role_msg = 'Unknown'
+                if msg_cnt == 1:
+                    role_msg = '用户(设定)'
+                if msg['role'] == 'user':
+                    role_msg = '用户'
+                elif msg['role'] == 'assistant':
+                    role_msg = 'chatGPT'
+                msg_role_with_content = role_msg + ':\n' + msg['content']
+                message_content_total += msg_role_with_content
+            elif self.aistant_current_model_type == 'Complete':
+                if 'role' in msg:
+                    continue
+                message_content_total += msg
+            # 统一换行
+            message_content_total += '\n\n'
+        
+        # 最终文本输出到面板
+        self.aistant_ui_display_txt_output_exec(message_content_total)
 
     def aistant_chat_update_statusbar(self, content):
         if self.aistant_ui_update_statusbar_txt != None:
@@ -264,9 +272,12 @@ class Aistant_UI_Agent:
                 return 
         print("chat_core_button_submit_exec--", prompt_text)
     #     prompt_text = self.ui_agent.aistant_ui_get_textEdit_input_text()
-        user_question = {"role": "user", "content": ""}
-        user_question['content'] = prompt_text
-        self.aistant_history_messages.append(user_question) # 新增 prompt
+        if self.aistant_current_model_type == 'Chat': 
+            user_question = {"role": "user", "content": ""}
+            user_question['content'] = prompt_text
+            self.aistant_chat_history_messages.append(user_question) # 新增 
+        elif self.aistant_current_model_type == 'Complete':
+            self.aistant_chat_history_messages.append(prompt_text)
 
         if self.aistant_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_IDLE or self.aistant_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_TIMEOUT:
             self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_EXEC)
@@ -275,7 +286,7 @@ class Aistant_UI_Agent:
         print("chat core button clear.")
         # self.aistant_role_whole_content = self.role_brief_txt + self.descript_txt
         # self.aistant_role_setting = {"role": "system", "content": self.aistant_role_whole_content}
-        self.aistant_history_messages = [self.aistant_role_setting,]
+        self.aistant_chat_history_messages = [self.aistant_role_setting,]
         self.ui_output_update()
 
     def chat_core_button_cancel_exec(self):
@@ -284,14 +295,13 @@ class Aistant_UI_Agent:
 
     def chat_core_button_save_exec(self):
         print("chat core button save.")
-        if self.aistant_ui_save_current_chat_exec != None:
-            self.aistant_ui_save_current_chat_exec()
+        self.aistant_ui_save_current_chat_exec()
 
     def chat_core_button_withdraw_exec(self):
         print("set chat core withdraw.")
-        if len(self.aistant_history_messages) > 2:
-            del self.aistant_history_messages[-1]
-            del self.aistant_history_messages[-1]
+        if len(self.aistant_chat_history_messages) > 2:
+            del self.aistant_chat_history_messages[-1]
+            del self.aistant_chat_history_messages[-1]
             self.ui_output_update()
 
     def chat_core_teminate_thread_exec(self):
@@ -387,11 +397,6 @@ class Aistant_UI_Agent:
 # 保存所有设置
     def aistant_ui_update_all_setting(self):
         print("aistant_ui_update_all_setting")
-        self.aistant_role_whole_content = self.role_brief_txt + self.descript_txt
-        self.aistant_role_setting = {"role": "system", "content": self.aistant_role_whole_content}
-        if len(self.aistant_history_messages) >= 1:
-            self.aistant_history_messages[0] = self.aistant_role_setting
-        self.ui_output_update()
 
     def aistant_ui_activate_button(self):
         self.ui.pushButton_4.clicked.connect(self.chat_core_button_submit_exec)
@@ -423,16 +428,35 @@ class Aistant_UI_Agent:
         print("close event trig.")
         if self.chat_core_teminate_thread_exec != None:
             self.chat_core_teminate_thread_exec()
+# 更新模型回调
+    def aistant_update_model_descript(self, model_idx):
+        # 更新model最新idx, 名称和类型
+        self.aistant_current_model_idx = self.ui.comboBox_4.currentIndex()
+        self.aistant_current_model_name = self.aistant_model_list[self.aistant_current_model_idx]['model']
+        self.aistant_current_model_type = self.aistant_model_list[self.aistant_current_model_idx]['type']
+        print("aistant_update_model_descript: ", self.aistant_current_model_idx, ' ',self.aistant_current_model_name, ' ',self.aistant_current_model_type)
+        self.aistant_chat_history_messages = [self.aistant_role_setting,]
 
 # 更新角色回调
-    def aistant_update_role_descript(self, text):
-        print("aistant_update_role_descript", text)
+    def aistant_update_role_descript(self, role_idx):
+        print("aistant_update_role_descript", role_idx)
+        # 候选框id
         self.current_role_descript_idx = self.ui.comboBox_3.currentIndex()
+        # 角色简称
         self.descript_txt = self.chat_setting.aistant_select_role_and_descript_get_config()[self.current_role_descript_idx]['descripion']
+        # 角色描述
         self.role_brief_txt = self.chat_setting.aistant_select_role_and_descript_get_config()[self.current_role_descript_idx]['brief']
-        # if self.role_brief_txt == '自定义':
-        #     self.role_brief_txt = ''
-        self.ui.plainTextEdit.setPlainText(self.descript_txt)
+        # 更新角色描述到设置面板
+        self.ui.plainTextEdit.setPlainText(self.descript_txt) #更新
+        # 更新token中role的content
+        self.aistant_role_whole_content = self.role_brief_txt + self.descript_txt
+        # 更新完整的role token
+        self.aistant_role_setting = {"role": "system", "content": self.aistant_role_whole_content}
+        # 更新历史信息
+        if len(self.aistant_chat_history_messages) >= 1:
+            self.aistant_chat_history_messages[0] = self.aistant_role_setting
+        # 更新问答输出面板
+        self.ui_output_update()
 
 # ------editor 
     def aistant_editor_open_exec(self):
