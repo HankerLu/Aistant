@@ -10,6 +10,12 @@
     <height>1149</height>
    </rect>
   </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777215</width>
+    <height>1149</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>Aistant</string>
   </property>
@@ -62,7 +68,7 @@
            </layout>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
             <item>
              <layout class="QVBoxLayout" name="verticalLayout_4" stretch="1,10">
               <item>
@@ -110,7 +116,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>619</width>
-                   <height>870</height>
+                   <height>878</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -157,14 +163,38 @@
              </layout>
             </item>
             <item>
-             <widget class="QTextEdit" name="textEdit_2"/>
+             <layout class="QVBoxLayout" name="verticalLayout_5">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_6">
+                <item>
+                 <widget class="QFontComboBox" name="fontComboBox"/>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="spinBox"/>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_3">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QTextEdit" name="textEdit_2"/>
+              </item>
+             </layout>
             </item>
            </layout>
           </item>
          </layout>
-        </item>
-        <item>
-         <layout class="QVBoxLayout" name="verticalLayout_5"/>
         </item>
        </layout>
       </widget>
@@ -448,10 +478,10 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>267</x>
-      <y>133</y>
+      <x>345</x>
+      <y>206</y>
       <width>120</width>
-      <height>72</height>
+      <height>50</height>
      </rect>
     </property>
     <property name="tearOffEnabled">
@@ -460,13 +490,12 @@
     <property name="title">
      <string>开始</string>
     </property>
-    <addaction name="action_11"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="geometry">
      <rect>
-      <x>347</x>
-      <y>133</y>
+      <x>425</x>
+      <y>206</y>
       <width>120</width>
       <height>94</height>
      </rect>
@@ -489,9 +518,6 @@
      <string>功能</string>
     </property>
     <addaction name="action_chatgpt"/>
-    <addaction name="actionAI"/>
-    <addaction name="actionA"/>
-    <addaction name="actionAI_2"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_5"/>
@@ -522,6 +548,9 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="action_14"/>
+   <addaction name="action_12"/>
+   <addaction name="action_13"/>
   </widget>
   <action name="action_6">
    <property name="text">
@@ -581,6 +610,21 @@
   <action name="action_7">
    <property name="text">
     <string>仅写</string>
+   </property>
+  </action>
+  <action name="action_12">
+   <property name="text">
+    <string>保存</string>
+   </property>
+  </action>
+  <action name="action_13">
+   <property name="text">
+    <string>查找</string>
+   </property>
+  </action>
+  <action name="action_14">
+   <property name="text">
+    <string>打开</string>
    </property>
   </action>
  </widget>

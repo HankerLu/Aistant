@@ -42,11 +42,11 @@ class Aistant_Chat_Server():
         while self.thread_chat_completion_do_run:
             time.sleep(0.1)
             self.core_threa_run_tick +=1
-            if keyboard.is_pressed('enter') and keyboard.is_pressed('shift'):
-                print("New line Command.")
-            elif keyboard.is_pressed('enter'):
-                print("Key enter press.")
-                # self.chat_core_button_submit_exec()
+            # if keyboard.is_pressed('enter') and keyboard.is_pressed('shift'):
+            #     print("New line Command.")
+            # elif keyboard.is_pressed('enter'):
+            #     print("Key enter press.")
+            #     # self.chat_core_button_submit_exec()
             if self.aistant_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_EXEC:
                 response = self.openai_chat_completion_api_req()
                 if response == '':  
