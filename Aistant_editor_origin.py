@@ -16,7 +16,7 @@ from PyQt5.QtCore import Qt
 
 from ext import *
 
-class Main(QtWidgets.QMainWindow):
+class Aistant_Editor_Manager(QtWidgets.QMainWindow):
 
     def __init__(self,parent=None):
         QtWidgets.QMainWindow.__init__(self,parent)
@@ -525,7 +525,7 @@ class Main(QtWidgets.QMainWindow):
 
     def new(self):
 
-        spawn = Main()
+        spawn = Aistant_Editor_Manager()
 
         spawn.show()
 
@@ -824,7 +824,7 @@ class Main(QtWidgets.QMainWindow):
 def main():
     app = QtWidgets.QApplication(sys.argv)
 
-    main = Main()
+    main = Aistant_Editor_Manager()
     main.show()
 
     sys.exit(app.exec_())

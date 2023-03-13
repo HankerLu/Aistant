@@ -148,6 +148,7 @@ class Aistant_UI_Agent:
         new_tab.ui.textEdit_2.setFont(font)
 
 #-----对话和编辑窗口开关回调-----#
+#"仅写"回调
     def aistant_editor_only_exec(self):
         print("chat_hide_chat_window")
         if self.aistant_chat_windows_show_status:
@@ -160,6 +161,7 @@ class Aistant_UI_Agent:
         #     self.aistant_show_chat_window_widgets()
         #     self.aistant_chat_windows_show_status = True
 
+#"仅聊"回调
     def aistant_chat_only_exec(self):
         if self.aistant_edit_window_show_status:
             self.aistant_hide_edit_window_widgets()
@@ -168,6 +170,7 @@ class Aistant_UI_Agent:
             self.aistant_show_chat_window_widgets()
             self.aistant_chat_windows_show_status = True 
 
+#"聊与写"回调
     def aistant_chat_editor_both_exec(self):
         if self.aistant_edit_window_show_status == False:
             self.aistant_show_edit_window_widgets()
@@ -179,10 +182,12 @@ class Aistant_UI_Agent:
     def aistant_hide_edit_window_widgets(self):
         print("aistant_chat_only_exec")
         self.ui.textEdit_2.setVisible(False)
+        self.ui.toolBar_2.setVisible(False)
 
     def aistant_show_edit_window_widgets(self):
         print("aistant_show_edit_window")
         self.ui.textEdit_2.setVisible(True)
+        self.ui.toolBar_2.setVisible(True)
 
     def aistant_hide_chat_window_widgets(self):
         self.ui.textEdit.setVisible(False)
