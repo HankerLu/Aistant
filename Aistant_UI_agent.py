@@ -49,10 +49,6 @@ class Aistant_UI_Agent:
         self.textBrower_writer.write_signal.connect(self.ui.textBrowser.setText)
         # self.textBrower_writer.write_signal.connect(self.ui.textBrowser.setMarkdown)
         # self.textBrower_writer.write_signal.connect(self.ui.textBrowser.setHtml)
-
-        self.statusbar_writer = Writer()
-        self.statusbar_writer.write_signal.connect(self.ui.statusbar.showMessage)
-        
         font = QtGui.QFont()
         font.setPointSize(12)
         self.ui.textBrowser.setFont(font)
@@ -60,11 +56,12 @@ class Aistant_UI_Agent:
 
         textbrowser_format = QTextCharFormat()
         textbrowser_format.setForeground(QColor(31, 31, 31))
-        # textbrowser_format.setBackground(QColor(0, 255, 0)) 
-        # self.ui.textBrowser.setStyleSheet("background-color: balck;")
         self.ui.textBrowser.setStyleSheet("background-color: rgb(210,210,210);")
         self.ui.textBrowser.setCurrentCharFormat(textbrowser_format)  # 应用高亮格式
 
+
+        self.statusbar_writer = Writer()
+        self.statusbar_writer.write_signal.connect(self.ui.statusbar.showMessage)
         self.ui.statusbar.showMessage('界面加载完成')
 
         # self.ui.stackedWidget.keyPressEvent = self.aistant_keyPressEvent
@@ -139,12 +136,12 @@ class Aistant_UI_Agent:
         self.ui.tabWidget.insertTab(new_tab_insert_pos, new_tab, new_tab_name) #基于当前名称更新对话标签名
         textbrowser_format = QTextCharFormat()
         textbrowser_format.setForeground(QColor(31, 31, 31))
-        new_tab.ui.textBrowser_2.setStyleSheet("background-color: rgb(210,210,210);")
-        new_tab.ui.textBrowser_2.setCurrentCharFormat(textbrowser_format)  # 应用高亮格式
+        new_tab.ui.textBrowser.setStyleSheet("background-color: rgb(210,210,210);")
+        new_tab.ui.textBrowser.setCurrentCharFormat(textbrowser_format)  # 应用高亮格式
 
         font = QtGui.QFont()
         font.setPointSize(12)
-        new_tab.ui.textBrowser_2.setFont(font)
+        new_tab.ui.textBrowser.setFont(font)
         new_tab.ui.textEdit_2.setFont(font)
 
 #-----对话和编辑窗口开关回调-----#

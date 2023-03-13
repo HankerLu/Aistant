@@ -9,9 +9,9 @@ class OpenAIReqStatus(Enum):
    REQ_STATUS_IDLE = 0
    REQ_STATUS_EXEC = 1
    REQ_STATUS_TIMEOUT = 2
-class Aistant_Chat_Core():
+class Aistant_Chat_Server():
     def __init__(self):
-        print(" Aistant Aistant_Chat_Core init.")
+        print(" Aistant Aistant_Chat_Server init.")
         self.aistant_chat_model_name = "gpt-3.5-turbo"
         self.aistant_role_setting = {"role": "system", "content": "我希望你能扮演辩手的角色。"}
         self.aistant_history_messages = [self.aistant_role_setting,]
