@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1291</width>
-    <height>1150</height>
+    <width>1292</width>
+    <height>1149</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -86,7 +86,7 @@
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>1225</width>
+                     <width>1226</width>
                      <height>883</height>
                     </rect>
                    </property>
@@ -236,7 +236,9 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="page_2"/>
+      <widget class="QWidget" name="page_2">
+       <layout class="QVBoxLayout" name="verticalLayout_21"/>
+      </widget>
       <widget class="QWidget" name="page_3">
        <layout class="QVBoxLayout" name="verticalLayout_14">
         <item>
@@ -280,8 +282,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>1249</width>
-                 <height>1006</height>
+                 <width>1250</width>
+                 <height>1005</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -498,12 +500,13 @@
     </item>
    </layout>
   </widget>
+  <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1291</width>
+     <width>1292</width>
      <height>23</height>
     </rect>
    </property>
@@ -513,8 +516,8 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>269</x>
-      <y>129</y>
+      <x>267</x>
+      <y>133</y>
       <width>120</width>
       <height>72</height>
      </rect>
@@ -530,8 +533,8 @@
    <widget class="QMenu" name="menu_2">
     <property name="geometry">
      <rect>
-      <x>439</x>
-      <y>182</y>
+      <x>347</x>
+      <y>133</y>
       <width>120</width>
       <height>94</height>
      </rect>
@@ -563,7 +566,6 @@
    <addaction name="menu_2"/>
    <addaction name="menu_3"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <action name="action_6">
    <property name="text">
     <string>密钥管理</string>
@@ -607,6 +609,16 @@
   <action name="actionAI_2">
    <property name="text">
     <string>AI编程</string>
+   </property>
+  </action>
+  <action name="action_4">
+   <property name="text">
+    <string>查找</string>
+   </property>
+  </action>
+  <action name="action_5">
+   <property name="text">
+    <string>撤回</string>
    </property>
   </action>
  </widget>

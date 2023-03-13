@@ -94,6 +94,7 @@ class Aistant_UI_Agent:
         # self.chat_setting.aistant_select_role_and_descript_set_config()
 
 #新建及删除对话标签页
+        self.hide_draft_txt_editor_status = True
         self.ui.pushButton_3.clicked.connect(self.aistant_create_new_chat_tab_page_exec)
         self.ui.tabWidget.tabCloseRequested.connect(self.aistant_remove_old_chat_tab_page_exec)
         # self.ui.tabWidget.removeTab(self.ui.tabWidget.indexOf(self.ui.tab_2))
@@ -126,6 +127,13 @@ class Aistant_UI_Agent:
     #             new_child = self.copy_widget(child)
     #             new_widget.layout().addWidget(new_child)
     #     return new_widget
+    def aistant_hide_draft_txt_editor(self):
+        if self.hide_draft_txt_editor_status == True:
+            self.ui.textEdit_3.setVisible(False)
+            self.hide_draft_txt_editor_status = False
+        else:
+            self.ui.textEdit_3.setVisible(True)
+            self.hide_draft_txt_editor_status = True
 
     def aistant_create_new_chat_tab_page_exec(self):
         print("aistant_create_new_chat_tab_page")
