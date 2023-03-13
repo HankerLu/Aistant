@@ -72,10 +72,10 @@
                 </property>
                 <layout class="QVBoxLayout" name="verticalLayout_2">
                  <item>
-                  <widget class="QTextEdit" name="textEdit"/>
-                 </item>
-                 <item>
                   <layout class="QVBoxLayout" name="verticalLayout">
+                   <item>
+                    <widget class="QTextEdit" name="textEdit"/>
+                   </item>
                    <item>
                     <layout class="QHBoxLayout" name="horizontalLayout_2">
                      <item>
@@ -166,19 +166,6 @@
                 <item>
                  <widget class="QSpinBox" name="spinBox"/>
                 </item>
-                <item>
-                 <spacer name="horizontalSpacer_3">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
                </layout>
               </item>
               <item>
@@ -238,8 +225,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>1250</width>
-                 <height>983</height>
+                 <width>418</width>
+                 <height>403</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_17">
