@@ -3,7 +3,7 @@ import Aistant_UI
 # import Aistant_chat_tab_UI
 import sys
 from PyQt5.QtCore import QObject, pyqtSignal
-from PyQt5.QtWidgets import QFileDialog, QPlainTextEdit
+from PyQt5.QtWidgets import QFileDialog, QShortcut
 from PyQt5.QtGui import QTextCharFormat, QColor
 from PyQt5.Qt import Qt
 import Aistant_setting_manage
@@ -141,9 +141,13 @@ class Aistant_UI_Agent:
         self.ui.spinBox.setValue(14)
 
 #密钥设置
+        self.aistant_openai_api_key = openai.api_key
 
 #链接按钮
         self.aistant_ui_activate_button()
+
+#智能菜单
+        self.aistant_init_smart_menu()
 
 #=========================对话后端=======================================#
         print(" Aistant Aistant_Chat_Server init.")
@@ -502,11 +506,26 @@ class Aistant_UI_Agent:
         print("aistant_editor_find_exec")
         find.Find(self).show()
 
-
+# 编辑器智能菜单
+    def aistant_init_smart_menu(self):
+        # 创建快捷键和弹出菜单
+        self.aistant_s_menu_shortcut = QtWidgets.QShortcut('Ctrl+;', self.ui.textEdit_2)
+        self.aistant_s_menu_shortcut.activated.connect(self.aistent_show_smart_menu)
+        self.aistant_smart_menu = QtWidgets.QMenu(self.ui.textEdit_2)
+        self.aistant_smart_menu.addAction(QtWidgets.QAction('询问', self.ui.textEdit_2))
+        self.aistant_smart_menu.addAction(QtWidgets.QAction('总结', self.ui.textEdit_2))
+        self.aistant_smart_menu.setEnabled(False)
+        
+    def aistent_show_smart_menu(self):
+        # 显示弹出菜单
+        # TODO: 前置触发条件，其他条件下直接过滤
+        cursor_x = self.ui.textEdit_2.cursorRect().left()
+        cursor_y = self.ui.textEdit_2.cursorRect().bottom()
+        cursor_position = self.ui.textEdit_2.mapToGlobal(QtCore.QPoint(cursor_x, cursor_y))
+        self.aistant_smart_menu.exec_(cursor_position)
 # ------------------------------------------------------------------------ #
 # callback release
     def aistant_ui_get_input_textedit_exec(self):
-        # print("aistant_ui_get_input_textedit_exec")
         return self.ui.textEdit.toPlainText()
 
     def aistant_ui_display_txt_output_exec(self, txt_display):
@@ -546,3 +565,8 @@ class Aistant_UI_Agent:
 
     def aistant_ui_teminate_chat_core(self, chat_core_teminate_cb):
         self.chat_core_teminate_callback = chat_core_teminate_cb
+
+
+if __name__ == "__main__":
+    aistant_ui = Aistant_UI_Agent()
+    aistant_ui.Aistant_UI_show()

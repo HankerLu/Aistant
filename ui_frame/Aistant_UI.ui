@@ -664,6 +664,7 @@
      <string>开始</string>
     </property>
     <addaction name="action_chatgpt"/>
+    <addaction name="actionA"/>
    </widget>
    <addaction name="menu_5"/>
    <addaction name="menu_2"/>
@@ -724,12 +725,12 @@
   </action>
   <action name="action_chatgpt">
    <property name="text">
-    <string>AI对话</string>
+    <string>主页面</string>
    </property>
   </action>
   <action name="actionA">
    <property name="text">
-    <string>AI翻译</string>
+    <string>实验室</string>
    </property>
   </action>
   <action name="actionAI">
