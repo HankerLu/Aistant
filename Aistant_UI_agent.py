@@ -103,7 +103,7 @@ class Aistant_UI_Agent:
         self.aistant_current_model_name = self.aistant_model_list[self.aistant_current_model_idx]['model']
         self.aistant_current_model_type = self.aistant_model_list[self.aistant_current_model_idx]['type']
         print("model name and type: ", self.aistant_current_model_type, self.aistant_current_model_name)
-        self.ui.comboBox_4.currentIndexChanged.connect(self.aistant_update_model_descript)
+        self.ui.comboBox_4.currentIndexChanged.connect(self.aistant_change_model_exec)
 
 
 #角色设置
@@ -117,12 +117,8 @@ class Aistant_UI_Agent:
         # self.current_role_descript_idx = len(role_descript_list) - self.ui.comboBox_3.currentIndex()
         # ("self.current_role_descript_idx", self.current_role_descript_idx)
         # self.current_role_descript_idx = 0
-        self.current_role_descript_idx = self.ui.comboBox_3.currentIndex()
-        self.role_brief_txt = role_descript_list[self.current_role_descript_idx]['brief']
-        self.descript_txt = role_descript_list[self.current_role_descript_idx]['descripion']
-        self.ui.plainTextEdit.setPlainText(self.descript_txt)
         # 设置角色变更更新回调
-        self.ui.comboBox_3.currentIndexChanged.connect(self.aistant_update_role_descript)
+        self.ui.comboBox_3.currentIndexChanged.connect(self.aistant_change_role_exec)
 
 
 #编辑器
@@ -156,8 +152,7 @@ class Aistant_UI_Agent:
 
 #=========================对话后端=======================================#
         print(" Aistant Aistant_Chat_Server init.")
-        self.aistant_role_whole_content = self.role_brief_txt + self.descript_txt
-        self.aistant_role_setting = {"role": "system", "content": self.aistant_role_whole_content}
+        self.aistant_role_content_update()
         self.aistant_chat_history_messages = [self.aistant_role_setting,]
 
         self.aistant_chat_completion_req_status = OpenAIReqStatus.REQ_STATUS_IDLE
@@ -301,7 +296,7 @@ class Aistant_UI_Agent:
 
     def chat_core_button_clear_exec(self):
         print("chat core button clear.")
-        # self.aistant_role_whole_content = self.role_brief_txt + self.descript_txt
+        # self.aistant_role_whole_content = self.role_brief_txt + self.role_custom_txt
         # self.aistant_role_setting = {"role": "system", "content": self.aistant_role_whole_content}
         self.aistant_chat_history_messages = [self.aistant_role_setting,]
         self.ui_output_update()
@@ -412,8 +407,8 @@ class Aistant_UI_Agent:
         return self.ui.textEdit.toPlainText()
 
 # 保存所有设置
-    def aistant_ui_update_all_setting(self):
-        print("aistant_ui_update_all_setting")
+    def aistant_ui_recover_default_setting(self):
+        print("aistant_ui_recover_default_setting")
 
     def aistant_ui_activate_button(self):
         self.ui.pushButton_4.clicked.connect(self.chat_core_button_submit_exec)
@@ -423,7 +418,9 @@ class Aistant_UI_Agent:
         self.ui.pushButton_6.clicked.connect(self.chat_core_button_save_exec)
         self.ui.pushButton.clicked.connect(self.chat_core_button_withdraw_exec)
 
-        self.ui.pushButton_2.clicked.connect(self.aistant_ui_update_all_setting)
+        self.ui.pushButton_2.clicked.connect(self.aistant_ui_recover_default_setting)
+
+        self.ui.pushButton_12.clicked.connect(self.aistant_save_role_custom_exec)
 
     def Aistant_UI_show(self):
         self.mainwin.show()
@@ -447,34 +444,48 @@ class Aistant_UI_Agent:
         if self.chat_core_teminate_thread_exec != None:
             self.chat_core_teminate_thread_exec()
 # 更新模型回调
-    def aistant_update_model_descript(self, model_idx):
+    def aistant_change_model_exec(self, model_idx):
         # 更新model最新idx, 名称和类型
         self.aistant_current_model_idx = self.ui.comboBox_4.currentIndex()
         self.aistant_current_model_name = self.aistant_model_list[self.aistant_current_model_idx]['model']
         self.aistant_current_model_type = self.aistant_model_list[self.aistant_current_model_idx]['type']
-        print("aistant_update_model_descript: ", self.aistant_current_model_idx, ' ',self.aistant_current_model_name, ' ',self.aistant_current_model_type)
+        print("aistant_change_model_exec: ", self.aistant_current_model_idx, ' ',self.aistant_current_model_name, ' ',self.aistant_current_model_type)
         self.aistant_chat_history_messages = [self.aistant_role_setting,]
 
 # 更新角色回调
-    def aistant_update_role_descript(self, role_idx):
-        print("aistant_update_role_descript", role_idx)
-        # 候选框id
-        self.current_role_descript_idx = self.ui.comboBox_3.currentIndex()
-        # 角色简称
-        self.descript_txt = self.chat_setting.aistant_select_role_and_descript_get_config()[self.current_role_descript_idx]['descripion']
-        # 角色描述
-        self.role_brief_txt = self.chat_setting.aistant_select_role_and_descript_get_config()[self.current_role_descript_idx]['brief']
-        # 更新角色描述到设置面板
-        self.ui.plainTextEdit.setPlainText(self.descript_txt) #更新
-        # 更新token中role的content
-        self.aistant_role_whole_content = self.role_brief_txt + self.descript_txt
-        # 更新完整的role token
-        self.aistant_role_setting = {"role": "system", "content": self.aistant_role_whole_content}
+    def aistant_change_role_exec(self, role_idx):
+        print("aistant update role descript", role_idx)
+       # 更新token中role的content
+        self.aistant_role_content_update()
         # 更新历史信息
         if len(self.aistant_chat_history_messages) >= 1:
             self.aistant_chat_history_messages[0] = self.aistant_role_setting
         # 更新问答输出面板
         self.ui_output_update()
+
+# 保存'自定义'角色回调
+    def aistant_save_role_custom_exec(self):
+        print("aistant_save_role_custom_exec")
+        self.aistant_role_content_update()
+        # 更新历史信息
+        if len(self.aistant_chat_history_messages) >= 1:
+            self.aistant_chat_history_messages[0] = self.aistant_role_setting
+        # 更新问答输出面板
+        self.ui_output_update()
+
+    def aistant_role_content_update(self):
+        self.current_role_descript_idx = self.ui.comboBox_3.currentIndex()
+        # self.role_name = self.chat_setting.aistant_select_role_and_descript_get_config()[self.current_role_descript_idx]['role']
+        self.role_brief_txt = self.chat_setting.aistant_select_role_and_descript_get_config()[self.current_role_descript_idx]['brief']
+        self.role_custom_txt = self.ui.plainTextEdit.toPlainText()
+        if self.role_brief_txt != '自定义':
+            self.aistant_role_whole_content = self.role_brief_txt
+            print(self.role_brief_txt)
+        else:
+            self.aistant_role_whole_content = self.role_custom_txt
+        self.aistant_role_setting = {"role": "system", "content": self.aistant_role_whole_content}
+
+
 
 # ------editor 
     def aistant_editor_open_exec(self):

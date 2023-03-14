@@ -322,14 +322,14 @@
                 <item>
                  <widget class="QLabel" name="label_8">
                   <property name="text">
-                   <string>默认角色补充描述（你可以基于‘默认角色设定’补充额外的描述和说明。 当 默认角色设定 为'自定义'时,将完全采用以下填充的内容）</string>
+                   <string>自定义角色描述（默认角色设定 为'自定义'时,将完全采用以下填充的内容）</string>
                   </property>
                  </widget>
                 </item>
                 <item>
                  <widget class="QPushButton" name="pushButton_12">
                   <property name="text">
-                   <string>保存自定义内容</string>
+                   <string>更新自定义内容</string>
                   </property>
                  </widget>
                 </item>
