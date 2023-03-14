@@ -8,7 +8,7 @@ from PyQt5.QtGui import QTextCharFormat, QColor
 from PyQt5.Qt import Qt
 import Aistant_setting_manage
 
-from ext import *
+import Aistant_editor_find
 
 import openai
 from enum import Enum
@@ -504,7 +504,7 @@ class Aistant_UI_Agent:
 
     def aistant_editor_find_exec(self):
         print("aistant_editor_find_exec")
-        find.Find(self).show()
+        Aistant_editor_find.Find(self.ui.textEdit_2).show()
 
 # 编辑器智能菜单
     def aistant_init_smart_menu(self):
