@@ -158,38 +158,6 @@ class Aistant_UI_Agent:
         self.core_threa_run_tick = 0
 #======================================================================#
 
-# openai 请求接口
-    def openai_chat_completion_api_req(self):
-        print(openai.api_key, ' ', self.aistant_current_model_name)
-        try:
-            if self.aistant_current_model_type == 'Chat':
-                response = openai.ChatCompletion.create(
-                model = self.aistant_current_model_name,
-                messages = self.aistant_chat_history_messages
-                )
-                return response.choices[0]['message']
-            elif self.aistant_current_model_type == 'Complete':
-                print("openai_chat_completion_api_req.Text Complete request.")
-                prompt_in = self.aistant_ui_get_input_textedit_exec() + '\n'
-                response = openai.Completion.create(
-                model = self.aistant_current_model_name,
-                prompt = prompt_in,
-                temperature=0.7,
-                max_tokens=200,
-                top_p=1,
-                frequency_penalty=0,
-                presence_penalty=0
-                )
-                return response.choices[0]["text"]
-            else:
-                print("openai_chat_completion_api_req.Unknow request type.")
-                response = ''
-                return response
-
-        except:
-            print(response.choices[0]['message'])
-            response = ''
-            return response
 
     def chat_core_thread_exec(self):
         print("chat bot start chat_core_thread_exec.")
@@ -230,6 +198,39 @@ class Aistant_UI_Agent:
     def set_openai_req_thread_do_run(self, do_run):
         self.thread_chat_completion_do_run = do_run
 
+# openai 请求接口
+    def openai_chat_completion_api_req(self):
+        print(openai.api_key, ' ', self.aistant_current_model_name)
+        try:
+            if self.aistant_current_model_type == 'Chat':
+                response = openai.ChatCompletion.create(
+                model = self.aistant_current_model_name,
+                messages = self.aistant_chat_history_messages
+                )
+                return response.choices[0]['message']
+            elif self.aistant_current_model_type == 'Complete':
+                print("openai_chat_completion_api_req.Text Complete request.")
+                prompt_in = self.aistant_ui_get_input_textedit_exec() + '\n'
+                response = openai.Completion.create(
+                model = self.aistant_current_model_name,
+                prompt = prompt_in,
+                temperature=0.7,
+                max_tokens=200,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0
+                )
+                return response.choices[0]["text"]
+            else:
+                print("openai_chat_completion_api_req.Unknow request type.")
+                response = ''
+                return response
+
+        except:
+            print(response.choices[0]['message'])
+            response = ''
+            return response
+# 更新输出文本
     def ui_output_update(self):
         message_content_total = ''
         msg_cnt = 0
@@ -246,9 +247,13 @@ class Aistant_UI_Agent:
                 msg_role_with_content = role_msg + ':\n' + msg['content']
                 message_content_total += msg_role_with_content
             elif self.aistant_current_model_type == 'Complete':
-                if 'role' in msg:
+                if isinstance(msg, dict) and msg['role'] == 'user':
+                    msg_role_with_content = '用户' + ':\n' + msg['content']
+                elif isinstance(msg, dict):
                     continue
-                message_content_total += msg
+                else:
+                    msg_role_with_content = self.aistant_current_model_name + ':' + msg
+                message_content_total += msg_role_with_content
             # 统一换行
             message_content_total += '\n\n'
         
@@ -256,20 +261,18 @@ class Aistant_UI_Agent:
         self.aistant_ui_display_txt_output_exec(message_content_total)
 
     def aistant_chat_update_statusbar(self, content):
-        if self.aistant_ui_update_statusbar_txt != None:
-            self.aistant_ui_update_statusbar_txt(content)
-
+        self.aistant_ui_update_statusbar_txt(content)
 
 #callback release
+# 发送消息
     def chat_core_button_submit_exec(self):
-        if self.aistant_ui_get_input_textedit_exec != None:
-            prompt_text = self.aistant_ui_get_input_textedit_exec()
-            print("---prompt_text: %s"%prompt_text)
-            # if prompt_text == '' or prompt_text == '\r' or prompt_text == '\n' or prompt_text == '\r\n':
-            if prompt_text == '':
-                # print("chat_core_button_submit_exec-Empty send prompt message.")
-                self.aistant_chat_update_statusbar("发送消息为空")
-                return 
+        prompt_text = self.aistant_ui_get_input_textedit_exec()
+        print("---prompt_text: %s"%prompt_text)
+        # if prompt_text == '' or prompt_text == '\r' or prompt_text == '\n' or prompt_text == '\r\n':
+        if prompt_text == '':
+            # print("chat_core_button_submit_exec-Empty send prompt message.")
+            self.aistant_chat_update_statusbar("发送消息为空")
+            return 
         print("chat_core_button_submit_exec--", prompt_text)
     #     prompt_text = self.ui_agent.aistant_ui_get_textEdit_input_text()
         if self.aistant_current_model_type == 'Chat': 
@@ -277,7 +280,9 @@ class Aistant_UI_Agent:
             user_question['content'] = prompt_text
             self.aistant_chat_history_messages.append(user_question) # 新增 
         elif self.aistant_current_model_type == 'Complete':
-            self.aistant_chat_history_messages.append(prompt_text)
+            user_question = {"role": "user", "content": ""}
+            user_question['content'] = prompt_text
+            self.aistant_chat_history_messages.append(user_question) # 新增 
 
         if self.aistant_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_IDLE or self.aistant_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_TIMEOUT:
             self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_EXEC)
