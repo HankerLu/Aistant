@@ -63,12 +63,13 @@ class Aistant_UI_Agent:
         # self.textBrower_writer.write_signal.connect(self.ui.textEdit_3.setHtml)
         font = QtGui.QFont()
         font.setPointSize(12)
-        self.ui.textEdit_3.setFont(font)
         self.ui.textEdit.setFont(font)
+        self.ui.textEdit.setStyleSheet("background-color: rgb(255,192,203);")
 
         textbrowser_format = QTextCharFormat()
         textbrowser_format.setForeground(QColor(31, 31, 31))
-        self.ui.textEdit_3.setStyleSheet("background-color: rgb(210,210,210);")
+        self.ui.textEdit_3.setFont(font)
+        self.ui.textEdit_3.setStyleSheet("background-color: rgb(255,255,204);")
         self.ui.textEdit_3.setCurrentCharFormat(textbrowser_format)  # 应用高亮格式
 
 
@@ -141,6 +142,8 @@ class Aistant_UI_Agent:
         self.ui.spinBox.setValue(14)
 
         self.aistant_editor_ai_model = 'text-davinci-003'
+
+        self.ui.textEdit_2.setStyleSheet("background-color: rgb(200, 255, 190);")
 
 #密钥设置
         self.aistant_openai_api_key = openai.api_key
@@ -560,7 +563,7 @@ class Aistant_UI_Agent:
     def Aistant_editor_openai_api_req(self, prompt_in):
         # print(openai.api_key, ' ', self.aistant_current_model_name)
         try:
-            print("openai_chat_completion_api_req.Text Complete request.")
+            print("Aistant_editor_openai_api_req.Text Complete request.")
             response = openai.Completion.create(
             model = self.aistant_editor_ai_model,
             prompt = prompt_in,
