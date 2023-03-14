@@ -405,6 +405,7 @@ class Aistant_UI_Agent:
 
     def aistant_ui_activate_button(self):
         self.ui.pushButton_4.clicked.connect(self.chat_core_button_submit_exec)
+        # self.ui.pushButton_4.setShortcut("Ctrl+A")
         self.ui.pushButton_7.clicked.connect(self.chat_core_button_clear_exec)
         self.ui.pushButton_5.clicked.connect(self.chat_core_button_cancel_exec)
         self.ui.pushButton_6.clicked.connect(self.chat_core_button_save_exec)
