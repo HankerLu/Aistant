@@ -117,11 +117,7 @@
                   <item>
                    <layout class="QVBoxLayout" name="verticalLayout_3">
                     <item>
-                     <widget class="QTextBrowser" name="textBrowser">
-                      <property name="focusPolicy">
-                       <enum>Qt::NoFocus</enum>
-                      </property>
-                     </widget>
+                     <widget class="QTextEdit" name="textEdit_3"/>
                     </item>
                    </layout>
                   </item>

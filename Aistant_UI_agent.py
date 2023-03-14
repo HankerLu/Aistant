@@ -58,18 +58,18 @@ class Aistant_UI_Agent:
         self.ui.action_10.triggered.connect(self.action_chat_setting_exec)
 
         self.textBrower_writer = Writer()
-        self.textBrower_writer.write_signal.connect(self.ui.textBrowser.setText)
-        # self.textBrower_writer.write_signal.connect(self.ui.textBrowser.setMarkdown)
-        # self.textBrower_writer.write_signal.connect(self.ui.textBrowser.setHtml)
+        self.textBrower_writer.write_signal.connect(self.ui.textEdit_3.setText)
+        # self.textBrower_writer.write_signal.connect(self.ui.textEdit_3.setMarkdown)
+        # self.textBrower_writer.write_signal.connect(self.ui.textEdit_3.setHtml)
         font = QtGui.QFont()
         font.setPointSize(12)
-        self.ui.textBrowser.setFont(font)
+        self.ui.textEdit_3.setFont(font)
         self.ui.textEdit.setFont(font)
 
         textbrowser_format = QTextCharFormat()
         textbrowser_format.setForeground(QColor(31, 31, 31))
-        self.ui.textBrowser.setStyleSheet("background-color: rgb(210,210,210);")
-        self.ui.textBrowser.setCurrentCharFormat(textbrowser_format)  # 应用高亮格式
+        self.ui.textEdit_3.setStyleSheet("background-color: rgb(210,210,210);")
+        self.ui.textEdit_3.setCurrentCharFormat(textbrowser_format)  # 应用高亮格式
 
 
         self.statusbar_writer = Writer()
@@ -574,7 +574,7 @@ class Aistant_UI_Agent:
         return self.ui.textEdit.toPlainText()
 
     def aistant_ui_display_txt_output_exec(self, txt_display):
-        # self.ui.textBrowser.setText(txt_display)
+        # self.ui.textEdit_3.setText(txt_display)
         # html = markdown.markdown(txt_display)
         self.textBrower_writer.write_to_display_widget(txt_display)
 
@@ -589,7 +589,7 @@ class Aistant_UI_Agent:
             return
         if filename:
             with open(filename, "w") as file:
-                file.write(self.ui.textBrowser.toPlainText())
+                file.write(self.ui.textEdit_3.toPlainText())
 
 # callback consume
     def aistant_ui_set_chat_submit_cb_ptr(self, chat_submit_cb):
