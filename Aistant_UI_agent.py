@@ -236,6 +236,7 @@ class Aistant_UI_Agent:
             print(response.choices[0]['message'])
             response = ''
             return response
+
 # 更新输出文本
     def ui_output_update(self):
         message_content_total = ''
@@ -540,11 +541,16 @@ class Aistant_UI_Agent:
 
 # 智能菜单->询问
     def aistant_smart_query_exec(self):
-        print("aistant_smart_query_exec")
+        cursor = self.ui.textEdit_2.textCursor()
+        selected_text = cursor.selectedText()
+        print("aistant_smart_query_exec: ", selected_text)
+
 
 # 智能菜单->总结
     def aistant_smart_summarize_exec(self):
-        print("aistant_smart_summarize_exec")
+        cursor = self.ui.textEdit_2.textCursor()
+        selected_text = cursor.selectedText()
+        print("aistant_smart_summarize_exec", selected_text)
 
     # def aistant_smart_menu_contextMenuEvent(self, event):
     #     menu = QMenu(self)
