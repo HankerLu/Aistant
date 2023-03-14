@@ -509,8 +509,10 @@ class Aistant_UI_Agent:
 # 编辑器智能菜单
     def aistant_init_smart_menu(self):
         # 创建快捷键和弹出菜单
-        self.aistant_s_menu_shortcut = QtWidgets.QShortcut('Ctrl+;', self.ui.textEdit_2)
-        self.aistant_s_menu_shortcut.activated.connect(self.aistent_show_smart_menu)
+        self.aistant_s_menu_shortcut = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_F1), self.ui.textEdit_2)
+        # self.aistant_s_menu_shortcut = QtWidgets.QShortcut('Ctrl+Space', self.ui.textEdit_2)
+        self.aistant_s_menu_shortcut.activated.connect(self.aistant_show_smart_menu)
+        self.aistant_s_menu_shortcut.setContext
         self.aistant_smart_menu = QtWidgets.QMenu(self.ui.textEdit_2)
         self.aistant_smart_action_query = QtWidgets.QAction('询问', self.ui.textEdit_2)
         self.aistant_smart_action_summarize = QtWidgets.QAction('总结', self.ui.textEdit_2)
@@ -520,22 +522,52 @@ class Aistant_UI_Agent:
         # 菜单选项链接回调
         self.aistant_smart_action_query.triggered.connect(self.aistant_smart_query_exec)
         self.aistant_smart_action_summarize.triggered.connect(self.aistant_smart_summarize_exec)
-        
         self.aistant_smart_menu.setEnabled(True)
 
-    def aistent_show_smart_menu(self):
+        self.aistant_smart_line_edit = QtWidgets.QLineEdit(self.ui.page)
+        self.aistant_smart_line_edit.hide()
+        self.aistant_smart_line_edit.returnPressed.connect(self.aistant_smart_line_return_exec)
+    
+# 弹出智能菜单
+    def aistant_show_smart_menu(self):
         # 显示弹出菜单
         # TODO: 前置触发条件，其他条件下直接过滤
+        print("aistant_show_smart_menu")
         cursor_x = self.ui.textEdit_2.cursorRect().left()
         cursor_y = self.ui.textEdit_2.cursorRect().bottom()
         cursor_position = self.ui.textEdit_2.mapToGlobal(QtCore.QPoint(cursor_x, cursor_y))
         self.aistant_smart_menu.exec_(cursor_position)
 
+# 智能菜单->询问
     def aistant_smart_query_exec(self):
         print("aistant_smart_query_exec")
 
+# 智能菜单->总结
     def aistant_smart_summarize_exec(self):
         print("aistant_smart_summarize_exec")
+
+    # def aistant_smart_menu_contextMenuEvent(self, event):
+    #     menu = QMenu(self)
+    #     action = QAction("Action", self)
+    #     menu.addAction(action)
+    #     menu.exec_(self.mapToGlobal(event.pos()))
+
+# 编辑行弹出回调
+    def aistant_show_smart_line(self):
+        print("aistant_show_smart_lineedit")
+        cursor_x = self.ui.textEdit_2.cursorRect().left()
+        cursor_y = self.ui.textEdit_2.cursorRect().bottom()
+        cursor_position = self.ui.textEdit_2.mapToGlobal(QtCore.QPoint(cursor_x, cursor_y))
+        
+        self.aistant_smart_line_edit.move(cursor_position)
+        self.aistant_smart_line_edit.show()
+        # print("aistant_show_smart_lineedit---")
+        # self.ui.lineEdit_3.move(cursor_position.x(), cursor_position.y())
+
+# 编辑行回车隐藏回调
+    def aistant_smart_line_return_exec(self):
+        print("aistant_smart_line_return_exec")
+        self.aistant_smart_line_edit.hide()
 # ------------------------------------------------------------------------ #
 # callback release
     def aistant_ui_get_input_textedit_exec(self):
