@@ -56,3 +56,4 @@ class Aistant_Chat_Setting():
     def aistant_chat_model_dict_get_config(self):
         return self.chat_model_dict
 
+# 设置密钥

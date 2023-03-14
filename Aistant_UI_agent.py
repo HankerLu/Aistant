@@ -140,6 +140,8 @@ class Aistant_UI_Agent:
 
         self.ui.spinBox.setValue(14)
 
+#密钥设置
+
 #链接按钮
         self.aistant_ui_activate_button()
 
