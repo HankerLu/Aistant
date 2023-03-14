@@ -512,10 +512,17 @@ class Aistant_UI_Agent:
         self.aistant_s_menu_shortcut = QtWidgets.QShortcut('Ctrl+;', self.ui.textEdit_2)
         self.aistant_s_menu_shortcut.activated.connect(self.aistent_show_smart_menu)
         self.aistant_smart_menu = QtWidgets.QMenu(self.ui.textEdit_2)
-        self.aistant_smart_menu.addAction(QtWidgets.QAction('询问', self.ui.textEdit_2))
-        self.aistant_smart_menu.addAction(QtWidgets.QAction('总结', self.ui.textEdit_2))
-        self.aistant_smart_menu.setEnabled(False)
+        self.aistant_smart_action_query = QtWidgets.QAction('询问', self.ui.textEdit_2)
+        self.aistant_smart_action_summarize = QtWidgets.QAction('总结', self.ui.textEdit_2)
+        self.aistant_smart_menu.addAction(self.aistant_smart_action_query)
+        self.aistant_smart_menu.addAction(self.aistant_smart_action_summarize)
         
+        # 菜单选项链接回调
+        self.aistant_smart_action_query.triggered.connect(self.aistant_smart_query_exec)
+        self.aistant_smart_action_summarize.triggered.connect(self.aistant_smart_summarize_exec)
+        
+        self.aistant_smart_menu.setEnabled(True)
+
     def aistent_show_smart_menu(self):
         # 显示弹出菜单
         # TODO: 前置触发条件，其他条件下直接过滤
@@ -523,6 +530,12 @@ class Aistant_UI_Agent:
         cursor_y = self.ui.textEdit_2.cursorRect().bottom()
         cursor_position = self.ui.textEdit_2.mapToGlobal(QtCore.QPoint(cursor_x, cursor_y))
         self.aistant_smart_menu.exec_(cursor_position)
+
+    def aistant_smart_query_exec(self):
+        print("aistant_smart_query_exec")
+
+    def aistant_smart_summarize_exec(self):
+        print("aistant_smart_summarize_exec")
 # ------------------------------------------------------------------------ #
 # callback release
     def aistant_ui_get_input_textedit_exec(self):
