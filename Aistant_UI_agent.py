@@ -140,6 +140,8 @@ class Aistant_UI_Agent:
 
         self.ui.spinBox.setValue(14)
 
+        self.aistant_editor_ai_model = 'text-davinci-003'
+
 #密钥设置
         self.aistant_openai_api_key = openai.api_key
 
@@ -233,7 +235,7 @@ class Aistant_UI_Agent:
                 return response
 
         except:
-            print(response.choices[0]['message'])
+            # print(response.choices[0]['message'])
             response = ''
             return response
 
@@ -544,7 +546,9 @@ class Aistant_UI_Agent:
         cursor = self.ui.textEdit_2.textCursor()
         selected_text = cursor.selectedText()
         print("aistant_smart_query_exec: ", selected_text)
-
+        out_text = self.Aistant_editor_openai_api_req(selected_text)
+        out_text = '\n' + out_text
+        self.ui.textEdit_2.append(out_text)
 
 # 智能菜单->总结
     def aistant_smart_summarize_exec(self):
@@ -552,11 +556,25 @@ class Aistant_UI_Agent:
         selected_text = cursor.selectedText()
         print("aistant_smart_summarize_exec", selected_text)
 
-    # def aistant_smart_menu_contextMenuEvent(self, event):
-    #     menu = QMenu(self)
-    #     action = QAction("Action", self)
-    #     menu.addAction(action)
-    #     menu.exec_(self.mapToGlobal(event.pos()))
+# 调用 OPENAI API
+    def Aistant_editor_openai_api_req(self, prompt_in):
+        # print(openai.api_key, ' ', self.aistant_current_model_name)
+        try:
+            print("openai_chat_completion_api_req.Text Complete request.")
+            response = openai.Completion.create(
+            model = self.aistant_editor_ai_model,
+            prompt = prompt_in,
+            temperature=0.7,
+            max_tokens=1000,
+            top_p=1,
+            frequency_penalty=0,
+            presence_penalty=0
+            )
+            return response.choices[0]["text"]
+        except:
+            # print(response.choices[0]['text'])
+            response = ''
+            return response
 
 # 编辑行弹出回调
     def aistant_show_smart_line(self):
