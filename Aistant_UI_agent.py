@@ -154,6 +154,8 @@ class Aistant_UI_Agent:
 
         self.ui.textEdit_2.setStyleSheet("background-color: rgb(200, 255, 190);")
 
+        # self.filename = ''
+
 #密钥设置
         self.aistant_openai_api_key = openai.api_key
 
@@ -513,8 +515,8 @@ class Aistant_UI_Agent:
         print("aistant_editor_save_exec")
         # Only open dialog if there is no filename yet
         #PYQT5 Returns a tuple in PyQt5, we only need the filename
-        if not self.filename:
-          self.filename = QtWidgets.QFileDialog.getSaveFileName(self.ui.stackedWidget, 'Save File')[0]
+        # if not self.filename:
+        self.filename = QtWidgets.QFileDialog.getSaveFileName(self.ui.stackedWidget, 'Save File')[0]
 
         if self.filename:
             
