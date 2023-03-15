@@ -71,7 +71,7 @@ class Aistant_UI_Agent:
         self.ui.action_10.triggered.connect(self.action_chat_setting_exec)
 
         self.textBrower_writer = Writer()
-        self.textBrower_writer.write_signal.connect(self.ui.textEdit_3.setText)
+        self.textBrower_writer.write_signal.connect(self.aistant_chat_textedit_set_txt)
         # self.textBrower_writer.write_signal.connect(self.ui.textEdit_3.setMarkdown)
         # self.textBrower_writer.write_signal.connect(self.ui.textEdit_3.setHtml)
         font = QtGui.QFont()
@@ -311,7 +311,14 @@ class Aistant_UI_Agent:
             message_content_total += '\n\n'
         
         # 最终文本输出到面板
-        self.aistant_ui_display_txt_output_exec(message_content_total)
+        self.aistant_ui_display_txt_output_emit(message_content_total)
+
+    def aistant_chat_textedit_set_txt(self, txt_out):
+        self.ui.textEdit.clear()
+        self.ui.textEdit_3.setText(txt_out)
+        textedit_bar = self.ui.textEdit_3.verticalScrollBar()
+        textedit_bar.setValue(textedit_bar.maximum())
+        print("aistant_chat_textedit_set_txt: ", textedit_bar.maximum())
 
     def aistant_chat_update_statusbar(self, content):
         self.aistant_ui_update_statusbar_txt(content)
@@ -674,7 +681,7 @@ class Aistant_UI_Agent:
     def aistant_ui_get_input_textedit_exec(self):
         return self.ui.textEdit.toPlainText()
 
-    def aistant_ui_display_txt_output_exec(self, txt_display):
+    def aistant_ui_display_txt_output_emit(self, txt_display):
         # self.ui.textEdit_3.setText(txt_display)
         # html = markdown.markdown(txt_display)
         self.textBrower_writer.write_to_display_widget(txt_display)
