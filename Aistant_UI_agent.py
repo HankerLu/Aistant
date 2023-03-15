@@ -133,6 +133,10 @@ class Aistant_UI_Agent:
         # 设置角色变更更新回调
         self.ui.comboBox_3.currentIndexChanged.connect(self.aistant_change_role_exec)
 
+#多轮对话设定
+        self.multi_chat_enable = True
+        self.ui.checkBox.setChecked(self.multi_chat_enable)
+        self.ui.checkBox.stateChanged.connect(self.aistant_chat_multi_talk_enable) 
 
 #编辑器
         self.aistant_editor_changesSaved = True
@@ -178,7 +182,12 @@ class Aistant_UI_Agent:
         
         self.core_threa_run_tick = 0
 #======================================================================#
-
+    def aistant_chat_multi_talk_enable(self, state):
+        if state:
+            self.multi_chat_enable = True
+        else:
+            self.multi_chat_enable = False
+        print("aistant_chat_multi_talk_enable: ",self.multi_chat_enable, state)
 
     def chat_core_thread_exec(self):
         print("chat bot start chat_core_thread_exec.")
@@ -198,7 +207,7 @@ class Aistant_UI_Agent:
                     continue
                 self.aistant_chat_history_messages.append(response_content) # 新增 completion
                 self.ui_output_update()
-                # print(response.choices[0]['message'])
+
                 self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_IDLE)
 
     def get_openai_req_status_str(self):
@@ -223,15 +232,37 @@ class Aistant_UI_Agent:
     def openai_chat_completion_api_req(self):
         print(openai.api_key, ' ', self.aistant_current_model_name)
         try:
+            prompt_text = self.aistant_ui_get_input_textedit_exec()
+            print("---prompt_text: %s"%prompt_text)
+            # if prompt_text == '' or prompt_text == '\r' or prompt_text == '\n' or prompt_text == '\r\n':
+            if prompt_text == '':
+                # print("chat_core_button_submit_exec-Empty send prompt message.")
+                self.aistant_chat_update_statusbar("发送消息为空")
+                return 
+            user_question = {"role": "user", "content": ""}
+            user_question['content'] = prompt_text
+            print("chat_core_button_submit_exec--", prompt_text) 
+            self.aistant_chat_history_messages.append(user_question) # 新增 
+
             if self.aistant_current_model_type == 'Chat':
+                print("self.multi_chat_enable: ", self.multi_chat_enable, (self.multi_chat_enable == 2))
+                if self.multi_chat_enable:
+                    print("self.multi_chat_enable == True")
+                    prompt_in_msg = self.aistant_chat_history_messages
+                else:
+                    print("self.multi_chat_enable == False")
+                    prompt_in_msg = []
+                    prompt_in_msg.append(self.aistant_role_setting)
+                    prompt_in_msg.append(user_question)
+                
                 response = openai.ChatCompletion.create(
                 model = self.aistant_current_model_name,
-                messages = self.aistant_chat_history_messages
+                messages = prompt_in_msg
                 )
                 return response.choices[0]['message']
             elif self.aistant_current_model_type == 'Complete':
                 print("openai_chat_completion_api_req.Text Complete request.")
-                prompt_in = self.aistant_ui_get_input_textedit_exec() + '\n'
+                prompt_in = prompt_text + '\n'
                 response = openai.Completion.create(
                 model = self.aistant_current_model_name,
                 prompt = prompt_in,
@@ -288,24 +319,6 @@ class Aistant_UI_Agent:
 #callback release
 # 发送消息
     def chat_core_button_submit_exec(self):
-        prompt_text = self.aistant_ui_get_input_textedit_exec()
-        print("---prompt_text: %s"%prompt_text)
-        # if prompt_text == '' or prompt_text == '\r' or prompt_text == '\n' or prompt_text == '\r\n':
-        if prompt_text == '':
-            # print("chat_core_button_submit_exec-Empty send prompt message.")
-            self.aistant_chat_update_statusbar("发送消息为空")
-            return 
-        print("chat_core_button_submit_exec--", prompt_text)
-    #     prompt_text = self.ui_agent.aistant_ui_get_textEdit_input_text()
-        if self.aistant_current_model_type == 'Chat': 
-            user_question = {"role": "user", "content": ""}
-            user_question['content'] = prompt_text
-            self.aistant_chat_history_messages.append(user_question) # 新增 
-        elif self.aistant_current_model_type == 'Complete':
-            user_question = {"role": "user", "content": ""}
-            user_question['content'] = prompt_text
-            self.aistant_chat_history_messages.append(user_question) # 新增 
-
         if self.aistant_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_IDLE or self.aistant_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_TIMEOUT:
             self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_EXEC)
 
