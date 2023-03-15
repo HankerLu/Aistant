@@ -161,7 +161,15 @@ class Aistant_UI_Agent:
         # self.filename = ''
 
 #密钥设置
-        self.aistant_openai_api_key = openai.api_key
+        self.aistant_openai_api_key = self.ui.lineEdit.text()
+        if openai.api_key != '':
+            print("Initil api key. Value: ", openai.api_key)
+            self.aistant_openai_api_key = openai.api_key
+            #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
+        else:
+            print("Initil api key. Empty: ", openai.api_key)
+        self.aistant_api_keys_list = []
+
 
 #链接按钮
         self.aistant_ui_activate_button()
