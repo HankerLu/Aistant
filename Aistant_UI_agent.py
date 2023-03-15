@@ -550,7 +550,6 @@ class Aistant_UI_Agent:
         self.aistant_smart_menu.addAction(self.aistant_smart_action_summarize)
         
         # 菜单选项链接回调
-        self.aistant_smart_action_summarize.triggered.connect(self.aistant_smart_summarize_exec)
         self.aistant_smart_menu.setEnabled(True)
 
         self.aistant_smart_line_edit = QtWidgets.QLineEdit(self.ui.page)
@@ -559,9 +558,14 @@ class Aistant_UI_Agent:
 
         # openai后台线程
         self.aistant_query_thread = AistantThread(self.aistant_smart_query_block_exec)
-        self.aistant_query_thread.signal.connect(self.aistant_smart_query_update_ui)
+        self.aistant_query_thread.signal.connect(self.aistant_smart_update_ui_text)
+
+        self.aistant_summarize_thread = AistantThread(self.aistant_smart_summarize_block_exec)
+        self.aistant_summarize_thread.signal.connect(self.aistant_smart_update_ui_text)
+
         #Aition触发回调询问
         self.aistant_smart_action_query.triggered.connect(self.aistant_smart_query_trig)
+        self.aistant_smart_action_summarize.triggered.connect(self.aistant_smart_summarize_trig)
 # 弹出智能菜单
     def aistant_show_smart_menu(self):
         # 显示弹出菜单
@@ -574,28 +578,36 @@ class Aistant_UI_Agent:
 
 # 智能菜单->询问
     # 更新界面
-    def aistant_smart_query_update_ui(self, content):
-        # print("aistant_smart_query_update_ui: ", content)
+    def aistant_smart_update_ui_text(self, content):
+        # print("aistant_smart_update_ui_text: ", content)
         self.ui.textEdit_2.append(content)
 
     # 阻塞部分询问
-    def aistant_smart_query_block_exec(self):
-        cursor = self.ui.textEdit_2.textCursor()
-        selected_text = cursor.selectedText()
-        print("aistant_smart_query_block_exec before:", selected_text)
-        out_text = self.aistant_editor_openai_api_req(selected_text)
-        print("aistant_smart_query_block_exec after:", out_text)
-        return out_text
-
-    
+    # 智能询问
     def aistant_smart_query_trig(self):
         self.aistant_query_thread.start()
 
-# 智能菜单->总结
-    def aistant_smart_summarize_exec(self):
+    def aistant_smart_query_block_exec(self):
         cursor = self.ui.textEdit_2.textCursor()
         selected_text = cursor.selectedText()
-        print("aistant_smart_summarize_exec", selected_text)
+        selected_text = selected_text
+        print("aistant_smart_query_block_exec in:", selected_text)
+        out_text = self.aistant_editor_openai_api_req(selected_text)
+        return out_text
+
+    # 智能总结
+    def aistant_smart_summarize_trig(self):
+        self.aistant_summarize_thread.start()
+
+    def aistant_smart_summarize_block_exec(self):
+        cursor = self.ui.textEdit_2.textCursor()
+        selected_text = cursor.selectedText()
+        selected_text = '请总结以下内容:' + selected_text
+        print("aistant_smart_query_block_exec in:", selected_text)
+        out_text = self.aistant_editor_openai_api_req(selected_text)
+        return out_text
+
+# 智能菜单->总结
 
 # 调用 OPENAI API
     def aistant_editor_openai_api_req(self, prompt_in):
