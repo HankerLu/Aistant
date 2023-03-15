@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import Aistant_UI
 # import Aistant_chat_tab_UI
 import sys
-from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtCore import QObject, pyqtSignal,QThread
 from PyQt5.QtWidgets import QFileDialog, QShortcut
 from PyQt5.QtGui import QTextCharFormat, QColor
 from PyQt5.Qt import Qt
@@ -31,12 +31,25 @@ class Writer(QObject):
     def write_to_display_widget(self, text):
         self.write_signal.emit(text)
 
+class AistantThread(QThread):
+    # 定义一个信号，用于在线程中发射信号
+    signal = pyqtSignal(str)
+    def __init__(self, handle, parent=None):
+        super(AistantThread, self).__init__(parent)
+        self.run_handle = handle
+    
+    def run(self):
+        # 在线程中执行长时间操作
+        if self.run_handle != None:
+            print("AistantThread:run_handle")
+            ret = self.run_handle()
+            self.signal.emit(ret)
+
 # class Aistant_Chat_UI_Tab_Agent(QtWidgets.QWidget):
 #     def __init__(self, parent=None):
 #         super().__init__(parent)
 #         self.ui = Aistant_chat_tab_UI.Ui_Form()
 #         self.ui.setupUi(self)
-
 
 # 连接操作：
 # 1.连接前端和自定义槽函数
@@ -537,14 +550,18 @@ class Aistant_UI_Agent:
         self.aistant_smart_menu.addAction(self.aistant_smart_action_summarize)
         
         # 菜单选项链接回调
-        self.aistant_smart_action_query.triggered.connect(self.aistant_smart_query_exec)
         self.aistant_smart_action_summarize.triggered.connect(self.aistant_smart_summarize_exec)
         self.aistant_smart_menu.setEnabled(True)
 
         self.aistant_smart_line_edit = QtWidgets.QLineEdit(self.ui.page)
         self.aistant_smart_line_edit.hide()
         self.aistant_smart_line_edit.returnPressed.connect(self.aistant_smart_line_return_exec)
-    
+
+        # openai后台线程
+        self.aistant_query_thread = AistantThread(self.aistant_smart_query_block_exec)
+        self.aistant_query_thread.signal.connect(self.aistant_smart_query_update_ui)
+        #Aition触发回调询问
+        self.aistant_smart_action_query.triggered.connect(self.aistant_smart_query_trig)
 # 弹出智能菜单
     def aistant_show_smart_menu(self):
         # 显示弹出菜单
@@ -556,13 +573,23 @@ class Aistant_UI_Agent:
         self.aistant_smart_menu.exec_(cursor_position)
 
 # 智能菜单->询问
-    def aistant_smart_query_exec(self):
+    # 更新界面
+    def aistant_smart_query_update_ui(self, content):
+        # print("aistant_smart_query_update_ui: ", content)
+        self.ui.textEdit_2.append(content)
+
+    # 阻塞部分询问
+    def aistant_smart_query_block_exec(self):
         cursor = self.ui.textEdit_2.textCursor()
         selected_text = cursor.selectedText()
-        print("aistant_smart_query_exec: ", selected_text)
-        out_text = self.Aistant_editor_openai_api_req(selected_text)
-        out_text = '\n' + out_text
-        self.ui.textEdit_2.append(out_text)
+        print("aistant_smart_query_block_exec before:", selected_text)
+        out_text = self.aistant_editor_openai_api_req(selected_text)
+        print("aistant_smart_query_block_exec after:", out_text)
+        return out_text
+
+    
+    def aistant_smart_query_trig(self):
+        self.aistant_query_thread.start()
 
 # 智能菜单->总结
     def aistant_smart_summarize_exec(self):
@@ -571,10 +598,9 @@ class Aistant_UI_Agent:
         print("aistant_smart_summarize_exec", selected_text)
 
 # 调用 OPENAI API
-    def Aistant_editor_openai_api_req(self, prompt_in):
+    def aistant_editor_openai_api_req(self, prompt_in):
         # print(openai.api_key, ' ', self.aistant_current_model_name)
         try:
-            print("Aistant_editor_openai_api_req.Text Complete request.")
             response = openai.Completion.create(
             model = self.aistant_editor_ai_model,
             prompt = prompt_in,
@@ -586,7 +612,7 @@ class Aistant_UI_Agent:
             )
             return response.choices[0]["text"]
         except:
-            # print(response.choices[0]['text'])
+            print("aistant_editor_openai_api_req error")
             response = ''
             return response
 

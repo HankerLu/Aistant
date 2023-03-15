@@ -389,7 +389,7 @@ class Ui_MainWindow(object):
         self.toolBar_2.addAction(self.action_13)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidget.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -430,7 +430,7 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "对话模型"))
         self.label_2.setText(_translate("MainWindow", "默认角色设定（仅在gpt-3.5-turbo模型下有效）"))
         self.label_8.setText(_translate("MainWindow", "自定义角色描述（默认角色设定 为\'自定义\'时,将完全采用以下填充的内容）"))
-        self.pushButton_12.setText(_translate("MainWindow", "保存自定义内容"))
+        self.pushButton_12.setText(_translate("MainWindow", "更新自定义内容"))
         self.label_5.setText(_translate("MainWindow", "功能：多轮对话设置（设置多轮对话及最大记忆轮数）"))
         self.checkBox.setText(_translate("MainWindow", "开启多轮对话（仅在gpt-3.5-turbo模型下支持开启）"))
         self.label_6.setText(_translate("MainWindow", "多轮对话轮数"))
