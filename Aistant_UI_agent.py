@@ -150,7 +150,7 @@ class Aistant_UI_Agent:
 
         self.ui.spinBox.setValue(14)
 
-        self.aistant_editor_ai_model = 'text-davinci-003'
+        self.aistant_editor_ai_model = 'text-davinci-002'
 
         self.ui.textEdit_2.setStyleSheet("background-color: rgb(200, 255, 190);")
 
@@ -601,16 +601,26 @@ class Aistant_UI_Agent:
     def aistant_editor_openai_api_req(self, prompt_in):
         # print(openai.api_key, ' ', self.aistant_current_model_name)
         try:
-            response = openai.Completion.create(
-            model = self.aistant_editor_ai_model,
-            prompt = prompt_in,
-            temperature=0.7,
-            max_tokens=1000,
-            top_p=1,
-            frequency_penalty=0,
-            presence_penalty=0
+            # response = openai.Completion.create(
+            # model = self.aistant_editor_ai_model,
+            # prompt = prompt_in,
+            # temperature=0.7,
+            # max_tokens=1000,
+            # top_p=1,
+            # frequency_penalty=0,
+            # presence_penalty=0
+            # )
+            # return response.choices[0]["text"]
+            aistant_chat_total_messages = [{"role": "system", "content": "你是一名得力的助手"},]
+            user_question = {"role": "user", "content": ""}
+            user_question['content'] = prompt_in
+            aistant_chat_total_messages.append(user_question) # 新增 
+            response = openai.ChatCompletion.create(
+            model = 'gpt-3.5-turbo',
+            messages = aistant_chat_total_messages
             )
-            return response.choices[0]["text"]
+            return response.choices[0]['message']['content']
+            
         except:
             print("aistant_editor_openai_api_req error")
             response = ''

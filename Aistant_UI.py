@@ -389,7 +389,7 @@ class Ui_MainWindow(object):
         self.toolBar_2.addAction(self.action_13)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(2)
+        self.stackedWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
