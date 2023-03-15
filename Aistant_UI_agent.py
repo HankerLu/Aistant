@@ -533,7 +533,7 @@ class Aistant_UI_Agent:
 # ------editor 
     def aistant_editor_open_exec(self):
         print("aistant_editor_open_exec")
-        self.filename = QtWidgets.QFileDialog.getOpenFileName(self.ui.stackedWidget, 'Open File',".","(*.writer)")[0]
+        self.filename = QtWidgets.QFileDialog.getOpenFileName(self.ui.stackedWidget, 'Open File',".","(*.doc)")[0]
 
         if self.filename:
             with open(self.filename,"rt") as file:
@@ -549,8 +549,8 @@ class Aistant_UI_Agent:
         if self.filename:
             
             # Append extension if not there yet
-            if not self.filename.endswith(".writer"):
-              self.filename += ".writer"
+            if not self.filename.endswith(".doc"):
+              self.filename += ".doc"
             # if not self.filename.endswith(".txt"):
             #       self.filename += ".txt"
 
