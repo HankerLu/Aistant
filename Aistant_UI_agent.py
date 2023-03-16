@@ -105,10 +105,10 @@ class Aistant_UI_Agent:
 
         self.ui.action_5.triggered.connect(self.aistant_chat_editor_both_exec)
 #设置参数
-        self.chat_setting = Aistant_setting_manage.Aistant_Chat_Setting()
+        self.aistant_setting = Aistant_setting_manage.Aistant_Chat_Setting()
 
 #模型设置
-        self.aistant_model_list = self.chat_setting.aistant_chat_model_dict_get_config()
+        self.aistant_model_list = self.aistant_setting.aistant_chat_model_dict_get_config()
         for i in range(len(self.aistant_model_list)):
             c_m_txt = self.aistant_model_list[i]['company'] + '：' + self.aistant_model_list[i]['model']
             self.ui.comboBox_4.addItem(c_m_txt)
@@ -121,7 +121,7 @@ class Aistant_UI_Agent:
 
 
 #角色设置
-        role_descript_list = self.chat_setting.aistant_select_role_and_descript_get_config()
+        role_descript_list = self.aistant_setting.aistant_select_role_and_descript_get_config()
         for i in range(len(role_descript_list)):
             r_d_txt = role_descript_list[i]['role'] + '：' + role_descript_list[i]['brief']
             # new_r_d_item = Q
@@ -134,10 +134,14 @@ class Aistant_UI_Agent:
         # 设置角色变更更新回调
         self.ui.comboBox_3.currentIndexChanged.connect(self.aistant_change_role_exec)
 
+#----------------- 基于本地配置文件的UI当前状态更新 -------------------------#
 #多轮对话设定
-        self.multi_chat_enable = True
+        self.multi_chat_enable = self.aistant_setting.aistant_setting_get_multi_chat()
+        print("self.multi_chat_enable: ", self.multi_chat_enable)
         self.ui.checkBox.setChecked(self.multi_chat_enable)
         self.ui.checkBox.stateChanged.connect(self.aistant_chat_multi_talk_enable) 
+
+#-------------------------------------------------------------------------#
 
 #编辑器
         self.aistant_editor_changesSaved = True
@@ -197,6 +201,7 @@ class Aistant_UI_Agent:
         else:
             self.multi_chat_enable = False
         print("aistant_chat_multi_talk_enable: ",self.multi_chat_enable, state)
+        self.aistant_setting.aistant_setting_set_multi_chat(self.multi_chat_enable)
 
     def chat_core_thread_exec(self):
         print("chat bot start chat_core_thread_exec.")
@@ -523,8 +528,8 @@ class Aistant_UI_Agent:
 
     def aistant_role_content_update(self):
         self.current_role_descript_idx = self.ui.comboBox_3.currentIndex()
-        # self.role_name = self.chat_setting.aistant_select_role_and_descript_get_config()[self.current_role_descript_idx]['role']
-        self.role_brief_txt = self.chat_setting.aistant_select_role_and_descript_get_config()[self.current_role_descript_idx]['brief']
+        # self.role_name = self.aistant_setting.aistant_select_role_and_descript_get_config()[self.current_role_descript_idx]['role']
+        self.role_brief_txt = self.aistant_setting.aistant_select_role_and_descript_get_config()[self.current_role_descript_idx]['brief']
         self.role_custom_txt = self.ui.plainTextEdit.toPlainText()
         if self.role_brief_txt != '自定义':
             self.aistant_role_whole_content = self.role_brief_txt

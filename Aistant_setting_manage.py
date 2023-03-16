@@ -39,7 +39,7 @@ class Aistant_Chat_Setting():
         self.aistant_json_default_content  =   {'role': '助手',\
                                                 'company': 'openai',\
                                                 'model': 'gpt-3.5-turbo',\
-                                                'muitl_chat': 'True',\
+                                                'muitl_chat': True,\
                                                 'cur_key_value': '',
                                                 'his_key_value': [],\
                                                 }
@@ -78,6 +78,11 @@ class Aistant_Chat_Setting():
             json.dump(self.aistant_json_default_content, f)
         self.aistant_json_tempory_content = self.aistant_json_default_content
 
+    def aistant_update_local_file_with_content(self):
+        print("aistant_update_local_file_with_content")
+        with open(self.aistant_setting_file_path, 'w') as f:
+            json.dump(self.aistant_json_tempory_content, f)
+
 # --------------访问(读/写) local setting的相关方法 ------------------#
     def aistant_setting_get_role(self):
         try:
@@ -106,6 +111,16 @@ class Aistant_Chat_Setting():
         except:
             multi_chat_val = 'error'
         return multi_chat_val
+
+    def aistant_setting_set_multi_chat(self, multi_chat_state):
+        print("aistant_setting_set_multi_chat")
+        ret = 0
+        try:
+            self.aistant_json_tempory_content['muitl_chat'] = multi_chat_state
+            self.aistant_update_local_file_with_content()
+        except:
+            ret = -1 
+        return ret
 
     def aistant_setting_get_cur_key_val(self):
         try:
