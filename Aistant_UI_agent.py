@@ -34,6 +34,7 @@ class Writer(QObject):
 class AistantThread(QThread):
     # 定义一个信号，用于在线程中发射信号
     signal = pyqtSignal(str)
+    signal_int = pyqtSignal(int)
     def __init__(self, handle, parent=None):
         super(AistantThread, self).__init__(parent)
         self.run_handle = handle
@@ -44,6 +45,9 @@ class AistantThread(QThread):
             print("AistantThread:run_handle")
             ret = self.run_handle()
             self.signal.emit(ret)
+    
+    def signal_emit(self, val):
+        self.signal_int.emit(val)
 
 # class Aistant_Chat_UI_Tab_Agent(QtWidgets.QWidget):
 #     def __init__(self, parent=None):
@@ -159,12 +163,15 @@ class Aistant_UI_Agent:
             print("[Init]openai api key update: ", openai.api_key)
         else:
             print("[Init]openai api key empty.")
-        self.ui.pushButton_8.clicked.connect(self.asitant_update_and_save_key_exec)
+        self.ui.pushButton_8.clicked.connect(self.aistant_update_and_save_key_exec)
 
         self.aistant_api_his_keys_list = []
 
 #密钥检测进度条设置
         self.ui.progressBar.setValue(0)
+        self.aistant_test_key_thread = AistantThread(self.aistant_api_key_test_exec)
+        self.aistant_test_key_thread.signal_int.connect(self.aistant_api_key_test_update_progressbar)
+        self.ui.pushButton_9.clicked.connect(self.aistant_test_api_key_trig_exec)
 
 #-------------------------------------------------------------------------#
 
@@ -209,9 +216,29 @@ class Aistant_UI_Agent:
         
         self.core_threa_run_tick = 0
 #======================================================================#
+    def aistant_test_api_key_trig_exec(self):
+        print("aistant_test_api_key_trig_exec")
+        self.aistant_test_key_thread.start()
 
-    def asitant_update_and_save_key_exec(self):
-        print("asitant_update_and_save_key_exec")
+    def aistant_api_key_test_exec(self):
+        test_exec_cnt = 0
+        while True:
+            time.sleep(0.1)
+            print("aistant_api_key_test_exec: ", test_exec_cnt)
+            test_exec_cnt = test_exec_cnt + 1
+            self.aistant_test_key_thread.signal_emit(test_exec_cnt)
+            if test_exec_cnt == 100:
+                test_exec_cnt = 0
+                self.aistant_test_key_thread.signal_emit(test_exec_cnt)
+                break
+        print("aistant_api_key_test_exec done.")
+
+    def aistant_api_key_test_update_progressbar(self, val):
+        print("aistant_api_key_test_update_progressbar: ", val)
+        self.ui.progressBar.setValue(val)
+
+    def aistant_update_and_save_key_exec(self):
+        print("aistant_update_and_save_key_exec")
         self.aistant_openai_api_key = self.ui.lineEdit.text()
         if self.aistant_openai_api_key != '':
             openai.api_key = self.aistant_openai_api_key
@@ -675,8 +702,6 @@ class Aistant_UI_Agent:
         print("aistant_smart_query_block_exec in:", selected_text)
         out_text = self.aistant_editor_openai_api_req(selected_text)
         return out_text
-
-# 智能菜单->总结
 
 # 调用 OPENAI API
     def aistant_editor_openai_api_req(self, prompt_in):
