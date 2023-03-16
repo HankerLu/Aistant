@@ -163,6 +163,9 @@ class Aistant_UI_Agent:
 
         self.aistant_api_his_keys_list = []
 
+#密钥检测进度条设置
+        self.ui.progressBar.setValue(0)
+
 #-------------------------------------------------------------------------#
 
 #编辑器
