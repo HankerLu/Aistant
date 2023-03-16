@@ -243,6 +243,7 @@ class Aistant_UI_Agent:
                 print('-----response_content', response_content)
                 if response_content == '':  
                     self.aistant_chat_update_statusbar('API请求错误')
+                    self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_IDLE)
                     continue
                 self.aistant_chat_history_messages.append(response_content) # 新增 completion
                 self.ui_output_update()
