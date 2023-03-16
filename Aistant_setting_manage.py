@@ -37,8 +37,7 @@ class Aistant_Chat_Setting():
 
 # 默认的setting content设置
         self.aistant_json_default_content  =   {'role': 0,\
-                                                'company': 'openai',\
-                                                'model': 'gpt-3.5-turbo',\
+                                                'model': 0,\
                                                 'muitl_chat': True,\
                                                 'cur_key_value': '',
                                                 'his_key_value': [],\
@@ -51,6 +50,7 @@ class Aistant_Chat_Setting():
     def aistant_check_local_setting_and_update_cache(self):
         print("aistant_check_local_setting_and_update_cache")
         content = self.aistant_get_content_by_json_file()
+        # TODO: 增加必要的合法性检查
         if content == '':
             self.aistant_recover_with_default_setting()
             return
@@ -88,7 +88,7 @@ class Aistant_Chat_Setting():
         try:
             role_val = self.aistant_json_tempory_content['role']
         except:
-            role_val = 'error'
+            role_val = -1
         return role_val
 
     def aistant_setting_set_role_id(self, role_id):
@@ -104,19 +104,22 @@ class Aistant_Chat_Setting():
         self.aistant_update_local_file_with_content()
         return ret
 
-    def aistant_setting_get_company(self):
-        try:
-            company_val = self.aistant_json_tempory_content['company']
-        except:
-            company_val = 'error'
-        return company_val
-    
-    def aistant_setting_get_model(self):
+    def aistant_setting_get_model_id(self):
         try:
             model_val = self.aistant_json_tempory_content['model']
         except:
-            model_val = 'error'
+            model_val = -1
         return model_val
+    
+    def aistant_setting_set_model_id(self, model_id):
+        ret = 0
+        try:
+            self.aistant_json_tempory_content['model'] = model_id
+        except:
+            self.aistant_json_tempory_content['model'] = 0
+            ret = -1
+        self.aistant_update_local_file_with_content()
+        return ret
     
     def aistant_setting_get_multi_chat(self):
         try:

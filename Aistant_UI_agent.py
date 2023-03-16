@@ -107,27 +107,6 @@ class Aistant_UI_Agent:
 #设置参数
         self.aistant_setting = Aistant_setting_manage.Aistant_Chat_Setting()
 
-#模型设置
-        self.aistant_model_list = self.aistant_setting.aistant_chat_model_dict_get_config()
-        for i in range(len(self.aistant_model_list)):
-            c_m_txt = self.aistant_model_list[i]['company'] + '：' + self.aistant_model_list[i]['model']
-            self.ui.comboBox_4.addItem(c_m_txt)
-
-        self.aistant_current_model_idx = self.ui.comboBox_4.currentIndex()
-        self.aistant_current_model_name = self.aistant_model_list[self.aistant_current_model_idx]['model']
-        self.aistant_current_model_type = self.aistant_model_list[self.aistant_current_model_idx]['type']
-        print("model name and type: ", self.aistant_current_model_type, self.aistant_current_model_name)
-        self.ui.comboBox_4.currentIndexChanged.connect(self.aistant_change_model_exec)
-
-
-#角色设置
-        # self.ui.comboBox_3.setCurrentIndex(0)
-        # self.current_role_descript_idx = len(role_descript_list) - self.ui.comboBox_3.currentIndex()
-        # ("self.current_role_descript_idx", self.current_role_descript_idx)
-        # self.current_role_descript_idx = 0
-        # 设置角色变更更新回调
-        
-
 #----------------- 基于本地配置文件的UI当前状态更新 -------------------------#
 #角色设定(基于本地配置)
         role_descript_list = self.aistant_setting.aistant_select_role_and_descript_get_config()
@@ -144,6 +123,26 @@ class Aistant_UI_Agent:
             self.ui.comboBox_3.addItem(r_d_txt)
         self.ui.comboBox_3.setCurrentIndex(self.current_role_descript_idx)
         self.ui.comboBox_3.currentIndexChanged.connect(self.aistant_change_role_exec)
+
+#模型设定(基于本地配置)
+
+        self.aistant_model_list = self.aistant_setting.aistant_chat_model_dict_get_config()
+        for i in range(len(self.aistant_model_list)):
+            c_m_txt = self.aistant_model_list[i]['company'] + '：' + self.aistant_model_list[i]['model']
+            self.ui.comboBox_4.addItem(c_m_txt)
+
+        model_id = self.aistant_setting.aistant_setting_get_model_id()
+        if model_id != -1:
+            self.aistant_current_model_idx = model_id
+        else:
+            self.aistant_current_model_idx = 0 
+
+        self.aistant_current_model_name = self.aistant_model_list[self.aistant_current_model_idx]['model']
+        self.aistant_current_model_type = self.aistant_model_list[self.aistant_current_model_idx]['type']
+        print("model name and type: ", self.aistant_current_model_type, self.aistant_current_model_name)
+
+        self.ui.comboBox_4.setCurrentIndex(self.aistant_current_model_idx)
+        self.ui.comboBox_4.currentIndexChanged.connect(self.aistant_change_model_exec)
 
 #多轮对话设定(基于本地配置)
         self.multi_chat_enable = self.aistant_setting.aistant_setting_get_multi_chat()
@@ -513,6 +512,7 @@ class Aistant_UI_Agent:
         self.aistant_current_model_type = self.aistant_model_list[self.aistant_current_model_idx]['type']
         print("aistant_change_model_exec: ", self.aistant_current_model_idx, ' ',self.aistant_current_model_name, ' ',self.aistant_current_model_type)
         self.aistant_chat_history_messages = [self.aistant_role_setting,]
+        self.aistant_setting.aistant_setting_set_model_id(self.aistant_current_model_idx)
 
 # 更新角色回调
     def aistant_change_role_exec(self, role_idx):
