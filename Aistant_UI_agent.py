@@ -121,26 +121,35 @@ class Aistant_UI_Agent:
 
 
 #角色设置
-        role_descript_list = self.aistant_setting.aistant_select_role_and_descript_get_config()
-        for i in range(len(role_descript_list)):
-            r_d_txt = role_descript_list[i]['role'] + '：' + role_descript_list[i]['brief']
-            # new_r_d_item = Q
-            self.ui.comboBox_3.addItem(r_d_txt)
-
         # self.ui.comboBox_3.setCurrentIndex(0)
         # self.current_role_descript_idx = len(role_descript_list) - self.ui.comboBox_3.currentIndex()
         # ("self.current_role_descript_idx", self.current_role_descript_idx)
         # self.current_role_descript_idx = 0
         # 设置角色变更更新回调
-        self.ui.comboBox_3.currentIndexChanged.connect(self.aistant_change_role_exec)
+        
 
 #----------------- 基于本地配置文件的UI当前状态更新 -------------------------#
-#多轮对话设定
+#角色设定(基于本地配置)
+        role_descript_list = self.aistant_setting.aistant_select_role_and_descript_get_config()
+        role_id = self.aistant_setting.aistant_setting_get_role_id()
+        if role_id != -1:
+            self.current_role_descript_idx = role_id
+        else:
+            print("role id error.")
+            self.current_role_descript_idx = 0
+        print("role_id: ", self.current_role_descript_idx)
+        for i in range(len(role_descript_list)):
+            r_d_txt = role_descript_list[i]['role'] + '：' + role_descript_list[i]['brief']
+            # new_r_d_item = Q
+            self.ui.comboBox_3.addItem(r_d_txt)
+        self.ui.comboBox_3.setCurrentIndex(self.current_role_descript_idx)
+        self.ui.comboBox_3.currentIndexChanged.connect(self.aistant_change_role_exec)
+
+#多轮对话设定(基于本地配置)
         self.multi_chat_enable = self.aistant_setting.aistant_setting_get_multi_chat()
         print("self.multi_chat_enable: ", self.multi_chat_enable)
         self.ui.checkBox.setChecked(self.multi_chat_enable)
         self.ui.checkBox.stateChanged.connect(self.aistant_chat_multi_talk_enable) 
-
 #-------------------------------------------------------------------------#
 
 #编辑器
@@ -515,6 +524,8 @@ class Aistant_UI_Agent:
             self.aistant_chat_history_messages[0] = self.aistant_role_setting
         # 更新问答输出面板
         self.ui_output_update()
+        # 更新配置文件
+        self.aistant_setting.aistant_setting_set_role_id(role_idx)
 
 # 保存'自定义'角色回调
     def aistant_save_role_custom_exec(self):

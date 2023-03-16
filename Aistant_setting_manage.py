@@ -36,7 +36,7 @@ class Aistant_Chat_Setting():
         ]
 
 # 默认的setting content设置
-        self.aistant_json_default_content  =   {'role': '助手',\
+        self.aistant_json_default_content  =   {'role': 0,\
                                                 'company': 'openai',\
                                                 'model': 'gpt-3.5-turbo',\
                                                 'muitl_chat': True,\
@@ -84,12 +84,25 @@ class Aistant_Chat_Setting():
             json.dump(self.aistant_json_tempory_content, f)
 
 # --------------访问(读/写) local setting的相关方法 ------------------#
-    def aistant_setting_get_role(self):
+    def aistant_setting_get_role_id(self):
         try:
             role_val = self.aistant_json_tempory_content['role']
         except:
             role_val = 'error'
         return role_val
+
+    def aistant_setting_set_role_id(self, role_id):
+        print("aistant_setting_set_role_id")
+        ret = 0
+        try:
+            self.aistant_json_tempory_content['role'] = role_id
+            # self.aistant_update_local_file_with_content()
+        except:
+            self.aistant_json_tempory_content['role'] = 0
+            # self.aistant_update_local_file_with_content()
+            ret = -1
+        self.aistant_update_local_file_with_content()
+        return ret
 
     def aistant_setting_get_company(self):
         try:
@@ -117,9 +130,10 @@ class Aistant_Chat_Setting():
         ret = 0
         try:
             self.aistant_json_tempory_content['muitl_chat'] = multi_chat_state
-            self.aistant_update_local_file_with_content()
         except:
+            self.aistant_json_tempory_content['muitl_chat'] = True
             ret = -1 
+        self.aistant_update_local_file_with_content()
         return ret
 
     def aistant_setting_get_cur_key_val(self):
