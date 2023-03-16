@@ -1,8 +1,12 @@
 
+import json
+import os
 
 class Aistant_Chat_Setting():
     def __init__(self):
         print("Aistant_Setting init.")
+
+#UI选项补全元素管理
         self.chat_model_dict = [
         {'company':'openai', 'model':'gpt-3.5-turbo', 'type': 'Chat'},
         {'company':'openai', 'model':'text-davinci-003', 'type': 'Complete'},
@@ -31,29 +35,101 @@ class Aistant_Chat_Setting():
          'brief':'自定义'},
         ]
 
-        self.multi_round_chat_config = True
+# 默认的setting content设置
+        self.aistant_json_default_content  =   {'role': '助手',\
+                                                'company': 'openai',\
+                                                'model': 'gpt-3.5-turbo',\
+                                                'muitl_chat': 'True',\
+                                                'cur_key_value': '',
+                                                'his_key_value': [],\
+                                                }
+#本地保存管理
+        self.aistant_setting_file_path = 'setting.json'
+        self.aistant_check_local_setting_and_update_cache()
 
-# 设置对话角色及描述
-    # def aistant_select_role_and_descript_set_config(self, role_descript_dict):
-    #     print("Aistant select role and descript set config.")
-    #     self.role_default_config_dict = role_descript_dict
+    # 软件启动时，检查并在必要时更新 setting 文件
+    def aistant_check_local_setting_and_update_cache(self):
+        print("aistant_check_local_setting_and_update_cache")
+        content = self.aistant_get_content_by_json_file()
+        if content == '':
+            self.aistant_recover_with_default_setting()
+            return
+        self.aistant_json_tempory_content = content
 
+    # 获取 settin.json的content内容
+    def aistant_get_content_by_json_file(self):
+        print("aistant_get_content_by_json_file")
+        content = ''
+        if os.path.isfile(self.aistant_setting_file_path):
+            print("配置存在")
+            with open(self.aistant_setting_file_path, 'r') as f:
+                try:
+                    content = json.load(f)
+                except ValueError as e:
+                    print("配置不合法，将setting.json恢复为默认配置")
+        else:
+            print("配置不存在，将setting.json恢复为默认配置")
+        return content
+
+    # 将setting.json 恢复为软件内部的默认配置
+    def aistant_recover_with_default_setting(self):
+        print("aistant_recover_with_default_setting")
+        with open(self.aistant_setting_file_path, 'w') as f:
+            json.dump(self.aistant_json_default_content, f)
+        self.aistant_json_tempory_content = self.aistant_json_default_content
+
+# --------------访问(读/写) local setting的相关方法 ------------------#
+    def aistant_setting_get_role(self):
+        try:
+            role_val = self.aistant_json_tempory_content['role']
+        except:
+            role_val = 'error'
+        return role_val
+
+    def aistant_setting_get_company(self):
+        try:
+            company_val = self.aistant_json_tempory_content['company']
+        except:
+            company_val = 'error'
+        return company_val
+    
+    def aistant_setting_get_model(self):
+        try:
+            model_val = self.aistant_json_tempory_content['model']
+        except:
+            model_val = 'error'
+        return model_val
+    
+    def aistant_setting_get_multi_chat(self):
+        try:
+            multi_chat_val = self.aistant_json_tempory_content['muitl_chat']
+        except:
+            multi_chat_val = 'error'
+        return multi_chat_val
+
+    def aistant_setting_get_cur_key_val(self):
+        try:
+            cur_key_val = self.aistant_json_tempory_content['cur_key_value']
+        except:
+            cur_key_val = 'error'
+        return cur_key_val
+    
+    def aistant_setting_get_his_key_val(self):
+        try:
+            his_key_val = self.aistant_json_tempory_content['his_key_value']
+        except:
+            his_key_val = 'error'
+        return his_key_val
+
+# --------------------------- UI元素补全 ---------------------------#
+# 获取对话角色及描述UI补全
     def aistant_select_role_and_descript_get_config(self):
         return self.role_default_config_dict
 
-# 设置多轮对话模式
-    def aistant_multi_round_chat_set_config(self, enable):
-        print("Aistant multi round set config")
-        self.multi_round_chat_config = enable
-
-    def aistant_multi_round_chat_get_config(self):
-        return self.multi_round_chat_config
-
 # 设置对话模型
-    # def aistant_chat_model_dict_set_config(self, model_dict):
-    #     self.chat_model_dict = model_dict
-
     def aistant_chat_model_dict_get_config(self):
         return self.chat_model_dict
 
-# 设置密钥
+if __name__ == "__main__":
+    print("test aistant setting manage")
+    aistant_setting = Aistant_Chat_Setting()

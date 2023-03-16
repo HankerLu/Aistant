@@ -35,3 +35,11 @@ print(f"Database user: {user}")
 print(f"Database password: {password}")
 print(f"Log errors: {log_errors}")
 print(f"Show warnings: {show_warnings}")
+
+
+# config.set('openai_api_key', '')
+# with open('config.ini', 'w') as f:
+#     config.write(f)
+# # 读取配置文件
+# config = configparser.ConfigParser()
+# config.read('config.ini')
