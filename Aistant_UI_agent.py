@@ -56,7 +56,7 @@ class AistantThread(QThread):
 # 2.自定义槽函数
 class Aistant_UI_Agent:
     def __init__(self):
-        print(" Aistant UI agent init.")
+        print("Aistant UI agent init.")
         app = QtWidgets.QApplication(sys.argv)
         MainWindow = QtWidgets.QMainWindow()
         ui = Aistant_UI.Ui_MainWindow()
@@ -149,6 +149,20 @@ class Aistant_UI_Agent:
         print("self.multi_chat_enable: ", self.multi_chat_enable)
         self.ui.checkBox.setChecked(self.multi_chat_enable)
         self.ui.checkBox.stateChanged.connect(self.aistant_chat_multi_talk_enable) 
+
+#密钥设置
+        self.aistant_openai_api_key = self.aistant_setting.aistant_setting_get_cur_key_val()
+        
+        if self.aistant_openai_api_key != '':
+            openai.api_key = self.aistant_openai_api_key
+            self.ui.lineEdit.setText(openai.api_key)
+            print("[Init]openai api key update: ", openai.api_key)
+        else:
+            print("[Init]openai api key empty.")
+        self.ui.pushButton_8.clicked.connect(self.asitant_update_and_save_key_exec)
+
+        self.aistant_api_his_keys_list = []
+
 #-------------------------------------------------------------------------#
 
 #编辑器
@@ -173,17 +187,6 @@ class Aistant_UI_Agent:
 
         # self.filename = ''
 
-#密钥设置
-        self.aistant_openai_api_key = self.ui.lineEdit.text()
-        if openai.api_key != '':
-            print("Initil api key. Value: ", openai.api_key)
-            self.aistant_openai_api_key = openai.api_key
-            #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
-        else:
-            print("Initil api key. Empty: ", openai.api_key)
-        self.aistant_api_keys_list = []
-
-
 #链接按钮
         self.aistant_ui_activate_button()
 
@@ -203,6 +206,17 @@ class Aistant_UI_Agent:
         
         self.core_threa_run_tick = 0
 #======================================================================#
+
+    def asitant_update_and_save_key_exec(self):
+        print("asitant_update_and_save_key_exec")
+        self.aistant_openai_api_key = self.ui.lineEdit.text()
+        if self.aistant_openai_api_key != '':
+            openai.api_key = self.aistant_openai_api_key
+            print("[Init]openai api key update: ", openai.api_key)
+            self.aistant_setting.aistant_setting_set_cur_key_val(openai.api_key)
+        else:
+            print("[Init]openai api key empty.")
+
     def aistant_chat_multi_talk_enable(self, state):
         if state:
             self.multi_chat_enable = True

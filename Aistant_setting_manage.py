@@ -37,10 +37,11 @@ class Aistant_Chat_Setting():
 
 # 默认的setting content设置
         self.aistant_json_default_content  =   {'role': 0,\
-                                                'model': 0,\
-                                                'muitl_chat': True,\
+                                                'model': 0,
+                                                'muitl_chat': True,
+                                                'custom_role': '',
                                                 'cur_key_value': '',
-                                                'his_key_value': [],\
+                                                'his_key_value': [],
                                                 }
 #本地保存管理
         self.aistant_setting_file_path = 'setting.json'
@@ -50,7 +51,7 @@ class Aistant_Chat_Setting():
     def aistant_check_local_setting_and_update_cache(self):
         print("aistant_check_local_setting_and_update_cache")
         content = self.aistant_get_content_by_json_file()
-        # TODO: 增加必要的合法性检查
+        # TODO: 增加必要的合法性检查, 比如key少的情况下，需要与默认配置进行合并补全
         if content == '':
             self.aistant_recover_with_default_setting()
             return
@@ -145,6 +146,18 @@ class Aistant_Chat_Setting():
         except:
             cur_key_val = 'error'
         return cur_key_val
+    
+    def aistant_setting_set_cur_key_val(self, key_val):
+        ret = 0
+        try:
+            print("aistant_setting_set_cur_key_val: ", key_val)
+            self.aistant_json_tempory_content['cur_key_value'] = key_val
+        except:
+            print("aistant_setting_set_cur_key_val. Empty.")
+            self.aistant_json_tempory_content['cur_key_value'] = ''
+            ret = -1
+        self.aistant_update_local_file_with_content()
+        return ret
     
     def aistant_setting_get_his_key_val(self):
         try:
