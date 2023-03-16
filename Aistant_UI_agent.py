@@ -169,10 +169,16 @@ class Aistant_UI_Agent:
 
 #密钥检测进度条设置
         self.ui.progressBar.setValue(0)
-        self.aistant_test_key_thread = AistantThread(self.aistant_api_key_test_exec)
-        self.aistant_test_key_thread.signal_int.connect(self.aistant_api_key_test_update_progressbar)
-        self.ui.pushButton_9.clicked.connect(self.aistant_test_api_key_trig_exec)
+        self.aistant_test_key_count_thread = AistantThread(self.aistant_api_key_test_exec)
+        self.aistant_test_key_count_thread.signal_int.connect(self.aistant_api_key_test_update_progressbar)
 
+        self.aistant_test_key_main_thread = AistantThread(self.aistant_api_key_test_block_exec)
+        self.aistant_test_key_main_thread.signal.connect(self.ui.label_14.setText)
+
+        self.ui.pushButton_9.clicked.connect(self.aistant_test_api_key_trig_exec)
+        self.aistant_api_key_test_status = 0
+        self.test_exec_cnt = 0
+        self.test_api_key_val = ''
 #-------------------------------------------------------------------------#
 
 #编辑器
@@ -218,23 +224,57 @@ class Aistant_UI_Agent:
 #======================================================================#
     def aistant_test_api_key_trig_exec(self):
         print("aistant_test_api_key_trig_exec")
-        self.aistant_test_key_thread.start()
+        self.test_api_key_val = self.ui.lineEdit_4.text()
+        if self.test_api_key_val == '':
+            self.ui.label_14.setText("密钥为空，请输入有效密钥")
+            return
+        self.ui.label_14.setText("密钥测试中...")
+        self.aistant_test_key_count_thread.start()
+        self.aistant_test_key_main_thread.start()
 
     def aistant_api_key_test_exec(self):
-        test_exec_cnt = 0
+        self.test_exec_cnt = 0
         while True:
-            time.sleep(0.1)
-            print("aistant_api_key_test_exec: ", test_exec_cnt)
-            test_exec_cnt = test_exec_cnt + 1
-            self.aistant_test_key_thread.signal_emit(test_exec_cnt)
-            if test_exec_cnt == 100:
-                test_exec_cnt = 0
-                self.aistant_test_key_thread.signal_emit(test_exec_cnt)
+            time.sleep(0.2)
+            print("aistant_api_key_test_exec: ", self.test_exec_cnt)
+            if self.test_exec_cnt < 99:
+                self.test_exec_cnt = self.test_exec_cnt + 1
+            self.aistant_test_key_count_thread.signal_emit(self.test_exec_cnt)
+            if self.aistant_api_key_test_status != 0:
+                self.aistant_test_key_count_thread.signal_emit(100)
+                self.test_exec_cnt = 0
+                self.aistant_api_key_test_status = 0
                 break
+
         print("aistant_api_key_test_exec done.")
 
+    def aistant_api_key_test_block_exec(self):
+        print("aistant_api_key_test_block_exec")
+        ret = ''
+        api_key_origin = openai.api_key 
+        openai.api_key = self.test_api_key_val
+        try:
+            aistant_chat_total_messages = [{"role": "system", "content": "你是一名得力的助手"},]
+            user_question = {"role": "user", "content": ""}
+            user_question['content'] = '在吗'
+            aistant_chat_total_messages.append(user_question) # 新增 
+            response = openai.ChatCompletion.create(
+            model = 'gpt-3.5-turbo',
+            messages = aistant_chat_total_messages
+            )
+            self.aistant_api_key_test_status = 1
+            ret = '密钥测试ok'
+            
+        except:
+            print("aistant_editor_openai_api_req error")
+            self.aistant_api_key_test_status = -1
+            response = ''
+            ret = '密钥测试失败'
+        openai.api_key = api_key_origin
+        return ret
+
     def aistant_api_key_test_update_progressbar(self, val):
-        print("aistant_api_key_test_update_progressbar: ", val)
+        # print("aistant_api_key_test_update_progressbar: ", val)
         self.ui.progressBar.setValue(val)
 
     def aistant_update_and_save_key_exec(self):
