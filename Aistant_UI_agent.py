@@ -42,8 +42,8 @@ class AistantThread(QThread):
     def run(self):
         # 在线程中执行长时间操作
         if self.run_handle != None:
-            print("AistantThread:run_handle")
             ret = self.run_handle()
+            print("AistantThread:run_handle. RET: ", ret)
             self.signal.emit(ret)
     
     def signal_emit(self, val):
@@ -694,10 +694,10 @@ class Aistant_UI_Agent:
 
         # openai后台线程
         self.aistant_query_thread = AistantThread(self.aistant_smart_query_block_exec)
-        self.aistant_query_thread.signal.connect(self.aistant_smart_update_ui_text)
+        self.aistant_query_thread.signal.connect(self.aistant_smart_query_update_ui_text)
 
         self.aistant_summarize_thread = AistantThread(self.aistant_smart_summarize_block_exec)
-        self.aistant_summarize_thread.signal.connect(self.aistant_smart_update_ui_text)
+        self.aistant_summarize_thread.signal.connect(self.aistant_smart_summarize_update_ui_text)
 
         #Aition触发回调询问
         self.aistant_smart_action_query.triggered.connect(self.aistant_smart_query_trig)
@@ -714,8 +714,12 @@ class Aistant_UI_Agent:
 
 # 智能菜单->询问
     # 更新界面
-    def aistant_smart_update_ui_text(self, content):
-        # print("aistant_smart_update_ui_text: ", content)
+    def aistant_smart_query_update_ui_text(self, content):
+        print("aistant_smart_query_update_ui_text.")
+        self.ui.textEdit_2.append(content)
+
+    def aistant_smart_summarize_update_ui_text(self, content):
+        print("aistant_smart_summarize_update_ui_text.")
         self.ui.textEdit_2.append(content)
 
     # 阻塞部分询问
