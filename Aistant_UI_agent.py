@@ -188,14 +188,19 @@ class Aistant_UI_Agent:
         self.ui.action_13.triggered.connect(self.aistant_editor_find_exec)
         self.ui.action_14.triggered.connect(self.aistant_editor_open_exec)
         # fontBox = QtWidgets.QFontComboBox(self)
-        self.ui.fontComboBox.currentFontChanged.connect(lambda font: self.ui.textEdit_2.setCurrentFont(font))
+        # self.ui.fontComboBox.currentFontChanged.connect(lambda font: self.ui.textEdit_2.setCurrentFont(font))
+        self.ui.fontComboBox.currentFontChanged.connect(self.aistant_test_editor_change_font)
+        self.ui.textEdit_2.setCurrentFont(self.ui.fontComboBox.currentFont())
 
         # Will display " pt" after each value
         self.ui.spinBox.setSuffix(" pt")
 
-        self.ui.spinBox.valueChanged.connect(lambda size: self.ui.textEdit_2.setFontPointSize(size))
-
+        # self.ui.spinBox.valueChanged.connect(lambda size: self.ui.textEdit_2.setFontPointSize(size))
+        self.ui.spinBox.valueChanged.connect(self.aistant_test_editor_change_size)
         self.ui.spinBox.setValue(14)
+
+        self.ui.textEdit_2.cursorPositionChanged.connect(self.aistant_cursor_change_event)
+        # self.ui.textEdit_2.currentCharFormatChanged.connect(self.aistant_format_change_event)
 
         self.aistant_editor_ai_model = 'text-davinci-003'
 
@@ -222,6 +227,27 @@ class Aistant_UI_Agent:
         
         self.core_threa_run_tick = 0
 #======================================================================#
+    def aistant_test_editor_change_font(self, font):
+        print("aistant_test_editor_change_font: ", font)
+        self.ui.textEdit_2.setCurrentFont(font)
+
+    def aistant_test_editor_change_size(self, size):
+        print("aistant_test_editor_change_size: ", size)
+        self.ui.textEdit_2.setFontPointSize(size)
+    
+    def aistant_cursor_change_event(self):
+        # print("aistant_cursor_change_event....")
+        cursor = self.ui.textEdit_2.textCursor()
+        if cursor.position() == 0 and cursor.hasSelection() == False:
+            print("光标回到了起点")
+            self.ui.textEdit_2.setCurrentFont(self.ui.fontComboBox.currentFont())
+            self.ui.textEdit_2.setFontPointSize(self.ui.spinBox.value())
+
+    def aistant_format_change_event(self, format):
+        print("aistant_format_change_event")
+        self.ui.textEdit_2.setCurrentFont(self.ui.fontComboBox.currentFont())
+        self.ui.textEdit_2.setFontPointSize(self.ui.spinBox.value())
+
     def aistant_test_api_key_trig_exec(self):
         print("aistant_test_api_key_trig_exec")
         self.test_api_key_val = self.ui.lineEdit_4.text()
