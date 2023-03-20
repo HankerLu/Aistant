@@ -390,7 +390,8 @@ class Aistant_UI_Agent:
                 
                 response = openai.ChatCompletion.create(
                 model = self.aistant_current_model_name,
-                messages = prompt_in_msg
+                messages = prompt_in_msg,
+                temperature = 0.1
                 )
                 return response.choices[0]['message']
             elif self.aistant_current_model_type == 'Complete':
@@ -798,7 +799,8 @@ class Aistant_UI_Agent:
             aistant_chat_total_messages.append(user_question) # 新增 
             response = openai.ChatCompletion.create(
             model = 'gpt-3.5-turbo',
-            messages = aistant_chat_total_messages
+            messages = aistant_chat_total_messages,
+            temperature = 0.1
             )
             return response.choices[0]['message']['content']
             

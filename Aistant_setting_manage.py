@@ -9,6 +9,7 @@ class Aistant_Chat_Setting():
 #UI选项补全元素管理
         self.chat_model_dict = [
         {'company':'openai', 'model':'gpt-3.5-turbo', 'type': 'Chat'},
+        {'company':'openai', 'model':'gpt-3.5-turbo-0301', 'type': 'Chat'},
         {'company':'openai', 'model':'text-davinci-003', 'type': 'Complete'},
         {'company':'openai', 'model':'text-curie-001', 'type': 'Complete'},
         {'company':'openai', 'model':'text-babbage-001', 'type': 'Complete'},
