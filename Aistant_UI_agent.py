@@ -197,7 +197,7 @@ class Aistant_UI_Agent:
 
         self.ui.spinBox.setValue(14)
 
-        self.aistant_editor_ai_model = 'text-davinci-002'
+        self.aistant_editor_ai_model = 'text-davinci-003'
 
         self.ui.textEdit_2.setStyleSheet("background-color: rgb(200, 255, 190);")
 
@@ -729,6 +729,7 @@ class Aistant_UI_Agent:
         selected_text = selected_text
         print("aistant_smart_query_block_exec in:", selected_text)
         out_text = self.aistant_editor_openai_api_req(selected_text)
+        print("aistant_smart_query_block_exec out.")
         return out_text
 
     # 智能总结
@@ -739,8 +740,9 @@ class Aistant_UI_Agent:
         cursor = self.ui.textEdit_2.textCursor()
         selected_text = cursor.selectedText()
         selected_text = '请总结以下内容:' + selected_text
-        print("aistant_smart_query_block_exec in:", selected_text)
+        print("aistant_smart_summarize_block_exec in:", selected_text)
         out_text = self.aistant_editor_openai_api_req(selected_text)
+        print("aistant_smart_summarize_block_exec out.")
         return out_text
 
 # 调用 OPENAI API
@@ -749,6 +751,7 @@ class Aistant_UI_Agent:
         try:
             # response = openai.Completion.create(
             # model = self.aistant_editor_ai_model,
+            # # model = 'curie',
             # prompt = prompt_in,
             # temperature=0.7,
             # max_tokens=1000,
@@ -757,6 +760,8 @@ class Aistant_UI_Agent:
             # presence_penalty=0
             # )
             # return response.choices[0]["text"]
+
+            # time.sleep(0.1)
             aistant_chat_total_messages = [{"role": "system", "content": "你是一名得力的助手"},]
             user_question = {"role": "user", "content": ""}
             user_question['content'] = prompt_in
