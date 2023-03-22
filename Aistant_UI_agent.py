@@ -9,7 +9,6 @@ from PyQt5.Qt import Qt
 import Aistant_setting_manage
 
 import Aistant_editor_find
-
 import openai
 from enum import Enum
 import threading
