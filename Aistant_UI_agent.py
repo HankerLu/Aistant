@@ -74,6 +74,8 @@ class Aistant_UI_Agent:
         self.ui.action_10.triggered.connect(self.action_chat_setting_exec)
         self.ui.action_8.triggered.connect(self.action_chat_help_exec)
 
+        # self.mainwin.setStyleSheet("background-color: rgb(230,255,255);")
+
         self.textBrower_writer = Writer()
         self.textBrower_writer.write_signal.connect(self.aistant_chat_textedit_set_txt)
         # self.textBrower_writer.write_signal.connect(self.ui.textEdit_3.setMarkdown)
@@ -370,7 +372,7 @@ class Aistant_UI_Agent:
             if prompt_text == '':
                 # print("chat_core_button_submit_exec-Empty send prompt message.")
                 self.aistant_chat_update_statusbar("发送消息为空")
-                return 
+                return ''
             user_question = {"role": "user", "content": ""}
             user_question['content'] = prompt_text
             print("chat_core_button_submit_exec--", prompt_text) 
