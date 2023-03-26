@@ -17,9 +17,7 @@ load_widget.move(500, 300)
 load_widget.show()
 
 import Aistant_UI
-# import Aistant_chat_tab_UI
 import Aistant_setting_manage
-
 import Aistant_editor_find
 import openai
 from enum import Enum
@@ -139,7 +137,7 @@ class Aistant_UI_Agent:
         else:
             logging.info("role id error.")
             self.current_role_descript_idx = 0
-        logging.info("role_id: ", self.current_role_descript_idx)
+        print("role_id: ", self.current_role_descript_idx)
         for i in range(len(role_descript_list)):
             r_d_txt = role_descript_list[i]['role'] + '：' + role_descript_list[i]['brief']
             # new_r_d_item = Q
@@ -698,8 +696,6 @@ class Aistant_UI_Agent:
             self.aistant_role_whole_content = self.role_custom_txt
         self.aistant_role_setting = {"role": "system", "content": self.aistant_role_whole_content}
 
-
-
 # ------editor 
     def aistant_editor_open_exec(self):
         logging.info("aistant_editor_open_exec")
@@ -825,9 +821,9 @@ class Aistant_UI_Agent:
     def aistant_smart_query_block_exec(self):
         cursor = self.ui.textEdit_2.textCursor()
         selected_text = cursor.selectedText()
-        selected_text = selected_text
+        selected_text = selected_text + '\n' + '请对以上内容进行回答。'
         print("aistant_smart_query_block_exec in:", selected_text)
-        out_text = self.aistant_editor_openai_api_req(selected_text)
+        out_text = self.aistant_editor_openai_api_req('query', selected_text)
         print("aistant_smart_query_block_exec out.")
         return out_text
 
@@ -840,7 +836,7 @@ class Aistant_UI_Agent:
         selected_text = cursor.selectedText()
         selected_text = selected_text + '\n' + '请对以上内容进行总结。'
         print("aistant_smart_summarize_block_exec in:", selected_text)
-        out_text = self.aistant_editor_openai_api_req(selected_text)
+        out_text = self.aistant_editor_openai_api_req('other', selected_text)
         print("aistant_smart_summarize_block_exec out.")
         return out_text
     
@@ -853,7 +849,7 @@ class Aistant_UI_Agent:
         selected_text = cursor.selectedText()
         selected_text = selected_text + '\n' + '请对以上内容进行解释。'
         print("aistant_smart_explain_block_exec in:", selected_text)
-        out_text = self.aistant_editor_openai_api_req(selected_text)
+        out_text = self.aistant_editor_openai_api_req('other', selected_text)
         print("aistant_smart_explain_block_exec out.")
         return out_text
     
@@ -866,7 +862,7 @@ class Aistant_UI_Agent:
         selected_text = cursor.selectedText()
         selected_text = selected_text + '\n' + '请续写以上内容。'
         print("aistant_smart_continue_block_exec in:", selected_text)
-        out_text = self.aistant_editor_openai_api_req(selected_text)
+        out_text = self.aistant_editor_openai_api_req('other', selected_text)
         print("aistant_smart_continue_block_exec out.")
         return out_text
     
@@ -879,12 +875,12 @@ class Aistant_UI_Agent:
         selected_text = cursor.selectedText()
         selected_text = selected_text + '\n' + '请对以上内容进行改进。'
         print("aistant_smart_improve_block_exec in:", selected_text)
-        out_text = self.aistant_editor_openai_api_req(selected_text)
+        out_text = self.aistant_editor_openai_api_req('other', selected_text)
         print("aistant_smart_improve_block_exec out.")
         return out_text
 
 # 调用 OPENAI API
-    def aistant_editor_openai_api_req(self, prompt_in):
+    def aistant_editor_openai_api_req(self, requester, prompt_in):
         # print(openai.api_key, ' ', self.aistant_current_model_name)
         try:
             # response = openai.Completion.create(
@@ -900,7 +896,10 @@ class Aistant_UI_Agent:
             # return response.choices[0]["text"]
 
             # time.sleep(0.1)
-            aistant_chat_total_messages = [{"role": "system", "content": "你是一名得力的助手"},]
+            if requester == 'query':
+                aistant_chat_total_messages = [{"role": "system", "content": "你是一名得力的助手。"},]
+            else:
+                aistant_chat_total_messages = [{"role": "system", "content": "你是一位文案编辑或文案优化专家。我将会向你提供各种文本,并在最后向你提出'回答''总结''改进''解释''续写'等方面的要求，你需要以文本内容为基础，结合我的请求，对文本内容进行相关的操作。"},]
             user_question = {"role": "user", "content": ""}
             user_question['content'] = prompt_in
             aistant_chat_total_messages.append(user_question) # 新增 
