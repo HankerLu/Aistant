@@ -166,7 +166,6 @@ class Aistant_UI_Agent:
         
         if self.aistant_openai_api_key != '':
             openai.api_key = self.aistant_openai_api_key
-            self.ui.lineEdit.setText(openai.api_key)
             print("[Init]openai api key update: ", openai.api_key)
         else:
             logging.info("[Init]openai api key empty.")
@@ -221,6 +220,21 @@ class Aistant_UI_Agent:
 #智能菜单
         self.aistant_init_smart_menu()
 
+#密钥框加密显示
+        self.ui.lineEdit.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.ui.lineEdit.setPlaceholderText("请输入密码")
+
+        self.ui.lineEdit_4.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.ui.lineEdit_4.setPlaceholderText("请输入密码")
+
+        self.aistant_password_mode = True
+        self.ui.lineEdit.setText(openai.api_key)
+        self.ui.pushButton_11.clicked.connect(self.aistant_encrypt_toggle)
+        # self.current_input_origin_key = openai.api_key
+        # crypt_key = self.encrypt_string(openai.api_key)
+        # self.ui.lineEdit.textChanged.connect(self.aistant_default_key_crypt_handle)
+        # self.ui.lineEdit_4.textChanged.connect(self.aistant_test_key_crypt_handle)
+
 #=========================对话后端=======================================#
         print(" Aistant Aistant_Chat_Server init.")
         self.aistant_role_content_update()
@@ -234,6 +248,18 @@ class Aistant_UI_Agent:
         
         self.core_threa_run_tick = 0
 #======================================================================#
+    def aistant_encrypt_toggle(self):
+        if self.aistant_password_mode == True:
+            self.ui.lineEdit.setEchoMode(QtWidgets.QLineEdit.Normal)
+            self.ui.lineEdit_4.setEchoMode(QtWidgets.QLineEdit.Normal)
+            self.ui.pushButton_11.setText('隐藏密钥')
+            self.aistant_password_mode = False
+        else:
+            self.ui.lineEdit.setEchoMode(QtWidgets.QLineEdit.Password)
+            self.ui.lineEdit_4.setEchoMode(QtWidgets.QLineEdit.Password)
+            self.ui.pushButton_11.setText('显示密钥')
+            self.aistant_password_mode = True
+
     def aistant_test_editor_change_font(self, font):
         print("aistant_test_editor_change_font: ", font)
         self.ui.textEdit_2.setCurrentFont(font)
