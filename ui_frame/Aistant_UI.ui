@@ -267,7 +267,7 @@
                <x>0</x>
                <y>0</y>
                <width>1252</width>
-               <height>1011</height>
+               <height>989</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -575,8 +575,8 @@
    <widget class="QMenu" name="menu_2">
     <property name="geometry">
      <rect>
-      <x>309</x>
-      <y>129</y>
+      <x>446</x>
+      <y>157</y>
       <width>120</width>
       <height>72</height>
      </rect>
@@ -613,6 +613,8 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="action_6"/>
+   <addaction name="separator"/>
    <addaction name="action_4"/>
    <addaction name="action_5"/>
    <addaction name="action_7"/>
@@ -630,10 +632,11 @@
    <addaction name="action_14"/>
    <addaction name="action_12"/>
    <addaction name="action_13"/>
+   <addaction name="separator"/>
   </widget>
   <action name="action_6">
    <property name="text">
-    <string>密钥管理</string>
+    <string>新建</string>
    </property>
   </action>
   <action name="action_8">

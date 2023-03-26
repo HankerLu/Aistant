@@ -76,17 +76,17 @@ class AistantThread(QThread):
 class Aistant_UI_Agent:
     def __init__(self):
         logging.info("Aistant UI agent init.")
-        app = QtWidgets.QApplication(sys.argv)
+        # app = QtWidgets.QApplication(sys.argv)
         MainWindow = QtWidgets.QMainWindow()
         ui = Aistant_UI.Ui_MainWindow()
         ui.setupUi(MainWindow)
         
         self.mainwin = MainWindow
-        self.app = app
+        # self.app = app
         self.ui = ui 
 
         self.ui.action_chatgpt.triggered.connect(self.action_chatgpt_slot_exec)
-        # self.ui.action_6.triggered.connect(self.action_key_manage_exec)
+        self.ui.action_6.triggered.connect(self.create_new_mainwindow_exec)
         self.ui.action_10.triggered.connect(self.action_chat_setting_exec)
         self.ui.action_8.triggered.connect(self.action_chat_help_exec)
 
@@ -258,6 +258,11 @@ class Aistant_UI_Agent:
         
         self.core_threa_run_tick = 0
 #======================================================================#
+    #析构函数
+    def __del__(self):
+        print(" Aistant Aistant_Chat_Server del.")
+        self.thread_chat_completion_do_run = False
+
     def aistant_encrypt_toggle(self):
         if self.aistant_password_mode == True:
             self.ui.lineEdit.setEchoMode(QtWidgets.QLineEdit.Normal)
@@ -614,6 +619,14 @@ class Aistant_UI_Agent:
         print("aistant_ui_get_textEdit", self.ui.textEdit.toPlainText())
         return self.ui.textEdit.toPlainText()
 
+#创建一个新的进程
+    def create_new_mainwindow_exec(self):
+        print("create_new_mainwindow_exec")
+        self.new_app = QtWidgets.QApplication(sys.argv)
+        new_aistant_ui = Aistant_UI_Agent()
+        new_aistant_ui.Aistant_UI_show()
+
+
 # 保存所有设置
     def aistant_ui_recover_default_setting(self):
         print("aistant_ui_recover_default_setting")
@@ -632,7 +645,6 @@ class Aistant_UI_Agent:
 
     def Aistant_UI_show(self):
         self.mainwin.show()
-        sys.exit(self.app.exec_())
 
     def aistant_keyPressEvent(self, event):
         print("key pressed trig.", event)
@@ -976,5 +988,11 @@ class Aistant_UI_Agent:
 
 
 if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
     aistant_ui = Aistant_UI_Agent()
     aistant_ui.Aistant_UI_show()
+    # #如果aistant_ui中的new_app存在，就调用quit()方法
+    # if hasattr(aistant_ui, 'new_app'):
+    #     aistant_ui.new_app.quit()
+    sys.exit(app.exec_())
+    
