@@ -1,7 +1,6 @@
 
 import json
 import os
-
 class Aistant_Chat_Setting():
     def __init__(self):
         print("Aistant_Setting init.")
@@ -50,7 +49,6 @@ class Aistant_Chat_Setting():
 
     # 软件启动时，检查并在必要时更新 setting 文件
     def aistant_check_local_setting_and_update_cache(self):
-        print("aistant_check_local_setting_and_update_cache")
         content = self.aistant_get_content_by_json_file()
         # TODO: 增加必要的合法性检查, 比如key少的情况下，需要与默认配置进行合并补全
         if content == '':
@@ -60,7 +58,6 @@ class Aistant_Chat_Setting():
 
     # 获取 settin.json的content内容
     def aistant_get_content_by_json_file(self):
-        print("aistant_get_content_by_json_file")
         content = ''
         if os.path.isfile(self.aistant_setting_file_path):
             print("配置存在")
@@ -177,5 +174,5 @@ class Aistant_Chat_Setting():
         return self.chat_model_dict
 
 if __name__ == "__main__":
-    print("test aistant setting manage")
+    print("Aistant setting manage")
     aistant_setting = Aistant_Chat_Setting()

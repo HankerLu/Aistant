@@ -13,6 +13,11 @@ import openai
 from enum import Enum
 import threading
 import time
+import logging
+
+#将print和logging.info用宏作二选一操作
+
+logging.basicConfig(filename='aistant.log', level=logging.INFO)
 
 class OpenAIReqStatus(Enum):
     REQ_STATUS_IDLE = 0
@@ -42,6 +47,7 @@ class AistantThread(QThread):
         # 在线程中执行长时间操作
         if self.run_handle != None:
             ret = self.run_handle()
+            
             print("AistantThread:run_handle. RET: ", ret)
             self.signal.emit(ret)
     
@@ -59,7 +65,7 @@ class AistantThread(QThread):
 # 2.自定义槽函数
 class Aistant_UI_Agent:
     def __init__(self):
-        print("Aistant UI agent init.")
+        logging.info("Aistant UI agent init.")
         app = QtWidgets.QApplication(sys.argv)
         MainWindow = QtWidgets.QMainWindow()
         ui = Aistant_UI.Ui_MainWindow()
@@ -119,9 +125,9 @@ class Aistant_UI_Agent:
         if role_id != -1:
             self.current_role_descript_idx = role_id
         else:
-            print("role id error.")
+            logging.info("role id error.")
             self.current_role_descript_idx = 0
-        print("role_id: ", self.current_role_descript_idx)
+        logging.info("role_id: ", self.current_role_descript_idx)
         for i in range(len(role_descript_list)):
             r_d_txt = role_descript_list[i]['role'] + '：' + role_descript_list[i]['brief']
             # new_r_d_item = Q
@@ -163,7 +169,7 @@ class Aistant_UI_Agent:
             self.ui.lineEdit.setText(openai.api_key)
             print("[Init]openai api key update: ", openai.api_key)
         else:
-            print("[Init]openai api key empty.")
+            logging.info("[Init]openai api key empty.")
         self.ui.pushButton_8.clicked.connect(self.aistant_update_and_save_key_exec)
 
         self.aistant_api_his_keys_list = []
@@ -240,17 +246,17 @@ class Aistant_UI_Agent:
         # print("aistant_cursor_change_event....")
         cursor = self.ui.textEdit_2.textCursor()
         if cursor.position() == 0 and cursor.hasSelection() == False:
-            print("光标回到了起点")
+            logging.info("光标回到了起点")
             self.ui.textEdit_2.setCurrentFont(self.ui.fontComboBox.currentFont())
             self.ui.textEdit_2.setFontPointSize(self.ui.spinBox.value())
 
     def aistant_format_change_event(self, format):
-        print("aistant_format_change_event")
+        logging.info("aistant_format_change_event")
         self.ui.textEdit_2.setCurrentFont(self.ui.fontComboBox.currentFont())
         self.ui.textEdit_2.setFontPointSize(self.ui.spinBox.value())
 
     def aistant_test_api_key_trig_exec(self):
-        print("aistant_test_api_key_trig_exec")
+        logging.info("aistant_test_api_key_trig_exec")
         self.test_api_key_val = self.ui.lineEdit_4.text()
         if self.test_api_key_val == '':
             self.ui.label_14.setText("密钥为空，请输入有效密钥")
@@ -293,7 +299,7 @@ class Aistant_UI_Agent:
             ret = '密钥测试ok'
             
         except:
-            print("aistant_editor_openai_api_req error")
+            logging.info("aistant_editor_openai_api_req error")
             self.aistant_api_key_test_status = -1
             response = ''
             ret = '密钥测试失败'
@@ -312,7 +318,7 @@ class Aistant_UI_Agent:
             print("[Init]openai api key update: ", openai.api_key)
             self.aistant_setting.aistant_setting_set_cur_key_val(openai.api_key)
         else:
-            print("[Init]openai api key empty.")
+            logging.info("[Init]openai api key empty.")
 
     def aistant_chat_multi_talk_enable(self, state):
         if state:
@@ -323,7 +329,6 @@ class Aistant_UI_Agent:
         self.aistant_setting.aistant_setting_set_multi_chat(self.multi_chat_enable)
 
     def chat_core_thread_exec(self):
-        print("chat bot start chat_core_thread_exec.")
         while self.thread_chat_completion_do_run:
             time.sleep(0.1)
             self.core_threa_run_tick +=1
@@ -364,7 +369,6 @@ class Aistant_UI_Agent:
 
 # openai 请求接口
     def openai_chat_completion_api_req(self):
-        print(openai.api_key, ' ', self.aistant_current_model_name)
         try:
             prompt_text = self.aistant_ui_get_input_textedit_exec()
             print("---prompt_text: %s"%prompt_text)
@@ -381,10 +385,8 @@ class Aistant_UI_Agent:
             if self.aistant_current_model_type == 'Chat':
                 print("self.multi_chat_enable: ", self.multi_chat_enable, (self.multi_chat_enable == 2))
                 if self.multi_chat_enable:
-                    print("self.multi_chat_enable == True")
                     prompt_in_msg = self.aistant_chat_history_messages
                 else:
-                    print("self.multi_chat_enable == False")
                     prompt_in_msg = []
                     prompt_in_msg.append(self.aistant_role_setting)
                     prompt_in_msg.append(user_question)
@@ -396,7 +398,7 @@ class Aistant_UI_Agent:
                 )
                 return response.choices[0]['message']
             elif self.aistant_current_model_type == 'Complete':
-                print("openai_chat_completion_api_req.Text Complete request.")
+                logging.info("openai_chat_completion_api_req.Text Complete request.")
                 prompt_in = prompt_text + '\n'
                 response = openai.Completion.create(
                 model = self.aistant_current_model_name,
@@ -409,12 +411,11 @@ class Aistant_UI_Agent:
                 )
                 return response.choices[0]["text"]
             else:
-                print("openai_chat_completion_api_req.Unknow request type.")
+                logging.info("openai_chat_completion_api_req.Unknow request type.")
                 response = ''
                 return response
 
         except:
-            # print(response.choices[0]['message'])
             response = ''
             return response
 
@@ -465,22 +466,22 @@ class Aistant_UI_Agent:
             self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_EXEC)
 
     def chat_core_button_clear_exec(self):
-        print("chat core button clear.")
+        logging.info("chat core button clear.")
         # self.aistant_role_whole_content = self.role_brief_txt + self.role_custom_txt
         # self.aistant_role_setting = {"role": "system", "content": self.aistant_role_whole_content}
         self.aistant_chat_history_messages = [self.aistant_role_setting,]
         self.ui_output_update()
 
     def chat_core_button_cancel_exec(self):
-        print("chat core button cancel.")
+        logging.info("chat core button cancel.")
         self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_IDLE)
 
     def chat_core_button_save_exec(self):
-        print("chat core button save.")
+        logging.info("chat core button save.")
         self.aistant_ui_save_current_chat_exec()
 
     def chat_core_button_withdraw_exec(self):
-        print("set chat core withdraw.")
+        logging.info("set chat core withdraw.")
         if len(self.aistant_chat_history_messages) > 2:
             del self.aistant_chat_history_messages[-1]
             del self.aistant_chat_history_messages[-1]
@@ -494,7 +495,6 @@ class Aistant_UI_Agent:
 #-----对话和编辑窗口开关回调-----#
 #"仅写"回调
     def aistant_editor_only_exec(self):
-        print("chat_hide_chat_window")
         if self.aistant_chat_windows_show_status:
             self.aistant_hide_chat_window_widgets()
             self.aistant_chat_windows_show_status = False 
@@ -524,14 +524,12 @@ class Aistant_UI_Agent:
             self.aistant_chat_windows_show_status = True 
 
     def aistant_hide_edit_window_widgets(self):
-        print("aistant_chat_only_exec")
         self.ui.textEdit_2.setVisible(False)
         self.ui.toolBar_2.setVisible(False)
         self.ui.fontComboBox.setVisible(False)
         self.ui.spinBox.setVisible(False)
 
     def aistant_show_edit_window_widgets(self):
-        print("aistant_show_edit_window")
         self.ui.textEdit_2.setVisible(True)
         self.ui.toolBar_2.setVisible(True)
         self.ui.fontComboBox.setVisible(True)
@@ -642,7 +640,7 @@ class Aistant_UI_Agent:
 
 # 保存'自定义'角色回调
     def aistant_save_role_custom_exec(self):
-        print("aistant_save_role_custom_exec")
+        logging.info("aistant_save_role_custom_exec")
         self.aistant_role_content_update()
         # 更新历史信息
         if len(self.aistant_chat_history_messages) >= 1:
@@ -666,7 +664,7 @@ class Aistant_UI_Agent:
 
 # ------editor 
     def aistant_editor_open_exec(self):
-        print("aistant_editor_open_exec")
+        logging.info("aistant_editor_open_exec")
         self.filename = QtWidgets.QFileDialog.getOpenFileName(self.ui.stackedWidget, 'Open File',".","(*.doc)")[0]
 
         if self.filename:
@@ -674,7 +672,7 @@ class Aistant_UI_Agent:
                 self.ui.textEdit_2.setText(file.read())
     
     def aistant_editor_save_exec(self):
-        print("aistant_editor_save_exec")
+        logging.info("aistant_editor_save_exec")
         # Only open dialog if there is no filename yet
         #PYQT5 Returns a tuple in PyQt5, we only need the filename
         # if not self.filename:
@@ -697,7 +695,7 @@ class Aistant_UI_Agent:
             self.aistant_editor_changesSaved = True
 
     def aistant_editor_find_exec(self):
-        print("aistant_editor_find_exec")
+        logging.info("aistant_editor_find_exec")
         Aistant_editor_find.Find(self.ui.textEdit_2).show()
 
 # 编辑器智能菜单
@@ -734,7 +732,6 @@ class Aistant_UI_Agent:
     def aistant_show_smart_menu(self):
         # 显示弹出菜单
         # TODO: 前置触发条件，其他条件下直接过滤
-        print("aistant_show_smart_menu")
         cursor_x = self.ui.textEdit_2.cursorRect().left()
         cursor_y = self.ui.textEdit_2.cursorRect().bottom()
         cursor_position = self.ui.textEdit_2.mapToGlobal(QtCore.QPoint(cursor_x, cursor_y))
@@ -806,7 +803,7 @@ class Aistant_UI_Agent:
             return response.choices[0]['message']['content']
             
         except:
-            print("aistant_editor_openai_api_req error")
+            logging.info("aistant_editor_openai_api_req error")
             response = ''
             return response
 
