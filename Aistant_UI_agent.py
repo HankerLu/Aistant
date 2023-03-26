@@ -734,9 +734,15 @@ class Aistant_UI_Agent:
         self.aistant_smart_menu = QtWidgets.QMenu(self.ui.textEdit_2)
         self.aistant_smart_action_query = QtWidgets.QAction('询问', self.ui.textEdit_2)
         self.aistant_smart_action_summarize = QtWidgets.QAction('总结', self.ui.textEdit_2)
+        self.aistant_smart_action_explain = QtWidgets.QAction('解释', self.ui.textEdit_2)
+        self.aistant_smart_action_continue = QtWidgets.QAction('续写', self.ui.textEdit_2)
+        self.aistant_smart_action_improve = QtWidgets.QAction('改进', self.ui.textEdit_2)
+
         self.aistant_smart_menu.addAction(self.aistant_smart_action_query)
         self.aistant_smart_menu.addAction(self.aistant_smart_action_summarize)
-        
+        self.aistant_smart_menu.addAction(self.aistant_smart_action_explain)
+        self.aistant_smart_menu.addAction(self.aistant_smart_action_continue)
+        self.aistant_smart_menu.addAction(self.aistant_smart_action_improve)
         # 菜单选项链接回调
         self.aistant_smart_menu.setEnabled(True)
 
@@ -751,9 +757,23 @@ class Aistant_UI_Agent:
         self.aistant_summarize_thread = AistantThread(self.aistant_smart_summarize_block_exec)
         self.aistant_summarize_thread.signal.connect(self.aistant_smart_summarize_update_ui_text)
 
+        #基于上面的定义进行仿写
+        self.aistant_explain_thread = AistantThread(self.aistant_smart_explain_block_exec)
+        self.aistant_explain_thread.signal.connect(self.aistant_smart_explain_update_ui_text)
+
+        self.aistant_continue_thread = AistantThread(self.aistant_smart_continue_block_exec)
+        self.aistant_continue_thread.signal.connect(self.aistant_smart_continue_update_ui_text)
+
+        self.aistant_improve_thread = AistantThread(self.aistant_smart_improve_block_exec)
+        self.aistant_improve_thread.signal.connect(self.aistant_smart_improve_update_ui_text)
+
         #Aition触发回调询问
         self.aistant_smart_action_query.triggered.connect(self.aistant_smart_query_trig)
         self.aistant_smart_action_summarize.triggered.connect(self.aistant_smart_summarize_trig)
+
+        self.aistant_smart_action_explain.triggered.connect(self.aistant_smart_explain_trig)
+        self.aistant_smart_action_continue.triggered.connect(self.aistant_smart_continue_trig)
+        self.aistant_smart_action_improve.triggered.connect(self.aistant_smart_improve_trig)
 # 弹出智能菜单
     def aistant_show_smart_menu(self):
         # 显示弹出菜单
@@ -771,6 +791,18 @@ class Aistant_UI_Agent:
 
     def aistant_smart_summarize_update_ui_text(self, content):
         print("aistant_smart_summarize_update_ui_text.")
+        self.ui.textEdit_2.append(content)
+
+    def aistant_smart_explain_update_ui_text(self, content):
+        print("aistant_smart_explain_update_ui_text.")
+        self.ui.textEdit_2.append(content)
+
+    def aistant_smart_continue_update_ui_text(self, content):
+        print("aistant_smart_continue_update_ui_text.")
+        self.ui.textEdit_2.append(content)
+
+    def aistant_smart_improve_update_ui_text(self, content):
+        print("aistant_smart_improve_update_ui_text.")
         self.ui.textEdit_2.append(content)
 
     # 阻塞部分询问
@@ -794,10 +826,49 @@ class Aistant_UI_Agent:
     def aistant_smart_summarize_block_exec(self):
         cursor = self.ui.textEdit_2.textCursor()
         selected_text = cursor.selectedText()
-        selected_text = '请总结以下内容:' + selected_text
+        selected_text = selected_text + '\n' + '请对以上内容进行总结。'
         print("aistant_smart_summarize_block_exec in:", selected_text)
         out_text = self.aistant_editor_openai_api_req(selected_text)
         print("aistant_smart_summarize_block_exec out.")
+        return out_text
+    
+    # 智能解释
+    def aistant_smart_explain_trig(self):
+        self.aistant_explain_thread.start()
+
+    def aistant_smart_explain_block_exec(self):
+        cursor = self.ui.textEdit_2.textCursor()
+        selected_text = cursor.selectedText()
+        selected_text = selected_text + '\n' + '请对以上内容进行解释。'
+        print("aistant_smart_explain_block_exec in:", selected_text)
+        out_text = self.aistant_editor_openai_api_req(selected_text)
+        print("aistant_smart_explain_block_exec out.")
+        return out_text
+    
+    # 智能续写
+    def aistant_smart_continue_trig(self):
+        self.aistant_continue_thread.start()
+    
+    def aistant_smart_continue_block_exec(self):
+        cursor = self.ui.textEdit_2.textCursor()
+        selected_text = cursor.selectedText()
+        selected_text = selected_text + '\n' + '请续写以上内容。'
+        print("aistant_smart_continue_block_exec in:", selected_text)
+        out_text = self.aistant_editor_openai_api_req(selected_text)
+        print("aistant_smart_continue_block_exec out.")
+        return out_text
+    
+    # 智能改进
+    def aistant_smart_improve_trig(self):
+        self.aistant_improve_thread.start()
+
+    def aistant_smart_improve_block_exec(self):
+        cursor = self.ui.textEdit_2.textCursor()
+        selected_text = cursor.selectedText()
+        selected_text = selected_text + '\n' + '请对以上内容进行改进。'
+        print("aistant_smart_improve_block_exec in:", selected_text)
+        out_text = self.aistant_editor_openai_api_req(selected_text)
+        print("aistant_smart_improve_block_exec out.")
         return out_text
 
 # 调用 OPENAI API
