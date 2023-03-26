@@ -1,11 +1,23 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-import Aistant_UI
-# import Aistant_chat_tab_UI
-import sys
 from PyQt5.QtCore import QObject, pyqtSignal,QThread
 from PyQt5.QtWidgets import QFileDialog, QShortcut
 from PyQt5.QtGui import QTextCharFormat, QColor
 from PyQt5.Qt import Qt
+import sys
+#增加一个基于pyqt5的启动加载界面
+load_app = QtWidgets.QApplication(sys.argv)
+#启动加载图片为8666753_message_circle_chat_icon.ico
+load_widget = QtWidgets.QWidget()
+# load_widget.setWindowFlags(Qt.FramelessWindowHint)
+load_widget.setWindowOpacity(0.5)
+load_widget.setFixedSize(200, 200)
+load_widget.move(500, 300)
+# load_widget.setStyleSheet("background-image:url(./8666753_message_circle_chat_icon.ico);")#这句代码没有显示出来，不知道为什么
+# load_widget.setStyleSheet("background-image:url(./8666753_message_circle_chat_icon.ico);")
+load_widget.show()
+
+import Aistant_UI
+# import Aistant_chat_tab_UI
 import Aistant_setting_manage
 
 import Aistant_editor_find
@@ -15,7 +27,7 @@ import threading
 import time
 import logging
 
-#将print和logging.info用宏作二选一操作
+load_widget.hide()
 
 logging.basicConfig(filename='aistant.log', level=logging.INFO)
 
