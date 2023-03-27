@@ -577,6 +577,7 @@ class Aistant_UI_Agent:
 #========================================================================#
 
 #-----对话和编辑窗口开关回调-----#
+#将不存在的widget注释
 #"仅写"回调
     def aistant_editor_only_exec(self):
         if self.aistant_chat_windows_show_status:
@@ -621,23 +622,27 @@ class Aistant_UI_Agent:
 
     def aistant_hide_chat_window_widgets(self):
         self.ui.textEdit.setVisible(False)
+        self.ui.textEdit_3.setVisible(False)
         self.ui.pushButton_4.setVisible(False)
         self.ui.pushButton_5.setVisible(False)
-        self.ui.groupBox_2.setVisible(False)
-        self.ui.scrollArea.setVisible(False)
+        # self.ui.groupBox_2.setVisible(False)
+        # self.ui.scrollArea.setVisible(False)
         self.ui.pushButton.setVisible(False)
         self.ui.pushButton_6.setVisible(False)
         self.ui.pushButton_7.setVisible(False)
+        self.ui.pushButton_14.setVisible(False)
 
     def aistant_show_chat_window_widgets(self):
         self.ui.textEdit.setVisible(True)
+        self.ui.textEdit_3.setVisible(True)
         self.ui.pushButton_4.setVisible(True)
         self.ui.pushButton_5.setVisible(True)
-        self.ui.groupBox_2.setVisible(True)
-        self.ui.scrollArea.setVisible(True)
+        # self.ui.groupBox_2.setVisible(True)
+        # self.ui.scrollArea.setVisible(True)
         self.ui.pushButton.setVisible(True)
         self.ui.pushButton_6.setVisible(True)
         self.ui.pushButton_7.setVisible(True)
+        self.ui.pushButton_14.setVisible(True)
 
     def chat_page_button_submit(self):
         print("chat_page_button_submit", self.ui.textEdit.toPlainText())
