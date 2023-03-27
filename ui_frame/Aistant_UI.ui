@@ -25,7 +25,7 @@
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_19">
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_8">
+           <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="0,7,1">
             <item>
              <widget class="QLabel" name="label_9">
               <property name="font">
@@ -48,14 +48,14 @@
              </widget>
             </item>
             <item>
-             <widget class="QCheckBox" name="checkBox_2">
+             <widget class="QPushButton" name="pushButton_13">
               <property name="font">
                <font>
                 <pointsize>12</pointsize>
                </font>
               </property>
               <property name="text">
-               <string>自动生成主题</string>
+               <string>生成主题</string>
               </property>
              </widget>
             </item>
@@ -110,7 +110,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>619</width>
-                   <height>878</height>
+                   <height>876</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_18">
