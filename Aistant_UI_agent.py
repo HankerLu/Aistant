@@ -670,9 +670,12 @@ class Aistant_UI_Agent:
         new_aistant_ui.Aistant_UI_show()
 
 
-# 保存所有设置
+# 恢复默认设置
     def aistant_ui_recover_default_setting(self):
         print("aistant_ui_recover_default_setting")
+        self.aistant_setting.aistant_recover_with_default_setting()
+        self.ui.statusbar.showMessage("恢复默认设置成功, 重启软件生效！")
+
 
     def aistant_ui_activate_button(self):
         self.ui.pushButton_4.clicked.connect(self.chat_core_button_submit_exec)
