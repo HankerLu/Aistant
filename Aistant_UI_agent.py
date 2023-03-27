@@ -1,9 +1,11 @@
+# -*- coding: utf-8 -*-
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject, pyqtSignal,QThread
 from PyQt5.QtWidgets import QFileDialog, QShortcut
 from PyQt5.QtGui import QTextCharFormat, QColor
 from PyQt5.Qt import Qt
 import sys
+import json
 #增加一个基于pyqt5的启动加载界面
 load_app = QtWidgets.QApplication(sys.argv)
 #启动加载图片为8666753_message_circle_chat_icon.ico
@@ -510,11 +512,11 @@ class Aistant_UI_Agent:
             if self.aistant_current_model_type == 'Chat':
                 role_msg = 'Unknown'
                 if msg_cnt == 1:
-                    role_msg = '用户(设定)'
+                    role_msg = '-user(system setting)'
                 if msg['role'] == 'user':
-                    role_msg = '用户'
+                    role_msg = '-user'
                 elif msg['role'] == 'assistant':
-                    role_msg = 'chatGPT'
+                    role_msg = '-chatGPT'
                 msg_role_with_content = role_msg + ':\n' + msg['content']
                 message_content_total += msg_role_with_content
             elif self.aistant_current_model_type == 'Complete':
@@ -683,6 +685,7 @@ class Aistant_UI_Agent:
         self.ui.pushButton_2.clicked.connect(self.aistant_ui_recover_default_setting)
 
         self.ui.pushButton_12.clicked.connect(self.aistant_save_role_custom_exec)
+        self.ui.pushButton_14.clicked.connect(self.aistant_ui_load_current_chat_exec)
 
     def Aistant_UI_show(self):
         self.mainwin.show()
@@ -1005,8 +1008,56 @@ class Aistant_UI_Agent:
             return
         if filename:
             with open(filename, "w") as file:
-                file.write(self.ui.textEdit_3.toPlainText())
-
+                save_text = 'Aistant '+ 'model: ' + self.aistant_current_model_name + '\n' + self.ui.textEdit_3.toPlainText()
+                save_text = save_text + '\n' + '----------Aistant Origin----------' + '\n'
+                file.write(save_text)
+                # 将  self.aistant_chat_history_messages 转换为str，并且显示汉字
+                
+                #TypeError: dump() missing 1 required positional argument: 'fp'
+                #TypeError: write() argument must be str, not bytes
+                json.dump(self.aistant_chat_history_messages, file)
+                
+    #加载对话
+    def aistant_ui_load_current_chat_exec(self):
+        print("aistant_ui_load_current_chat_exec")
+        filename, _ = QFileDialog.getOpenFileName(self.ui.stackedWidget, "加载对话", "", "文本文件 (*.txt);;所有文件 (*)")
+        if filename == '':
+            print("load_conversation_name_input no file")
+            return
+        if filename:
+            with open(filename, "r") as file:
+                file_content = file.read() 
+                #检查file_content是否以 Aistant model 开头
+                if not file_content.startswith('Aistant model: '):
+                    print("load_conversation_name_input not Aistant model:")
+                    #通知statusbar
+                    self.aistant_ui_update_statusbar_txt("加载对话失败，文件格式不正确(只支持gpt-3.5-turbo或gpt-3.5-turbo-0301)")
+                    return
+                #获取第1行中 'Aistant model: '之后的内容
+                model_name = file_content.split('Aistant model: ', 1)[1].split('\n', 1)[0]
+                print('model_name:::' + model_name)
+                #获取 self.aistant_model_list 中的model_name对应的model_id
+                model_id = self.aistant_setting.aistant_chat_model_dict_get_idx_by_model(model_name)
+                if model_id == None:
+                    print("load_conversation_name_input model_name not found")
+                    #通知statusbar
+                    self.aistant_ui_update_statusbar_txt("加载对话失败，模型异常")
+                    return
+                self.aistant_current_model_idx = model_id
+                self.aistant_current_model_name = self.aistant_model_list[self.aistant_current_model_idx]['model']
+                self.aistant_current_model_type = self.aistant_model_list[self.aistant_current_model_idx]['type']
+                # print('model_id:::' + model_id)
+                print(self.aistant_current_model_name, self.aistant_current_model_type)
+                try:
+                    #提取 ----------Aistant Origin---------- 之后的内容,赋值给 str1
+                    str_load = file_content.split('----------Aistant Origin----------\n', 1)[1]
+                    # print("sss:::" + str_load)
+                    load_dict = json.loads(str_load)
+                    self.aistant_chat_history_messages = load_dict
+                    self.ui_output_update()     
+                except:
+                    print('load origin content exception')
+                    self.aistant_ui_update_statusbar_txt("加载对话失败，文件格式异常")
 # callback consume
     def aistant_ui_set_chat_submit_cb_ptr(self, chat_submit_cb):
         # print("aistant_ui_set_chat_submit_callback", chat_submit_cb)

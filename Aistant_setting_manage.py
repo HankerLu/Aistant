@@ -172,6 +172,12 @@ class Aistant_Chat_Setting():
 # 设置对话模型
     def aistant_chat_model_dict_get_config(self):
         return self.chat_model_dict
+    
+    def aistant_chat_model_dict_get_idx_by_model(self, model):
+        for idx, model_name in enumerate(self.chat_model_dict):
+            print(idx, model_name)
+            if model_name['model'] == model:
+                return idx
 
 if __name__ == "__main__":
     print("Aistant setting manage")

@@ -124,6 +124,13 @@
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_3">
                     <item>
+                     <widget class="QPushButton" name="pushButton_14">
+                      <property name="text">
+                       <string>加载对话</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
                      <widget class="QPushButton" name="pushButton_6">
                       <property name="text">
                        <string>保存对话</string>
@@ -267,7 +274,7 @@
                <x>0</x>
                <y>0</y>
                <width>1252</width>
-               <height>989</height>
+               <height>1011</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -636,7 +643,7 @@
   </widget>
   <action name="action_6">
    <property name="text">
-    <string>新建</string>
+    <string>新建窗口</string>
    </property>
   </action>
   <action name="action_8">
