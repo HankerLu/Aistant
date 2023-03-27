@@ -1,7 +1,7 @@
-import Aistant_UI_agent
+import Aistant_v33
 
 if __name__ == "__main__":
-    aistant_ui = Aistant_UI_agent.Aistant_UI_Agent()
+    aistant_ui = Aistant_v33.Aistant_UI_Agent()
     # aistant_chat_core = Aistant_func.Aistant_Chat_Server()
 
     # aistant_ui.aistant_ui_set_chat_submit_cb_ptr(aistant_chat_core.chat_core_button_submit_exec)
