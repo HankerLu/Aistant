@@ -1,0 +1,6 @@
+Aistant model: gpt-3.5-turbo
+-user(system setting): 我希望你能扮演一名得力的助手的角色。
+-user: 你好
+-chatGPT: 你好，有什么我可以帮助你的吗？
+----------Aistant Origin----------
+[{"role": "system", "content": "\u6211\u5e0c\u671b\u4f60\u80fd\u626e\u6f14\u4e00\u540d\u5f97\u529b\u7684\u52a9\u624b\u7684\u89d2\u8272\u3002"}, {"role": "user", "content": "\u4f60\u597d"}, {"role": "assistant", "content": "\u4f60\u597d\uff0c\u6709\u4ec0\u4e48\u6211\u53ef\u4ee5\u5e2e\u52a9\u4f60\u7684\u5417\uff1f"}]

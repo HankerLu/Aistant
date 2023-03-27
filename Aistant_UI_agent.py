@@ -536,6 +536,7 @@ class Aistant_UI_Agent:
     def aistant_chat_textedit_set_txt(self, txt_out):
         self.ui.textEdit.clear()
         self.ui.textEdit_3.setText(txt_out)
+        # self.ui.textEdit_3.setLineWrapMode(QtWidgets.QTextEdit.FixedPixelWidth)
         textedit_bar = self.ui.textEdit_3.verticalScrollBar()
         textedit_bar.setValue(textedit_bar.maximum())
         print("aistant_chat_textedit_set_txt: ", textedit_bar.maximum())
