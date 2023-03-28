@@ -879,7 +879,7 @@ class Aistant_UI_Agent:
 
     def aistant_smart_improve_update_ui_text(self, content):
         print("aistant_smart_improve_update_ui_text.")
-        self.ui.textEdit_2.append(content)
+        self.ui.textEdit_2.insertPlainText(content)
 
     # 阻塞部分询问
     # 智能询问
@@ -936,34 +936,45 @@ class Aistant_UI_Agent:
     
     # 智能改进
     def aistant_smart_improve_trig(self):
-        # self.aistant_improve_thread.start()
-        print("aistant_smart_improve_trig in.")
-        cursor = self.ui.textEdit_2.textCursor()
-        selected_text = cursor.selectedText()
-        selected_text = selected_text + '\n' + '请对以上内容进行改进。'
-        print("aistant_smart_improve_block_exec in:", selected_text)
-        self.aistant_stream_openai_api_req('other', selected_text)
-        # create variables to collect the stream of chunks
-        # collected_chunks = []
-        # collected_messages = []
-        # # iterate through the stream of events
-        # for chunk in self.chat_stream_res:
-        #     collected_chunks.append(chunk)  # save the event response
-        #     chunk_message = chunk['choices'][0]['delta']  # extract the message
-        #     collected_messages.append(chunk_message)  # save the message
-        #     self.ui.textEdit_2.append(chunk_message.get('content', ''))  
-        # # print the time delay and text received
-        # full_reply_content = ''.join([m.get('content', '') for m in collected_messages])
-        # print(f"Full conversation received: {full_reply_content}")
+        self.aistant_improve_thread.start()
+        # print("aistant_smart_improve_trig in.")
+        # cursor = self.ui.textEdit_2.textCursor()
+        # selected_text = cursor.selectedText()
+        # selected_text = selected_text + '\n' + '请对以上内容进行改进。'
+        # print("aistant_smart_improve_block_exec in:", selected_text)
+        # self.aistant_stream_openai_api_req('other', selected_text)
 
     def aistant_smart_improve_block_exec(self):
         cursor = self.ui.textEdit_2.textCursor()
         selected_text = cursor.selectedText()
         selected_text = selected_text + '\n' + '请对以上内容进行改进。'
         print("aistant_smart_improve_block_exec in:", selected_text)
-        out_text = self.aistant_editor_openai_api_req('other', selected_text)
+        # out_text = self.aistant_editor_openai_api_req('other', selected_text)
+        out_text = self.aistant_stream_openai_api_req('other', selected_text)
         print("aistant_smart_improve_block_exec out.")
+        if out_text == 'error':
+            return 'error'
+        for chunk in self.chat_stream_res:
+            chunk_message = chunk['choices'][0]['delta']  # extract the message
+            single_msg = chunk_message.get('content', '')
+            self.aistant_improve_thread.signal.emit(single_msg)
+            print('single_msg----:   ', single_msg)  
         return out_text
+
+
+    # def aistant_response_append_to_textedit(self):
+    #     for chunk in self.chat_stream_res:
+    #         chunk_message = chunk['choices'][0]['delta']
+    #         single_msg = chunk_message.get('content', '')
+    #         print('111111....----:   ',single_msg)
+    #         self.ui.textEdit_2.append(single_msg)
+    #         self.timer_count = self.timer_count + 1
+    #         if self.timer_count == 2:
+    #             self.timer.stop()
+    #             self.timer_count = 0
+    #             self.chat_stream_res = []
+    #             self.chat_stream_res_len = 0
+    #             print('timer stoped.')
 
     def aistant_stream_openai_api_req(self, requester, prompt_in):
         # print(openai.api_key, ' ', self.aistant_current_model_name)
@@ -996,28 +1007,33 @@ class Aistant_UI_Agent:
             temperature = 0.1,
             stream=True
             )
-            collected_chunks = []
-            collected_messages = []
-            # iterate through the stream of events
-            for chunk in self.chat_stream_res:
-                collected_chunks.append(chunk)  # save the event response
-                chunk_message = chunk['choices'][0]['delta']  # extract the message
-                collected_messages.append(chunk_message)  # save the message
-                single_msg = chunk_message.get('content', '')
-                # self.ui.textEdit_2.append(single_msg)
-                cursor = self.ui.textEdit_2.textCursor()
-                cursor.setPosition(len(self.ui.textEdit_2.toPlainText()))
-                cursor.insertText(single_msg)
-                cursor.setPosition(len(self.ui.textEdit_2.toPlainText()))
-                self.ui.textEdit_2.setTextCursor(cursor)
-                print('111111....----:   ',single_msg)
-            return 'ok'
+            #-----------------------------------#
+            # # iterate through the stream of events
+            # for chunk in self.chat_stream_res:
+            #     chunk_message = chunk['choices'][0]['delta']  # extract the message
+            #     single_msg = chunk_message.get('content', '')
+            #     self.ui.textEdit_2.insertPlainText(single_msg)
+            #     # cursor = self.ui.textEdit_2.textCursor()
+            #     # cursor.setPosition(len(self.ui.textEdit_2.toPlainText()))
+            #     # cursor.insertText(single_msg)
+            #     # cursor.setPosition(len(self.ui.textEdit_2.toPlainText()))
+            #     # self.ui.textEdit_2.setTextCursor(cursor)
+            #     print('single_msg----:   ', single_msg)           
+            #-----------------------------------#
+            # from PyQt5.QtCore import QTimer
+            # # self.chat_stream_res_len = len(self.chat_stream_res)
+            # # print('self.chat_stream_res_len: ', self.chat_stream_res_len)
+            # self.timer = QTimer()
+            # self.timer.timeout.connect(self.aistant_response_append_to_textedit)
+            # self.timer.start(1000)
+            # self.timer_count = 0
+            return ''
             
         except Exception as e:
             logging.info("aistant_editor_openai_api_req error")
             print("aistant_editor_openai_api_req error", e)
             response = ''
-            return 'error'
+            return 'error.'
 
 # 调用 OPENAI API
     def aistant_editor_openai_api_req(self, requester, prompt_in):
