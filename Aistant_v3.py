@@ -843,6 +843,12 @@ class Aistant_UI_Agent:
         self.aistant_improve_thread = AistantThread(self.aistant_smart_improve_block_exec)
         self.aistant_improve_thread.signal.connect(self.aistant_smart_improve_update_ui_text)
 
+        # self.aistant_stream_signal = pyqtSignal(str)
+        # self.aistant_stream_signal.connect(self.aistant_smart_stream_display_exec)
+
+        self.aistant_editor_writer = Writer()
+        self.aistant_editor_writer.write_signal.connect(self.aistant_smart_stream_display_exec)
+
         #Aition触发回调询问
         self.aistant_smart_action_query.triggered.connect(self.aistant_smart_query_trig)
         self.aistant_smart_action_summarize.triggered.connect(self.aistant_smart_summarize_trig)
@@ -879,7 +885,15 @@ class Aistant_UI_Agent:
 
     def aistant_smart_improve_update_ui_text(self, content):
         print("aistant_smart_improve_update_ui_text.")
-        self.ui.textEdit_2.insertPlainText(content)
+        self.ui.textEdit_2.append(content)
+    
+    def aistant_smart_stream_display_exec(self, content):
+        cursor = self.ui.textEdit_2.textCursor()
+        cursor.setPosition(len(self.ui.textEdit_2.toPlainText()))
+        cursor.insertText(content)
+        cursor.setPosition(len(self.ui.textEdit_2.toPlainText()))
+        self.ui.textEdit_2.setTextCursor(cursor)
+        # self.ui.textEdit_2.insertPlainText(content)
 
     # 阻塞部分询问
     # 智能询问
@@ -891,7 +905,7 @@ class Aistant_UI_Agent:
         selected_text = cursor.selectedText()
         selected_text = selected_text + '\n' + '请对以上内容进行回答。'
         print("aistant_smart_query_block_exec in:", selected_text)
-        out_text = self.aistant_editor_openai_api_req('query', selected_text)
+        out_text = self.aistant_stream_openai_api_req('query', selected_text)
         print("aistant_smart_query_block_exec out.")
         return out_text
 
@@ -904,7 +918,7 @@ class Aistant_UI_Agent:
         selected_text = cursor.selectedText()
         selected_text = selected_text + '\n' + '请对以上内容进行总结。'
         print("aistant_smart_summarize_block_exec in:", selected_text)
-        out_text = self.aistant_editor_openai_api_req('other', selected_text)
+        out_text = self.aistant_stream_openai_api_req('other', selected_text)
         print("aistant_smart_summarize_block_exec out.")
         return out_text
     
@@ -917,7 +931,7 @@ class Aistant_UI_Agent:
         selected_text = cursor.selectedText()
         selected_text = selected_text + '\n' + '请对以上内容进行解释。'
         print("aistant_smart_explain_block_exec in:", selected_text)
-        out_text = self.aistant_editor_openai_api_req('other', selected_text)
+        out_text = self.aistant_stream_openai_api_req('other', selected_text)
         print("aistant_smart_explain_block_exec out.")
         return out_text
     
@@ -930,7 +944,7 @@ class Aistant_UI_Agent:
         selected_text = cursor.selectedText()
         selected_text = selected_text + '\n' + '请续写以上内容。'
         print("aistant_smart_continue_block_exec in:", selected_text)
-        out_text = self.aistant_editor_openai_api_req('other', selected_text)
+        out_text = self.aistant_stream_openai_api_req('other', selected_text)
         print("aistant_smart_continue_block_exec out.")
         return out_text
     
@@ -951,14 +965,7 @@ class Aistant_UI_Agent:
         print("aistant_smart_improve_block_exec in:", selected_text)
         # out_text = self.aistant_editor_openai_api_req('other', selected_text)
         out_text = self.aistant_stream_openai_api_req('other', selected_text)
-        print("aistant_smart_improve_block_exec out.")
-        if out_text == 'error':
-            return 'error'
-        for chunk in self.chat_stream_res:
-            chunk_message = chunk['choices'][0]['delta']  # extract the message
-            single_msg = chunk_message.get('content', '')
-            self.aistant_improve_thread.signal.emit(single_msg)
-            print('single_msg----:   ', single_msg)  
+        print("aistant_smart_improve_block_exec out.") 
         return out_text
 
 
@@ -1007,6 +1014,13 @@ class Aistant_UI_Agent:
             temperature = 0.1,
             stream=True
             )
+            self.ui.textEdit_2.append('\n')
+            for chunk in self.chat_stream_res:
+                chunk_message = chunk['choices'][0]['delta']  # extract the message
+                single_msg = chunk_message.get('content', '')
+                # self.aistant_improve_thread.signal.emit(single_msg)
+                self.aistant_editor_writer.write_signal.emit(single_msg)
+                print('single_msg----:   ', single_msg)
             #-----------------------------------#
             # # iterate through the stream of events
             # for chunk in self.chat_stream_res:
