@@ -110,8 +110,8 @@ class Aistant_UI_Agent:
         textbrowser_format = QTextCharFormat()
         textbrowser_format.setForeground(QColor(31, 31, 31))
         self.ui.textEdit_3.setFont(font)
-        # self.ui.textEdit_3.setStyleSheet("background-color: rgb(255,255,204);")
-        self.ui.textEdit_3.setStyleSheet("background-color: rgb(173,216,230);")
+        self.ui.textEdit_3.setStyleSheet("background-color: rgb(255,255,204);")
+        # self.ui.textEdit_3.setStyleSheet("background-color: rgb(173,216,230);")
         self.ui.textEdit_3.setCurrentCharFormat(textbrowser_format)  # 应用高亮格式
 
 
@@ -758,6 +758,12 @@ class Aistant_UI_Agent:
         new_aistant_ui = Aistant_UI_Agent()
         new_aistant_ui.Aistant_UI_show()
 
+        # self.new_main_win = QtWidgets.QMainWindow()
+        # ui = Aistant_UI.Ui_MainWindow()
+        # ui.setupUi(self.new_main_win)
+        
+        # self.new_main_win.show()
+
 
 # 恢复默认设置
     def aistant_ui_recover_default_setting(self):
@@ -1284,6 +1290,7 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     aistant_ui = Aistant_UI_Agent()
     aistant_ui.Aistant_UI_show()
+    # print("after Aistant_UI_show")
     # #如果aistant_ui中的new_app存在，就调用quit()方法
     # if hasattr(aistant_ui, 'new_app'):
     #     aistant_ui.new_app.quit()
