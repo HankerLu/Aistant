@@ -87,6 +87,8 @@ class Aistant_UI_Agent:
         # self.app = app
         self.ui = ui 
 
+        #设置窗口的图标
+        self.mainwin.setWindowIcon(QtGui.QIcon('./216180_text_document_icon.ico'))
         self.ui.action_chatgpt.triggered.connect(self.action_chatgpt_slot_exec)
         self.ui.action_6.triggered.connect(self.create_new_mainwindow_exec)
         self.ui.action_10.triggered.connect(self.action_chat_setting_exec)
@@ -108,7 +110,8 @@ class Aistant_UI_Agent:
         textbrowser_format = QTextCharFormat()
         textbrowser_format.setForeground(QColor(31, 31, 31))
         self.ui.textEdit_3.setFont(font)
-        self.ui.textEdit_3.setStyleSheet("background-color: rgb(255,255,204);")
+        # self.ui.textEdit_3.setStyleSheet("background-color: rgb(255,255,204);")
+        self.ui.textEdit_3.setStyleSheet("background-color: rgb(173,216,230);")
         self.ui.textEdit_3.setCurrentCharFormat(textbrowser_format)  # 应用高亮格式
 
 
@@ -302,7 +305,7 @@ class Aistant_UI_Agent:
         chat_text = self.ui.textEdit_3.toPlainText()
         edit_text = self.ui.textEdit_2.toPlainText()
         total_text = '以下是聊天内容: ' + chat_text + '\n' + '以下是编辑器内容：' + '\n' + edit_text + '\n'
-        sys_setting = {"role": "system", "content": "你是一个总结师，你可以总结出一句话来描述我提供给你的内容,但不要超过35字。我提供的内容包括两个部分，一是聊天内容，\
+        sys_setting = {"role": "system", "content": "你是一个总结师，你可以总结出一句话来描述我提供给你的内容,但不要超过20字。我提供的内容包括两个部分，一是聊天内容，\
                        二是编辑器内容。如果聊天内容为空或者编辑器内容为空，那么对应的部分就以'无'代替。你需要以 聊天:对应内容 编辑：对应内容 的格式来回答我。"}
         output_text = self.aistant_openai_api_req_with_sys(sys_setting, total_text)
         print(output_text)
