@@ -767,7 +767,7 @@ class Aistant_UI_Agent:
 # ------editor 
     def aistant_editor_open_exec(self):
         logging.info("aistant_editor_open_exec")
-        self.filename = QtWidgets.QFileDialog.getOpenFileName(self.ui.stackedWidget, 'Open File',".","(*.doc)")[0]
+        self.filename = QtWidgets.QFileDialog.getOpenFileName(self.ui.stackedWidget, 'Open File',".","(*.txt)")[0]
 
         if self.filename:
             with open(self.filename,"rt") as file:
@@ -783,16 +783,16 @@ class Aistant_UI_Agent:
         if self.filename:
             
             # Append extension if not there yet
-            if not self.filename.endswith(".doc"):
-              self.filename += ".doc"
+            if not self.filename.endswith(".txt"):
+              self.filename += ".txt"
             # if not self.filename.endswith(".txt"):
             #       self.filename += ".txt"
 
             # We just store the contents of the text file along with the
             # format in html, which Qt does in a very nice way for us
             with open(self.filename,"wt") as file:
-                file.write(self.ui.textEdit_2.toHtml())
-                # file.write(self.ui.textEdit_2.toPlainText())
+                # file.write(self.ui.textEdit_2.toHtml())
+                file.write(self.ui.textEdit_2.toPlainText())
 
             self.aistant_editor_changesSaved = True
 
