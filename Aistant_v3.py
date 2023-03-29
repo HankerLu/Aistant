@@ -432,7 +432,7 @@ class Aistant_UI_Agent:
                     self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_IDLE)
                     continue
                 self.aistant_chat_history_messages.append(response_content) # 新增 completion
-                self.ui_output_update()
+                self.aistant_chat_ui_output_update()
 
                 self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_IDLE)
 
@@ -485,7 +485,7 @@ class Aistant_UI_Agent:
                 )
                 return response.choices[0]['message']
             elif self.aistant_current_model_type == 'Complete':
-                logging.info("openai_chat_completion_api_req.Text Complete request.")
+                logging.info("openai chat completion api req.Text Complete request.")
                 prompt_in = prompt_text + '\n'
                 response = openai.Completion.create(
                 model = self.aistant_current_model_name,
@@ -498,7 +498,7 @@ class Aistant_UI_Agent:
                 )
                 return response.choices[0]["text"]
             else:
-                logging.info("openai_chat_completion_api_req.Unknow request type.")
+                logging.info("openai chat completion api req.unknow model type.")
                 response = ''
                 return response
 
@@ -507,7 +507,7 @@ class Aistant_UI_Agent:
             return response
 
 # 更新输出文本
-    def ui_output_update(self):
+    def aistant_chat_ui_output_update(self):
         message_content_total = ''
         msg_cnt = 0
         for msg in self.aistant_chat_history_messages:
@@ -515,7 +515,7 @@ class Aistant_UI_Agent:
             if self.aistant_current_model_type == 'Chat':
                 role_msg = 'Unknown'
                 if msg_cnt == 1:
-                    role_msg = '-user(system setting)'
+                    role_msg = '-user(system setting)'           
                 if msg['role'] == 'user':
                     role_msg = '-user'
                 elif msg['role'] == 'assistant':
@@ -558,7 +558,7 @@ class Aistant_UI_Agent:
         # self.aistant_role_whole_content = self.role_brief_txt + self.role_custom_txt
         # self.aistant_role_setting = {"role": "system", "content": self.aistant_role_whole_content}
         self.aistant_chat_history_messages = [self.aistant_role_setting,]
-        self.ui_output_update()
+        self.aistant_chat_ui_output_update()
 
     def chat_core_button_cancel_exec(self):
         logging.info("chat core button cancel.")
@@ -573,7 +573,7 @@ class Aistant_UI_Agent:
         if len(self.aistant_chat_history_messages) > 2:
             del self.aistant_chat_history_messages[-1]
             del self.aistant_chat_history_messages[-1]
-            self.ui_output_update()
+            self.aistant_chat_ui_output_update()
 
     def chat_core_teminate_thread_exec(self):
         self.thread_chat_completion_do_run = False
@@ -738,7 +738,7 @@ class Aistant_UI_Agent:
         if len(self.aistant_chat_history_messages) >= 1:
             self.aistant_chat_history_messages[0] = self.aistant_role_setting
         # 更新问答输出面板
-        self.ui_output_update()
+        self.aistant_chat_ui_output_update()
         # 更新配置文件
         self.aistant_setting.aistant_setting_set_role_id(role_idx)
 
@@ -750,7 +750,7 @@ class Aistant_UI_Agent:
         if len(self.aistant_chat_history_messages) >= 1:
             self.aistant_chat_history_messages[0] = self.aistant_role_setting
         # 更新问答输出面板
-        self.ui_output_update()
+        self.aistant_chat_ui_output_update()
 
     def aistant_role_content_update(self):
         self.current_role_descript_idx = self.ui.comboBox_3.currentIndex()
@@ -1170,7 +1170,7 @@ class Aistant_UI_Agent:
                     # print("sss:::" + str_load)
                     load_dict = json.loads(str_load)
                     self.aistant_chat_history_messages = load_dict
-                    self.ui_output_update()     
+                    self.aistant_chat_ui_output_update()     
                 except:
                     print('load origin content exception')
                     self.aistant_ui_update_statusbar_txt("加载对话失败，文件格式异常")
