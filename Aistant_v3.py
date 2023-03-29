@@ -531,6 +531,7 @@ class Aistant_UI_Agent:
                     )
                     msg_role_with_content = '-chatGPT' + ':\n'
                     self.chat_textedit_streamer.write_signal.emit(msg_role_with_content)
+
                     try:
                         for chunk in response_chunk:
                             chunk_message = chunk['choices'][0]['delta']  # extract the message
@@ -540,6 +541,7 @@ class Aistant_UI_Agent:
                         prompt_in_msg = None
                         response_dict['content'] = response_content
                     except Exception as e:
+                        print("openai_chat_completion pass: ", e)
                         pass
                     return response_dict
                 else:
@@ -896,7 +898,7 @@ class Aistant_UI_Agent:
 # 编辑器智能菜单
     def aistant_init_smart_menu(self):
         # 创建快捷键和弹出菜单
-        self.aistant_s_menu_shortcut = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_F1), self.ui.textEdit_2)
+        self.aistant_s_menu_shortcut = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_F1), self.mainwin)
         # self.aistant_s_menu_shortcut = QtWidgets.QShortcut('Ctrl+Space', self.ui.textEdit_2)
         self.aistant_s_menu_shortcut.activated.connect(self.aistant_show_smart_menu)
         self.aistant_s_menu_shortcut.setContext
