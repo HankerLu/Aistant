@@ -86,7 +86,8 @@ class Aistant_UI_Agent:
         self.mainwin = MainWindow
         # self.app = app
         self.ui = ui 
-
+        # self.app = app
+        self.new_app_list = []
         #设置窗口的图标
         self.mainwin.setWindowIcon(QtGui.QIcon('./216180_text_document_icon.ico'))
         self.ui.action_chatgpt.triggered.connect(self.action_chatgpt_slot_exec)
@@ -754,9 +755,10 @@ class Aistant_UI_Agent:
 #创建一个新的进程
     def create_new_mainwindow_exec(self):
         print("create_new_mainwindow_exec")
-        self.new_app = QtWidgets.QApplication(sys.argv)
+        new_app = QtWidgets.QApplication(sys.argv)
         new_aistant_ui = Aistant_UI_Agent()
         new_aistant_ui.Aistant_UI_show()
+        self.new_app_list.append(new_app)
 
         # self.new_main_win = QtWidgets.QMainWindow()
         # ui = Aistant_UI.Ui_MainWindow()
@@ -806,6 +808,10 @@ class Aistant_UI_Agent:
         print("close event trig.")
         if self.chat_core_teminate_thread_exec != None:
             self.chat_core_teminate_thread_exec()
+        self.mainwin.close()
+        # if self.app != None:
+        #     self.app.quit()
+
 # 更新模型回调
     def aistant_change_model_exec(self, model_idx):
         # 更新model最新idx, 名称和类型
@@ -1290,9 +1296,8 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     aistant_ui = Aistant_UI_Agent()
     aistant_ui.Aistant_UI_show()
-    # print("after Aistant_UI_show")
+    print("after Aistant_UI_show")
     # #如果aistant_ui中的new_app存在，就调用quit()方法
     # if hasattr(aistant_ui, 'new_app'):
     #     aistant_ui.new_app.quit()
     sys.exit(app.exec_())
-    
