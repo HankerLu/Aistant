@@ -986,6 +986,7 @@ class Aistant_UI_Agent:
     def aistant_stream_openai_api_req(self, requester, prompt_in):
         # print(openai.api_key, ' ', self.aistant_current_model_name)
         print("aistant_stream_openai_api_req in.")
+        self.statusbar_writer.write_signal.emit('智能编辑正在请求中...')
         try:
             # response = openai.Completion.create(
             # model = self.aistant_editor_ai_model,
@@ -1041,13 +1042,14 @@ class Aistant_UI_Agent:
             # self.timer.timeout.connect(self.aistant_response_append_to_textedit)
             # self.timer.start(1000)
             # self.timer_count = 0
+            self.statusbar_writer.write_signal.emit('智能编辑完成。')
             return ''
             
         except Exception as e:
             logging.info("aistant_editor_openai_api_req error")
             print("aistant_editor_openai_api_req error", e)
-            response = ''
-            return 'error.'
+            self.statusbar_writer.write_signal.emit('智能编辑请求异常，请重试。')
+            return ''
 
 # 调用 OPENAI API
     def aistant_editor_openai_api_req(self, requester, prompt_in):
