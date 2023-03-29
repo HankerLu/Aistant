@@ -78,6 +78,13 @@
                  </widget>
                 </item>
                 <item>
+                 <widget class="QPushButton" name="pushButton_15">
+                  <property name="text">
+                   <string>重置</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QPushButton" name="pushButton_5">
                   <property name="text">
                    <string>取消</string>
@@ -237,8 +244,8 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>532</width>
-               <height>453</height>
+               <width>1252</width>
+               <height>1011</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_7">

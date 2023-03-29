@@ -600,8 +600,12 @@ class Aistant_UI_Agent:
         # 最终文本输出到面板
         self.aistant_ui_display_txt_output_emit(message_content_total)
 
-    def aistant_chat_textedit_set_txt(self, txt_out):
+    def aistant_reset_submit_exec(self):
+        print("aistant_reset_submit_exec")
         self.ui.textEdit.clear()
+
+    def aistant_chat_textedit_set_txt(self, txt_out):
+        # self.ui.textEdit.clear()
         self.ui.textEdit_3.setText(txt_out)
         # self.ui.textEdit_3.setLineWrapMode(QtWidgets.QTextEdit.FixedPixelWidth)
         textedit_bar = self.ui.textEdit_3.verticalScrollBar()
@@ -706,6 +710,7 @@ class Aistant_UI_Agent:
         self.ui.pushButton_6.setVisible(False)
         self.ui.pushButton_7.setVisible(False)
         self.ui.pushButton_14.setVisible(False)
+        self.ui.pushButton_15.setVisible(False)
 
     def aistant_show_chat_window_widgets(self):
         self.ui.textEdit.setVisible(True)
@@ -718,6 +723,7 @@ class Aistant_UI_Agent:
         self.ui.pushButton_6.setVisible(True)
         self.ui.pushButton_7.setVisible(True)
         self.ui.pushButton_14.setVisible(True)
+        self.ui.pushButton_15.setVisible(True)
 
     def chat_page_button_submit(self):
         print("chat_page_button_submit", self.ui.textEdit.toPlainText())
@@ -769,6 +775,7 @@ class Aistant_UI_Agent:
 
         self.ui.pushButton_12.clicked.connect(self.aistant_save_role_custom_exec)
         self.ui.pushButton_14.clicked.connect(self.aistant_ui_load_current_chat_exec)
+        self.ui.pushButton_15.clicked.connect(self.aistant_reset_submit_exec)
 
     def Aistant_UI_show(self):
         self.mainwin.show()
