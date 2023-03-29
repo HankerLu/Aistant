@@ -94,10 +94,12 @@ class Aistant_UI_Agent:
 
         # self.mainwin.setStyleSheet("background-color: rgb(230,255,255);")
 
-        self.textBrower_writer = Writer()
-        self.textBrower_writer.write_signal.connect(self.aistant_chat_textedit_set_txt)
-        # self.textBrower_writer.write_signal.connect(self.ui.textEdit_3.setMarkdown)
-        # self.textBrower_writer.write_signal.connect(self.ui.textEdit_3.setHtml)
+        self.chat_textedit_writer = Writer()
+        self.chat_textedit_writer.write_signal.connect(self.aistant_chat_textedit_set_txt)
+
+        self.chat_textedit_streamer = Writer()
+        self.chat_textedit_streamer.write_signal.connect(self.aistant_chat_textedit_stream_update)
+
         font = QtGui.QFont()
         font.setPointSize(12)
         self.ui.textEdit.setFont(font)
@@ -166,6 +168,9 @@ class Aistant_UI_Agent:
 
         self.ui.comboBox_4.setCurrentIndex(self.aistant_current_model_idx)
         self.ui.comboBox_4.currentIndexChanged.connect(self.aistant_change_model_exec)
+
+#对话更新流式模式设置
+        self.aistant_chat_stream_update_enable = True
 
 #多轮对话设定(基于本地配置)
         self.multi_chat_enable = self.aistant_setting.aistant_setting_get_multi_chat()
@@ -253,7 +258,7 @@ class Aistant_UI_Agent:
         self.aistant_thread_auto_generate_title.signal.connect(self.ui.lineEdit_3.setText)
 
 #stream流 管理
-        self.chat_stream_res = None
+        self.editor_req_stream_res = None
 #=========================对话后端=======================================#
         print(" Aistant Aistant_Chat_Server init.")
         self.aistant_role_content_update()
@@ -415,6 +420,40 @@ class Aistant_UI_Agent:
         print("aistant_chat_multi_talk_enable: ",self.multi_chat_enable, state)
         self.aistant_setting.aistant_setting_set_multi_chat(self.multi_chat_enable)
 
+    # def aistant_chat_req_and_update_combo_chat(self):
+    #     print("aistant_chat_req_and_update_combo_chat")
+
+    # def aistant_chat_req_and_update_combo_completion(self):
+    #     print("aistant_chat_req_and_update_combo_completion")
+    
+    # def aistant_chat_req_and_update_combo_of_all_type(self):
+    #     print("aistant_chat_req_and_update_combo. Type:", self.aistant_current_model_type)
+    #     try:
+    #         prompt_text = self.aistant_ui_get_input_textedit_exec()
+    #         if prompt_text == '':
+    #             self.aistant_chat_update_statusbar("发送消息为空")
+    #             return ''
+            
+    #         user_question = {"role": "user", "content": ""}
+    #         user_question['content'] = prompt_text
+    #         print("chat_core_button_submit_exec--", prompt_text) 
+    #         self.aistant_chat_history_messages.append(user_question) # 新增 
+
+    #         if self.aistant_current_model_type == 'Chat':
+    #             self.aistant_chat_req_and_update_combo_chat()
+
+    #         elif self.aistant_current_model_type == 'Completion':
+    #             self.aistant_chat_req_and_update_combo_completion()
+
+    #         else: 
+    #             print("aistant_chat_req_and_update_combo: None")
+    #             self.statusbar_writer.write_signal.emit("错误的模型类型")
+    #             return
+    #     except Exception as e:
+    #         print("aistant_chat_req_and_update_combo: ", e)
+    #         self.statusbar_writer.write_signal.emit("请求错误")
+    #         return
+    
     def chat_core_thread_exec(self):
         while self.thread_chat_completion_do_run:
             time.sleep(0.1)
@@ -426,13 +465,14 @@ class Aistant_UI_Agent:
             #     # self.chat_core_button_submit_exec()
             if self.aistant_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_EXEC:
                 response_content = self.openai_chat_completion_api_req()
-                print('-----response_content', response_content)
-                if response_content == '':  
+                print('-----response_content openai_chat_completion_api_re:', response_content)
+                
+                self.aistant_chat_history_messages.append(response_content) # 新增 completion
+                self.aistant_chat_ui_output_update()
+                if response_content['content'] == '':  
                     self.aistant_chat_update_statusbar('API请求错误')
                     self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_IDLE)
                     continue
-                self.aistant_chat_history_messages.append(response_content) # 新增 completion
-                self.aistant_chat_ui_output_update()
 
                 self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_IDLE)
 
@@ -456,6 +496,7 @@ class Aistant_UI_Agent:
 
 # openai 请求接口
     def openai_chat_completion_api_req(self):
+        err_response = {'role': 'error', 'content': ''}
         try:
             prompt_text = self.aistant_ui_get_input_textedit_exec()
             print("---prompt_text: %s"%prompt_text)
@@ -463,14 +504,14 @@ class Aistant_UI_Agent:
             if prompt_text == '':
                 # print("chat_core_button_submit_exec-Empty send prompt message.")
                 self.aistant_chat_update_statusbar("发送消息为空")
-                return ''
+                return err_response
             user_question = {"role": "user", "content": ""}
             user_question['content'] = prompt_text
             print("chat_core_button_submit_exec--", prompt_text) 
             self.aistant_chat_history_messages.append(user_question) # 新增 
-
+    
             if self.aistant_current_model_type == 'Chat':
-                print("self.multi_chat_enable: ", self.multi_chat_enable, (self.multi_chat_enable == 2))
+                print("self.multi_chat_enable: ", self.multi_chat_enable, self.aistant_chat_stream_update_enable)
                 if self.multi_chat_enable:
                     prompt_in_msg = self.aistant_chat_history_messages
                 else:
@@ -478,12 +519,31 @@ class Aistant_UI_Agent:
                     prompt_in_msg.append(self.aistant_role_setting)
                     prompt_in_msg.append(user_question)
                 
-                response = openai.ChatCompletion.create(
-                model = self.aistant_current_model_name,
-                messages = prompt_in_msg,
-                temperature = 0.1
-                )
-                return response.choices[0]['message']
+                if self.aistant_chat_stream_update_enable == True:
+                    response_dict = {'role': 'assistant', 'content': ''}
+                    response_content = ''
+                    response_chunk = openai.ChatCompletion.create(
+                    model = self.aistant_current_model_name,
+                    messages = prompt_in_msg,
+                    temperature = 0.1,
+                    stream = True
+                    )
+                    msg_role_with_content = '-chatGPT' + ':\n'
+                    self.chat_textedit_streamer.write_signal.emit(msg_role_with_content)
+                    for chunk in response_chunk:
+                        chunk_message = chunk['choices'][0]['delta']  # extract the message
+                        chat_sin_msg = chunk_message.get('content', '')
+                        response_content+=chat_sin_msg
+                        self.chat_textedit_streamer.write_signal.emit(chat_sin_msg)
+                    response_dict['content'] = response_content
+                    return response_dict
+                else:
+                    response = openai.ChatCompletion.create(
+                    model = self.aistant_current_model_name,
+                    messages = prompt_in_msg,
+                    temperature = 0.1
+                    )
+                    return response.choices[0]['message']
             elif self.aistant_current_model_type == 'Complete':
                 logging.info("openai chat completion api req.Text Complete request.")
                 prompt_in = prompt_text + '\n'
@@ -499,12 +559,11 @@ class Aistant_UI_Agent:
                 return response.choices[0]["text"]
             else:
                 logging.info("openai chat completion api req.unknow model type.")
-                response = ''
-                return response
+                return err_response
 
-        except:
-            response = ''
-            return response
+        except Exception as e:
+            print("openai_chat_completion_api_req-Exception:", e)
+            return err_response
 
 # 更新输出文本
     def aistant_chat_ui_output_update(self):
@@ -520,11 +579,13 @@ class Aistant_UI_Agent:
                     role_msg = '-user'
                 elif msg['role'] == 'assistant':
                     role_msg = '-chatGPT'
+                elif msg['role'] == 'error':
+                    role_msg = '-error'
                 msg_role_with_content = role_msg + ':\n' + msg['content']
                 message_content_total += msg_role_with_content
             elif self.aistant_current_model_type == 'Complete':
                 if isinstance(msg, dict) and msg['role'] == 'user':
-                    msg_role_with_content = '用户' + ':\n' + msg['content']
+                    msg_role_with_content = 'user' + ':\n' + msg['content']
                 elif isinstance(msg, dict):
                     continue
                 else:
@@ -546,6 +607,13 @@ class Aistant_UI_Agent:
 
     def aistant_chat_update_statusbar(self, content):
         self.aistant_ui_update_statusbar_txt(content)
+
+    def aistant_chat_textedit_stream_update(self, content):
+        cursor = self.ui.textEdit_3.textCursor()
+        cursor.setPosition(len(self.ui.textEdit_3.toPlainText()))
+        cursor.insertText(content)
+        cursor.setPosition(len(self.ui.textEdit_3.toPlainText()))
+        self.ui.textEdit_3.setTextCursor(cursor)
 
 #callback release
 # 发送消息
@@ -970,7 +1038,7 @@ class Aistant_UI_Agent:
 
 
     # def aistant_response_append_to_textedit(self):
-    #     for chunk in self.chat_stream_res:
+    #     for chunk in self.editor_req_stream_res:
     #         chunk_message = chunk['choices'][0]['delta']
     #         single_msg = chunk_message.get('content', '')
     #         print('111111....----:   ',single_msg)
@@ -979,7 +1047,7 @@ class Aistant_UI_Agent:
     #         if self.timer_count == 2:
     #             self.timer.stop()
     #             self.timer_count = 0
-    #             self.chat_stream_res = []
+    #             self.editor_req_stream_res = []
     #             self.chat_stream_res_len = 0
     #             print('timer stoped.')
 
@@ -1009,22 +1077,22 @@ class Aistant_UI_Agent:
             user_question['content'] = prompt_in
             aistant_chat_total_messages.append(user_question) # 新增 
             print('before openai.ChatCompletion.create')
-            self.chat_stream_res = openai.ChatCompletion.create(
+            self.editor_req_stream_res = openai.ChatCompletion.create(
             model = 'gpt-3.5-turbo',
             messages = aistant_chat_total_messages,
             temperature = 0.1,
             stream=True
             )
-            self.ui.textEdit_2.append('\n')
-            for chunk in self.chat_stream_res:
+            self.aistant_editor_writer.write_signal.emit('\n')
+            for chunk in self.editor_req_stream_res:
                 chunk_message = chunk['choices'][0]['delta']  # extract the message
                 single_msg = chunk_message.get('content', '')
                 # self.aistant_improve_thread.signal.emit(single_msg)
                 self.aistant_editor_writer.write_signal.emit(single_msg)
-                print('single_msg----:   ', single_msg)
+                print(single_msg)
             #-----------------------------------#
             # # iterate through the stream of events
-            # for chunk in self.chat_stream_res:
+            # for chunk in self.editor_req_stream_res:
             #     chunk_message = chunk['choices'][0]['delta']  # extract the message
             #     single_msg = chunk_message.get('content', '')
             #     self.ui.textEdit_2.insertPlainText(single_msg)
@@ -1036,7 +1104,7 @@ class Aistant_UI_Agent:
             #     print('single_msg----:   ', single_msg)           
             #-----------------------------------#
             # from PyQt5.QtCore import QTimer
-            # # self.chat_stream_res_len = len(self.chat_stream_res)
+            # # self.chat_stream_res_len = len(self.editor_req_stream_res)
             # # print('self.chat_stream_res_len: ', self.chat_stream_res_len)
             # self.timer = QTimer()
             # self.timer.timeout.connect(self.aistant_response_append_to_textedit)
@@ -1111,7 +1179,7 @@ class Aistant_UI_Agent:
     def aistant_ui_display_txt_output_emit(self, txt_display):
         # self.ui.textEdit_3.setText(txt_display)
         # html = markdown.markdown(txt_display)
-        self.textBrower_writer.write_to_display_widget(txt_display)
+        self.chat_textedit_writer.write_to_display_widget(txt_display)
 
     def aistant_ui_update_statusbar_txt(self, txt_display):
         self.statusbar_writer.write_to_display_widget(txt_display)
