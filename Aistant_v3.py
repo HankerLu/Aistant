@@ -169,9 +169,6 @@ class Aistant_UI_Agent:
         self.ui.comboBox_4.setCurrentIndex(self.aistant_current_model_idx)
         self.ui.comboBox_4.currentIndexChanged.connect(self.aistant_change_model_exec)
 
-#对话更新流式模式设置
-        self.aistant_chat_stream_update_enable = True
-
 #多轮对话设定(基于本地配置)
         self.multi_chat_enable = self.aistant_setting.aistant_setting_get_multi_chat()
         print("self.multi_chat_enable: ", self.multi_chat_enable)
@@ -257,9 +254,10 @@ class Aistant_UI_Agent:
         self.aistant_thread_auto_generate_title = AistantThread(self.aistant_auto_generate_title_exec)
         self.aistant_thread_auto_generate_title.signal.connect(self.ui.lineEdit_3.setText)
 
-#stream流 管理
+#stream流管理
         self.aistant_latest_query_dict = {}
         self.editor_req_stream_res = None
+        self.aistant_chat_stream_update_enable = True
 #=========================对话后端=======================================#
         print(" Aistant Aistant_Chat_Server init.")
         self.aistant_role_content_update()
@@ -529,13 +527,16 @@ class Aistant_UI_Agent:
                     )
                     msg_role_with_content = '-chatGPT' + ':\n'
                     self.chat_textedit_streamer.write_signal.emit(msg_role_with_content)
-                    for chunk in response_chunk:
-                        chunk_message = chunk['choices'][0]['delta']  # extract the message
-                        chat_sin_msg = chunk_message.get('content', '')
-                        response_content+=chat_sin_msg
-                        self.chat_textedit_streamer.write_signal.emit(chat_sin_msg)
-                    prompt_in_msg = None
-                    response_dict['content'] = response_content
+                    try:
+                        for chunk in response_chunk:
+                            chunk_message = chunk['choices'][0]['delta']  # extract the message
+                            chat_sin_msg = chunk_message.get('content', '')
+                            response_content+=chat_sin_msg
+                            self.chat_textedit_streamer.write_signal.emit(chat_sin_msg)
+                        prompt_in_msg = None
+                        response_dict['content'] = response_content
+                    except Exception as e:
+                        pass
                     return response_dict
                 else:
                     response = openai.ChatCompletion.create(
@@ -1086,12 +1087,16 @@ class Aistant_UI_Agent:
             stream=True
             )
             self.aistant_editor_writer.write_signal.emit('\n')
-            for chunk in self.editor_req_stream_res:
-                chunk_message = chunk['choices'][0]['delta']  # extract the message
-                single_msg = chunk_message.get('content', '')
-                # self.aistant_improve_thread.signal.emit(single_msg)
-                self.aistant_editor_writer.write_signal.emit(single_msg)
-                print(single_msg)
+
+            try:
+                for chunk in self.editor_req_stream_res:
+                    chunk_message = chunk['choices'][0]['delta']  # extract the message
+                    single_msg = chunk_message.get('content', '')
+                    # self.aistant_improve_thread.signal.emit(single_msg)
+                    self.aistant_editor_writer.write_signal.emit(single_msg)
+                    print(single_msg)
+            except Exception as e:
+                pass
             #-----------------------------------#
             # # iterate through the stream of events
             # for chunk in self.editor_req_stream_res:
