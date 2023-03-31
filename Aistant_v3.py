@@ -89,9 +89,10 @@ class Aistant_UI_Agent:
         # self.app = app
         self.new_app_list = []
         #设置窗口的图标
-        self.mainwin.setWindowIcon(QtGui.QIcon('./216180_text_document_icon.ico'))
+        self.mainwin.setWindowIcon(QtGui.QIcon('./aistant.ico'))
         self.ui.action_chatgpt.triggered.connect(self.action_chatgpt_slot_exec)
         self.ui.action_6.triggered.connect(self.create_new_mainwindow_exec)
+        self.ui.action_6.setVisible(False)
         self.ui.action_10.triggered.connect(self.action_chat_setting_exec)
         self.ui.action_8.triggered.connect(self.action_chat_help_exec)
 
@@ -128,11 +129,14 @@ class Aistant_UI_Agent:
 #工具栏
         self.aistant_chat_windows_show_status = True
         self.ui.action_7.triggered.connect(self.aistant_editor_only_exec)
+        self.ui.action_7.setIcon(QtGui.QIcon('./right.ico'))
 
         self.aistant_edit_window_show_status = True
         self.ui.action_4.triggered.connect(self.aistant_chat_only_exec)
+        self.ui.action_4.setIcon(QtGui.QIcon('./left.ico'))
 
         self.ui.action_5.triggered.connect(self.aistant_chat_editor_both_exec)
+        self.ui.action_5.setIcon(QtGui.QIcon('./both.ico'))
 #设置参数
         self.aistant_setting = Aistant_setting_manage.Aistant_Chat_Setting()
 
@@ -209,8 +213,11 @@ class Aistant_UI_Agent:
         self.aistant_editor_changesSaved = True
         
         self.ui.action_12.triggered.connect(self.aistant_editor_save_exec)
+        self.ui.action_12.setIcon(QtGui.QIcon('./save.ico'))
         self.ui.action_13.triggered.connect(self.aistant_editor_find_exec)
+        self.ui.action_13.setIcon(QtGui.QIcon('./find.ico'))
         self.ui.action_14.triggered.connect(self.aistant_editor_open_exec)
+        self.ui.action_14.setIcon(QtGui.QIcon('./open.ico'))
         # fontBox = QtWidgets.QFontComboBox(self)
         # self.ui.fontComboBox.currentFontChanged.connect(lambda font: self.ui.textEdit_2.setCurrentFont(font))
         self.ui.fontComboBox.currentFontChanged.connect(self.aistant_test_editor_change_font)
@@ -898,7 +905,7 @@ class Aistant_UI_Agent:
 # 编辑器智能菜单
     def aistant_init_smart_menu(self):
         # 创建快捷键和弹出菜单
-        self.aistant_s_menu_shortcut = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_F1), self.mainwin)
+        self.aistant_s_menu_shortcut = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_F1), self.ui.textEdit_2)
         # self.aistant_s_menu_shortcut = QtWidgets.QShortcut('Ctrl+Space', self.ui.textEdit_2)
         self.aistant_s_menu_shortcut.activated.connect(self.aistant_show_smart_menu)
         self.aistant_s_menu_shortcut.setContext
