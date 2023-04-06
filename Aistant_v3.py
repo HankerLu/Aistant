@@ -269,6 +269,10 @@ class Aistant_UI_Agent:
         self.aistant_latest_query_dict = {}
         self.editor_req_stream_res = None
         self.aistant_chat_stream_update_enable = True
+
+#当前加载或保存的对话文件的路径
+        self.aistant_current_chat_file_path = ''
+
 #=========================对话后端=======================================#
         print(" Aistant Aistant_Chat_Server init.")
         self.aistant_role_content_update()
@@ -726,6 +730,7 @@ class Aistant_UI_Agent:
         self.ui.pushButton_7.setVisible(False)
         self.ui.pushButton_14.setVisible(False)
         self.ui.pushButton_15.setVisible(False)
+        self.ui.pushButton_16.setVisible(False)
 
     def aistant_show_chat_window_widgets(self):
         self.ui.textEdit.setVisible(True)
@@ -739,6 +744,7 @@ class Aistant_UI_Agent:
         self.ui.pushButton_7.setVisible(True)
         self.ui.pushButton_14.setVisible(True)
         self.ui.pushButton_15.setVisible(True)
+        self.ui.pushButton_16.setVisible(True)
 
     def chat_page_button_submit(self):
         print("chat_page_button_submit", self.ui.textEdit.toPlainText())
@@ -798,6 +804,8 @@ class Aistant_UI_Agent:
         self.ui.pushButton_12.clicked.connect(self.aistant_save_role_custom_exec)
         self.ui.pushButton_14.clicked.connect(self.aistant_ui_load_current_chat_exec)
         self.ui.pushButton_15.clicked.connect(self.aistant_reset_submit_exec)
+
+        self.ui.pushButton_16.clicked.connect(self.aistant_ui_new_chat_file_save_exec)
 
     def Aistant_UI_show(self):
         self.mainwin.show()
@@ -1250,9 +1258,11 @@ class Aistant_UI_Agent:
     def aistant_ui_update_statusbar_txt(self, txt_display):
         self.statusbar_writer.write_to_display_widget(txt_display)
 
-    def aistant_ui_save_current_chat_exec(self):
-        print("aistant_ui_save_current_chat_exec")
+    # 另存对话
+    def aistant_ui_new_chat_file_save_exec(self):
+        print("aistant_ui_new_chat_file_save_exec")
         filename, _ = QFileDialog.getSaveFileName(self.ui.stackedWidget, "保存对话", "", "文本文件 (*.txt);;所有文件 (*)")
+        print("local_save_file_path new: ", filename)
         if filename == '':
             print("save_conversation_name_input no file")
             return
@@ -1266,6 +1276,34 @@ class Aistant_UI_Agent:
                 #TypeError: dump() missing 1 required positional argument: 'fp'
                 #TypeError: write() argument must be str, not bytes
                 json.dump(self.aistant_chat_history_messages, file)
+                self.statusbar_writer.write_signal.emit('对话已保存。')
+
+    # 保存对话
+    def aistant_ui_save_current_chat_exec(self):
+        print("aistant_ui_save_current_chat_exec")
+        local_save_file_path = ''
+        if self.aistant_current_chat_file_path != '':
+            local_save_file_path = self.aistant_current_chat_file_path
+            print("local_save_file_path exist")
+        else:
+            local_save_file_path, _ = QFileDialog.getSaveFileName(self.ui.stackedWidget, "保存对话", "", "文本文件 (*.txt);;所有文件 (*)")
+            print("local_save_file_path new: ", local_save_file_path)
+        filename = local_save_file_path
+        if filename == '':
+            print("save_conversation_name_input no file")
+            return
+        if filename:
+            with open(filename, "w") as file:
+                save_text = 'Aistant '+ 'model: ' + self.aistant_current_model_name + '\n' + self.ui.textEdit_3.toPlainText()
+                save_text = save_text + '\n' + '----------Aistant Origin----------' + '\n'
+                file.write(save_text)
+                # 将  self.aistant_chat_history_messages 转换为str，并且显示汉字
+                
+                #TypeError: dump() missing 1 required positional argument: 'fp'
+                #TypeError: write() argument must be str, not bytes
+                json.dump(self.aistant_chat_history_messages, file)
+                self.aistant_current_chat_file_path = filename
+                self.statusbar_writer.write_signal.emit('对话已保存。')
                 
     #加载对话
     def aistant_ui_load_current_chat_exec(self):
@@ -1304,7 +1342,9 @@ class Aistant_UI_Agent:
                     # print("sss:::" + str_load)
                     load_dict = json.loads(str_load)
                     self.aistant_chat_history_messages = load_dict
-                    self.aistant_chat_ui_output_update()     
+                    self.aistant_chat_ui_output_update()
+                    self.aistant_current_chat_file_path = filename
+                    print("aistant_current_chat_file_path:::" + self.aistant_current_chat_file_path)     
                 except:
                     print('load origin content exception')
                     self.aistant_ui_update_statusbar_txt("加载对话失败，文件格式异常")
