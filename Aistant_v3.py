@@ -545,6 +545,8 @@ class Aistant_UI_Agent:
                             chat_sin_msg = chunk_message.get('content', '')
                             response_content+=chat_sin_msg
                             self.chat_textedit_streamer.write_signal.emit(chat_sin_msg)
+                            if self.aistant_chat_completion_req_status == OpenAIReqStatus.REQ_STATUS_IDLE:
+                                break
                         prompt_in_msg = None
                         response_dict['content'] = response_content
                     except Exception as e:
