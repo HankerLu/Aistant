@@ -917,12 +917,15 @@ class Aistant_UI_Agent:
         self.aistant_smart_action_explain = QtWidgets.QAction('解释', self.ui.textEdit_2)
         self.aistant_smart_action_continue = QtWidgets.QAction('续写', self.ui.textEdit_2)
         self.aistant_smart_action_improve = QtWidgets.QAction('改进', self.ui.textEdit_2)
+        #增加中英互译选项
+        self.aistant_smart_action_translate = QtWidgets.QAction('翻译', self.ui.textEdit_2)
 
         self.aistant_smart_menu.addAction(self.aistant_smart_action_query)
         self.aistant_smart_menu.addAction(self.aistant_smart_action_summarize)
         self.aistant_smart_menu.addAction(self.aistant_smart_action_explain)
         self.aistant_smart_menu.addAction(self.aistant_smart_action_continue)
         self.aistant_smart_menu.addAction(self.aistant_smart_action_improve)
+        self.aistant_smart_menu.addAction(self.aistant_smart_action_translate)
         # 菜单选项链接回调
         self.aistant_smart_menu.setEnabled(True)
 
@@ -947,6 +950,10 @@ class Aistant_UI_Agent:
         self.aistant_improve_thread = AistantThread(self.aistant_smart_improve_block_exec)
         self.aistant_improve_thread.signal.connect(self.aistant_smart_improve_update_ui_text)
 
+        #增加中英互译线程
+        self.aistant_translate_thread = AistantThread(self.aistant_smart_translate_block_exec)
+        self.aistant_translate_thread.signal.connect(self.aistant_smart_translate_update_ui_text)
+
         # self.aistant_stream_signal = pyqtSignal(str)
         # self.aistant_stream_signal.connect(self.aistant_smart_stream_display_exec)
 
@@ -960,6 +967,8 @@ class Aistant_UI_Agent:
         self.aistant_smart_action_explain.triggered.connect(self.aistant_smart_explain_trig)
         self.aistant_smart_action_continue.triggered.connect(self.aistant_smart_continue_trig)
         self.aistant_smart_action_improve.triggered.connect(self.aistant_smart_improve_trig)
+
+        self.aistant_smart_action_translate.triggered.connect(self.aistant_smart_translate_trig)
 # 弹出智能菜单
     def aistant_show_smart_menu(self):
         # 显示弹出菜单
@@ -989,6 +998,10 @@ class Aistant_UI_Agent:
 
     def aistant_smart_improve_update_ui_text(self, content):
         print("aistant_smart_improve_update_ui_text.")
+        self.ui.textEdit_2.append(content)
+
+    def aistant_smart_translate_update_ui_text(self, content):
+        print("aistant_smart_translate_update_ui_text.")
         self.ui.textEdit_2.append(content)
     
     def aistant_smart_stream_display_exec(self, content):
@@ -1071,7 +1084,18 @@ class Aistant_UI_Agent:
         out_text = self.aistant_stream_openai_api_req('other', selected_text)
         print("aistant_smart_improve_block_exec out.") 
         return out_text
+    
+    def aistant_smart_translate_block_exec(self):
+        cursor = self.ui.textEdit_2.textCursor()
+        selected_text = cursor.selectedText()
+        selected_text = selected_text + '\n'
+        print("aistant_smart_translate_block_exec in:", selected_text)
+        out_text = self.aistant_stream_openai_api_req('translate', selected_text)
+        print("aistant_smart_translate_block_exec out.")
+        return out_text
 
+    def aistant_smart_translate_trig(self):
+        self.aistant_translate_thread.start()
 
     # def aistant_response_append_to_textedit(self):
     #     for chunk in self.editor_req_stream_res:
@@ -1107,6 +1131,8 @@ class Aistant_UI_Agent:
             # time.sleep(0.1)
             if requester == 'query':
                 aistant_chat_total_messages = [{"role": "system", "content": "你是一名得力的助手。"},]
+            elif requester == 'translate':
+                aistant_chat_total_messages = [{"role": "system", "content": "你是一名翻译专家。请翻译我之后提供给你的内容。如果内容是英文，请翻译成中文；如果内容是中文，请翻译成英文。另外，请只输出翻译结果。"},]
             else:
                 aistant_chat_total_messages = [{"role": "system", "content": "你是一位文案编辑或文案优化专家。我将会向你提供各种文本,并在最后向你提出'回答''总结''改进''解释''续写'等方面的要求，你需要以文本内容为基础，结合我的请求，对文本内容进行相关的操作。"},]
             user_question = {"role": "user", "content": ""}
