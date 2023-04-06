@@ -273,6 +273,11 @@ class Aistant_UI_Agent:
 #当前加载或保存的对话文件的路径
         self.aistant_current_chat_file_path = ''
 
+#增加一个保存对话输出内容的含有key-value的字典
+        self.aistant_chat_output_content_key_value = []
+
+#增加一个对话输出的分割线
+        self.aistant_chat_output_divider = '\n\n-----------------------------------\n'
 #=========================对话后端=======================================#
         print(" Aistant Aistant_Chat_Server init.")
         self.aistant_role_content_update()
@@ -591,6 +596,9 @@ class Aistant_UI_Agent:
     def aistant_chat_ui_output_update(self):
         message_content_total = ''
         msg_cnt = 0
+        #清空 self.aistant_chat_output_content
+        self.aistant_chat_output_content_key_value = []
+        is_msg_role_with_content_empty = True
         for msg in self.aistant_chat_history_messages:
             msg_cnt = msg_cnt + 1
             if self.aistant_current_model_type == 'Chat':
@@ -605,6 +613,7 @@ class Aistant_UI_Agent:
                     role_msg = '-error'
                 msg_role_with_content = role_msg + ':\n' + msg['content']
                 message_content_total += msg_role_with_content
+                is_msg_role_with_content_empty = False
             elif self.aistant_current_model_type == 'Complete':
                 if isinstance(msg, dict) and msg['role'] == 'user':
                     msg_role_with_content = 'user' + ':\n' + msg['content']
@@ -613,8 +622,16 @@ class Aistant_UI_Agent:
                 else:
                     msg_role_with_content = self.aistant_current_model_name + ':' + msg
                 message_content_total += msg_role_with_content
+                is_msg_role_with_content_empty = False  
+            
+            if is_msg_role_with_content_empty == False:
+                tmp_output_content_key_value = {'msg_output': '', 'msg_origin': ''}
+                tmp_output_content_key_value['msg_output'] = msg_role_with_content
+                tmp_output_content_key_value['msg_origin'] = msg
+                self.aistant_chat_output_content_key_value.append(tmp_output_content_key_value)
+            
             # 统一换行
-            message_content_total += '\n\n'
+            message_content_total += self.aistant_chat_output_divider
         
         # 最终文本输出到面板
         self.aistant_ui_display_txt_output_emit(message_content_total)
@@ -731,6 +748,7 @@ class Aistant_UI_Agent:
         self.ui.pushButton_14.setVisible(False)
         self.ui.pushButton_15.setVisible(False)
         self.ui.pushButton_16.setVisible(False)
+        self.ui.pushButton_17.setVisible(False)
 
     def aistant_show_chat_window_widgets(self):
         self.ui.textEdit.setVisible(True)
@@ -745,6 +763,7 @@ class Aistant_UI_Agent:
         self.ui.pushButton_14.setVisible(True)
         self.ui.pushButton_15.setVisible(True)
         self.ui.pushButton_16.setVisible(True)
+        self.ui.pushButton_17.setVisible(True)
 
     def chat_page_button_submit(self):
         print("chat_page_button_submit", self.ui.textEdit.toPlainText())
@@ -806,6 +825,7 @@ class Aistant_UI_Agent:
         self.ui.pushButton_15.clicked.connect(self.aistant_reset_submit_exec)
 
         self.ui.pushButton_16.clicked.connect(self.aistant_ui_new_chat_file_save_exec)
+        self.ui.pushButton_17.clicked.connect(self.aistant_ui_sync_chat_modify_exec)
 
     def Aistant_UI_show(self):
         self.mainwin.show()
@@ -1257,6 +1277,38 @@ class Aistant_UI_Agent:
 
     def aistant_ui_update_statusbar_txt(self, txt_display):
         self.statusbar_writer.write_to_display_widget(txt_display)
+
+    def aistant_ui_sync_chat_modify_exec(self):
+        print("aistant_ui_sync_chat_modify_exec")
+        self.statusbar_writer.write_signal.emit('同步对话编辑中...')
+        current_textedit_plaintext = self.ui.textEdit_3.toPlainText()
+        #将current_textedit_plaintext基于 self.aistant_chat_output_divider 分割，并构建一个list
+        try:
+            current_textedit_plaintext_list = current_textedit_plaintext.split(self.aistant_chat_output_divider)
+            print("current_textedit_plaintext_list len: ", len(current_textedit_plaintext_list), 
+                  'len of kv: ', len(self.aistant_chat_output_content_key_value))
+            #轮询current_textedit_plaintext_list，并在self.aistant_chat_output_content_key_value 逐条同步
+            chat_sync_count = 0
+            self.aistant_chat_history_messages = []
+            for single_chat in current_textedit_plaintext_list:
+                # print("single_chat: ", single_chat)
+                # print("single_chat len: ", len(single_chat))
+                tmp_single_his_origin = self.aistant_chat_output_content_key_value[chat_sync_count]['msg_origin']
+                if single_chat != self.aistant_chat_output_content_key_value[chat_sync_count]['msg_output']:
+                    tmp_single_his_origin['content'] = single_chat
+                self.aistant_chat_history_messages.append(tmp_single_his_origin)
+                chat_sync_count += 1
+                if chat_sync_count == len(self.aistant_chat_output_content_key_value):
+                    break
+            self.aistant_chat_ui_output_update()
+            self.statusbar_writer.write_signal.emit('同步对话编辑完成。')
+            # print("current_textedit_plaintext_list: ", current_textedit_plaintext_list)
+            # print("current_textedit_plaintext_list len: ", len(current_textedit_plaintext_list))
+        except Exception as e:
+            print("aistant_ui_sync_chat_modify_exec error", e)
+            self.statusbar_writer.write_signal.emit('同步编辑内容失败，请勿修改分隔符。')
+            return
+        # print('aistant_ui_sync_chat_modify_exec success', self.aistant_chat_history_messages)
 
     # 另存对话
     def aistant_ui_new_chat_file_save_exec(self):

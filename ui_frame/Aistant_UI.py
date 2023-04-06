@@ -84,6 +84,9 @@ class Ui_MainWindow(object):
         self.pushButton_16 = QtWidgets.QPushButton(self.page)
         self.pushButton_16.setObjectName("pushButton_16")
         self.horizontalLayout_3.addWidget(self.pushButton_16)
+        self.pushButton_17 = QtWidgets.QPushButton(self.page)
+        self.pushButton_17.setObjectName("pushButton_17")
+        self.horizontalLayout_3.addWidget(self.pushButton_17)
         self.pushButton = QtWidgets.QPushButton(self.page)
         self.pushButton.setObjectName("pushButton")
         self.horizontalLayout_3.addWidget(self.pushButton)
@@ -384,6 +387,7 @@ class Ui_MainWindow(object):
         self.pushButton_14.setText(_translate("MainWindow", "加载对话"))
         self.pushButton_6.setText(_translate("MainWindow", "保存对话"))
         self.pushButton_16.setText(_translate("MainWindow", "另存为.."))
+        self.pushButton_17.setText(_translate("MainWindow", "同步编辑"))
         self.pushButton.setText(_translate("MainWindow", "撤回"))
         self.pushButton_7.setText(_translate("MainWindow", "清空"))
         self.label_10.setText(_translate("MainWindow", "1.双击 chatgpt_bot_v2.0.exe 打开，软件加载稍慢，请耐心等一下\n"
