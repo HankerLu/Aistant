@@ -322,8 +322,8 @@ class Aistant_UI_Agent:
         chat_text = self.ui.textEdit_3.toPlainText()
         edit_text = self.ui.textEdit_2.toPlainText()
         total_text = '以下是聊天内容: ' + chat_text + '\n' + '以下是编辑器内容：' + '\n' + edit_text + '\n'
-        sys_setting = {"role": "system", "content": "你是一个总结师，你可以总结出一句话来描述我提供给你的内容,但不要超过20字。我提供的内容包括两个部分，一是聊天内容，\
-                       二是编辑器内容。如果聊天内容为空或者编辑器内容为空，那么对应的部分就以'无'代替。你需要以 聊天:对应内容 编辑：对应内容 的格式来回答我。"}
+        sys_setting = {"role": "system", "content": "你是一个总结师，你可以总结出一句话来描述我提供给你的内容,但不要超过10字。我提供的内容包括两个部分，一是聊天内容，\
+                       二是编辑器内容。如果聊天内容为空或者编辑器内容为空，那么对应的部分就不需要提供。你需要以‘聊天内容；编辑内容’的格式来回答我。"}
         output_text = self.aistant_openai_api_req_with_sys(sys_setting, total_text)
         print(output_text)
         return output_text
