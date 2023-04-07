@@ -260,10 +260,12 @@ class Aistant_UI_Agent:
         # self.ui.lineEdit.textChanged.connect(self.aistant_default_key_crypt_handle)
         # self.ui.lineEdit_4.textChanged.connect(self.aistant_test_key_crypt_handle)
 
-#自动生成主题
+#自动生成主题及主题同步至标签
         self.ui.pushButton_13.clicked.connect(self.aistant_auto_generate_title_trig)
         self.aistant_thread_auto_generate_title = AistantThread(self.aistant_auto_generate_title_exec)
         self.aistant_thread_auto_generate_title.signal.connect(self.ui.lineEdit_3.setText)
+
+        self.ui.pushButton_19.clicked.connect(self.aistant_auto_sync_title_trig)
 
 #stream流管理
         self.aistant_latest_query_dict = {}
@@ -332,6 +334,14 @@ class Aistant_UI_Agent:
         print("aistant_auto_generate_title_trig")
         self.aistant_thread_auto_generate_title.start()
 
+    #主题同步至标签
+    def aistant_auto_sync_title_trig(self):
+        print("aistant_auto_sync_title_trig")
+        title_text = self.ui.lineEdit_3.text()
+        if title_text == '':
+            self.statusbar_writer.write_signal.emit('主题为空，无法同步')
+            return
+        self.ui.pushButton_18.setText(title_text)
 
     def aistant_encrypt_toggle(self):
         if self.aistant_password_mode == True:

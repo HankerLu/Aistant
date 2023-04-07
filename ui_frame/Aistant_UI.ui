@@ -79,7 +79,7 @@
                </font>
               </property>
               <property name="text">
-               <string>生成主题</string>
+               <string>自动生成</string>
               </property>
              </widget>
             </item>
@@ -91,7 +91,7 @@
                </font>
               </property>
               <property name="text">
-               <string>同步主题</string>
+               <string>同步至标签</string>
               </property>
              </widget>
             </item>
