@@ -72,6 +72,28 @@ class AistantThread(QThread):
 #         self.ui = Aistant_chat_tab_UI.Ui_Form()
 #         self.ui.setupUi(self)
 
+class AistantChatAndEditContainer:
+    def __init__(self, parent=None):
+        print("AistantChatAndEditContainer init.")
+
+        self.single_title_text = ""
+
+        self.chat_input_text = ""
+        self.chat_input_background_color = "rgb(255,255,255)"
+
+        self.single_chat_history_messages = []
+        self.single_chat_output_content = ""
+        self.single_chat_key_value_dict = {}
+        self.aistant_single_chat_background_color = "rgb(255,255,255)"
+
+        self.editor_font_size = 12
+        self.editor_font_family = "微软雅黑"
+
+        self.editor_content = ""
+        self.editor_background_color = "rgb(255,255,255)"
+
+
+
 # 连接操作：
 # 1.连接前端和自定义槽函数
 # 2.自定义槽函数
@@ -91,8 +113,8 @@ class Aistant_UI_Agent:
         #设置窗口的图标
         self.mainwin.setWindowIcon(QtGui.QIcon('./aistant.ico'))
         self.ui.action_chatgpt.triggered.connect(self.action_chatgpt_slot_exec)
-        self.ui.action_6.triggered.connect(self.create_new_mainwindow_exec)
-        self.ui.action_6.setVisible(False)
+        self.ui.action_6.triggered.connect(self.create_new_chat_and_editor_window_exec)
+        # self.ui.action_6.setVisible(False)
         self.ui.action_10.triggered.connect(self.action_chat_setting_exec)
         self.ui.action_8.triggered.connect(self.action_chat_help_exec)
 
@@ -293,6 +315,14 @@ class Aistant_UI_Agent:
         
         self.core_threa_run_tick = 0
 #======================================================================#
+
+#创建并更新单标签的相关数据
+        self.aistant_chat_edit_list = []
+        aistant_chat_edit_container = AistantChatAndEditContainer(self)
+        aistant_chat_edit_button = self.ui.pushButton_18
+        aistant_chat_edit_button_container_dict = {'button': aistant_chat_edit_button, 'container': aistant_chat_edit_container}
+        self.aistant_chat_edit_list.append(aistant_chat_edit_button_container_dict)
+
     #析构函数
     def __del__(self):
         print(" Aistant Aistant_Chat_Server del.")
@@ -799,18 +829,20 @@ class Aistant_UI_Agent:
         return self.ui.textEdit.toPlainText()
 
 #创建一个新的进程
-    def create_new_mainwindow_exec(self):
-        print("create_new_mainwindow_exec")
-        new_app = QtWidgets.QApplication(sys.argv)
-        new_aistant_ui = Aistant_UI_Agent()
-        new_aistant_ui.Aistant_UI_show()
-        self.new_app_list.append(new_app)
+    def create_new_chat_and_editor_window_exec(self):
+        print("create_new_chat_and_editor_window_exec")
+        new_button = QtWidgets.QPushButton(self.ui.page)
+        container_num = len(self.aistant_chat_edit_list) + 1
+        text_title_of_new_button = '主题' + str(container_num)
+        new_button.setText(text_title_of_new_button)
+        #将新的button添加到horizontalLayout_7中的倒数第二个位置
+        self.ui.horizontalLayout_7.insertWidget(self.ui.horizontalLayout_7.count() - 1, new_button)
 
-        # self.new_main_win = QtWidgets.QMainWindow()
-        # ui = Aistant_UI.Ui_MainWindow()
-        # ui.setupUi(self.new_main_win)
+        new_container = AistantChatAndEditContainer(self)
+        aistant_chat_edit_button_container_dict = {'button': new_button, 'container': new_container}
+        self.aistant_chat_edit_list.append(aistant_chat_edit_button_container_dict)
         
-        # self.new_main_win.show()
+        self.aistant_current_chat_edit_index = 0
 
 
 # 恢复默认设置

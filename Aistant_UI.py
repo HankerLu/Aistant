@@ -397,10 +397,10 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Aistant v3.3 @奂奇"))
-        self.pushButton_18.setText(_translate("MainWindow", "对话1"))
+        self.pushButton_18.setText(_translate("MainWindow", "主题1"))
         self.label_9.setText(_translate("MainWindow", "主题："))
         self.pushButton_13.setText(_translate("MainWindow", "自动生成"))
-        self.pushButton_19.setText(_translate("MainWindow", "同步至标签"))
+        self.pushButton_19.setText(_translate("MainWindow", "更新标签"))
         self.pushButton_4.setText(_translate("MainWindow", "发送"))
         self.pushButton_15.setText(_translate("MainWindow", "重置"))
         self.pushButton_5.setText(_translate("MainWindow", "取消"))
@@ -456,7 +456,7 @@ class Ui_MainWindow(object):
         self.menu_5.setTitle(_translate("MainWindow", "开始"))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
         self.toolBar_2.setWindowTitle(_translate("MainWindow", "toolBar_2"))
-        self.action_6.setText(_translate("MainWindow", "新建窗口"))
+        self.action_6.setText(_translate("MainWindow", "新建"))
         self.action_8.setText(_translate("MainWindow", "使用说明"))
         self.action_9.setText(_translate("MainWindow", "关于..."))
         self.action_10.setText(_translate("MainWindow", "功能设置"))

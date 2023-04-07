@@ -29,7 +29,7 @@
             <item>
              <widget class="QPushButton" name="pushButton_18">
               <property name="text">
-               <string>对话1</string>
+               <string>主题1</string>
               </property>
              </widget>
             </item>
@@ -91,7 +91,7 @@
                </font>
               </property>
               <property name="text">
-               <string>同步至标签</string>
+               <string>更新标签</string>
               </property>
              </widget>
             </item>
@@ -668,7 +668,7 @@
   </widget>
   <action name="action_6">
    <property name="text">
-    <string>新建窗口</string>
+    <string>新建</string>
    </property>
   </action>
   <action name="action_8">
