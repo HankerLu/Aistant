@@ -305,7 +305,7 @@ class Aistant_UI_Agent:
 #=========================对话后端=======================================#
         print(" Aistant Aistant_Chat_Server init.")
         self.aistant_role_content_update()
-        self.aistant_chat_history_messages = [self.aistant_role_setting,]
+        self.aistant_chat_history_message = [self.aistant_role_setting,]
 
         self.aistant_chat_completion_req_status = OpenAIReqStatus.REQ_STATUS_IDLE
 
@@ -322,6 +322,9 @@ class Aistant_UI_Agent:
         aistant_chat_edit_button = self.ui.pushButton_18
         aistant_chat_edit_button_container_dict = {'button': aistant_chat_edit_button, 'container': aistant_chat_edit_container}
         self.aistant_chat_edit_list.append(aistant_chat_edit_button_container_dict)
+        
+        self.aistant_current_chat_edit_index = 0
+        self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages = self.aistant_chat_history_message
 
     #析构函数
     def __del__(self):
@@ -496,7 +499,7 @@ class Aistant_UI_Agent:
     #         user_question = {"role": "user", "content": ""}
     #         user_question['content'] = prompt_text
     #         print("chat_core_button_submit_exec--", prompt_text) 
-    #         self.aistant_chat_history_messages.append(user_question) # 新增 
+    #         self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages.append(user_question) # 新增 
 
     #         if self.aistant_current_model_type == 'Chat':
     #             self.aistant_chat_req_and_update_combo_chat()
@@ -527,8 +530,8 @@ class Aistant_UI_Agent:
                 print('-----response_content openai_chat_completion_api_re:', response_content)
                 if response_content['role'] == 'system' or response_content['role'] == 'user' or response_content['role'] == 'assistant':
                     print("chat_core_thread_exec system or user or assistant")
-                    self.aistant_chat_history_messages.append(self.aistant_latest_query_dict) # 新增 prompt
-                    self.aistant_chat_history_messages.append(response_content) # 新增 completion
+                    self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages.append(self.aistant_latest_query_dict) # 新增 prompt
+                    self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages.append(response_content) # 新增 completion
                 self.aistant_chat_ui_output_update()
                 self.update_openai_req_status(OpenAIReqStatus.REQ_STATUS_IDLE)
                 if response_content['role'] == 'error':
@@ -569,7 +572,7 @@ class Aistant_UI_Agent:
             if self.aistant_current_model_type == 'Chat':
                 print("self.multi_chat_enable: ", self.multi_chat_enable, self.aistant_chat_stream_update_enable)
                 if self.multi_chat_enable:
-                    prompt_in_msg = self.aistant_chat_history_messages.copy()
+                    prompt_in_msg = self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages.copy()
                     prompt_in_msg.append(user_question)
                 else:
                     prompt_in_msg = []
@@ -639,7 +642,7 @@ class Aistant_UI_Agent:
         #清空 self.aistant_chat_output_content
         self.aistant_chat_output_content_key_value = []
         is_msg_role_with_content_empty = True
-        for msg in self.aistant_chat_history_messages:
+        for msg in self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages:
             msg_cnt = msg_cnt + 1
             if self.aistant_current_model_type == 'Chat':
                 role_msg = 'Unknown'
@@ -708,7 +711,7 @@ class Aistant_UI_Agent:
         logging.info("chat core button clear.")
         # self.aistant_role_whole_content = self.role_brief_txt + self.role_custom_txt
         # self.aistant_role_setting = {"role": "system", "content": self.aistant_role_whole_content}
-        self.aistant_chat_history_messages = [self.aistant_role_setting,]
+        self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages = [self.aistant_role_setting,]
         self.aistant_chat_ui_output_update()
 
     def chat_core_button_cancel_exec(self):
@@ -721,9 +724,9 @@ class Aistant_UI_Agent:
 
     def chat_core_button_withdraw_exec(self):
         logging.info("set chat core withdraw.")
-        if len(self.aistant_chat_history_messages) > 2:
-            del self.aistant_chat_history_messages[-1]
-            del self.aistant_chat_history_messages[-1]
+        if len(self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages) > 2:
+            del self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages[-1]
+            del self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages[-1]
             self.aistant_chat_ui_output_update()
 
     def chat_core_teminate_thread_exec(self):
@@ -900,7 +903,7 @@ class Aistant_UI_Agent:
         self.aistant_current_model_name = self.aistant_model_list[self.aistant_current_model_idx]['model']
         self.aistant_current_model_type = self.aistant_model_list[self.aistant_current_model_idx]['type']
         print("aistant_change_model_exec: ", self.aistant_current_model_idx, ' ',self.aistant_current_model_name, ' ',self.aistant_current_model_type)
-        self.aistant_chat_history_messages = [self.aistant_role_setting,]
+        self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages = [self.aistant_role_setting,]
         self.aistant_setting.aistant_setting_set_model_id(self.aistant_current_model_idx)
 
 # 更新角色回调
@@ -909,8 +912,8 @@ class Aistant_UI_Agent:
        # 更新token中role的content
         self.aistant_role_content_update()
         # 更新历史信息
-        if len(self.aistant_chat_history_messages) >= 1:
-            self.aistant_chat_history_messages[0] = self.aistant_role_setting
+        if len(self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages) >= 1:
+            self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages[0] = self.aistant_role_setting
         # 更新问答输出面板
         self.aistant_chat_ui_output_update()
         # 更新配置文件
@@ -921,8 +924,8 @@ class Aistant_UI_Agent:
         logging.info("aistant_save_role_custom_exec")
         self.aistant_role_content_update()
         # 更新历史信息
-        if len(self.aistant_chat_history_messages) >= 1:
-            self.aistant_chat_history_messages[0] = self.aistant_role_setting
+        if len(self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages) >= 1:
+            self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages[0] = self.aistant_role_setting
         # 更新问答输出面板
         self.aistant_chat_ui_output_update()
 
@@ -1331,14 +1334,14 @@ class Aistant_UI_Agent:
                   'len of kv: ', len(self.aistant_chat_output_content_key_value))
             #轮询current_textedit_plaintext_list，并在self.aistant_chat_output_content_key_value 逐条同步
             chat_sync_count = 0
-            self.aistant_chat_history_messages = []
+            self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages = []
             for single_chat in current_textedit_plaintext_list:
                 # print("single_chat: ", single_chat)
                 # print("single_chat len: ", len(single_chat))
                 tmp_single_his_origin = self.aistant_chat_output_content_key_value[chat_sync_count]['msg_origin']
                 if single_chat != self.aistant_chat_output_content_key_value[chat_sync_count]['msg_output']:
                     tmp_single_his_origin['content'] = single_chat
-                self.aistant_chat_history_messages.append(tmp_single_his_origin)
+                self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages.append(tmp_single_his_origin)
                 chat_sync_count += 1
                 if chat_sync_count == len(self.aistant_chat_output_content_key_value):
                     break
@@ -1350,7 +1353,7 @@ class Aistant_UI_Agent:
             print("aistant_ui_sync_chat_modify_exec error", e)
             self.statusbar_writer.write_signal.emit('同步编辑内容失败，请勿修改分隔符。')
             return
-        # print('aistant_ui_sync_chat_modify_exec success', self.aistant_chat_history_messages)
+        # print('aistant_ui_sync_chat_modify_exec success', self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages)
 
     # 另存对话
     def aistant_ui_new_chat_file_save_exec(self):
@@ -1365,11 +1368,11 @@ class Aistant_UI_Agent:
                 save_text = 'Aistant '+ 'model: ' + self.aistant_current_model_name + '\n' + self.ui.textEdit_3.toPlainText()
                 save_text = save_text + '\n' + '----------Aistant Origin----------' + '\n'
                 file.write(save_text)
-                # 将  self.aistant_chat_history_messages 转换为str，并且显示汉字
+                # 将  self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages 转换为str，并且显示汉字
                 
                 #TypeError: dump() missing 1 required positional argument: 'fp'
                 #TypeError: write() argument must be str, not bytes
-                json.dump(self.aistant_chat_history_messages, file)
+                json.dump(self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages, file)
                 self.statusbar_writer.write_signal.emit('对话已保存。')
 
     # 保存对话
@@ -1391,11 +1394,11 @@ class Aistant_UI_Agent:
                 save_text = 'Aistant '+ 'model: ' + self.aistant_current_model_name + '\n' + self.ui.textEdit_3.toPlainText()
                 save_text = save_text + '\n' + '----------Aistant Origin----------' + '\n'
                 file.write(save_text)
-                # 将  self.aistant_chat_history_messages 转换为str，并且显示汉字
+                # 将  self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages 转换为str，并且显示汉字
                 
                 #TypeError: dump() missing 1 required positional argument: 'fp'
                 #TypeError: write() argument must be str, not bytes
-                json.dump(self.aistant_chat_history_messages, file)
+                json.dump(self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages, file)
                 self.aistant_current_chat_file_path = filename
                 self.statusbar_writer.write_signal.emit('对话已保存。')
                 
@@ -1435,7 +1438,7 @@ class Aistant_UI_Agent:
                     str_load = file_content.split('----------Aistant Origin----------\n', 1)[1]
                     # print("sss:::" + str_load)
                     load_dict = json.loads(str_load)
-                    self.aistant_chat_history_messages = load_dict
+                    self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages = load_dict
                     self.aistant_chat_ui_output_update()
                     self.aistant_current_chat_file_path = filename
                     print("aistant_current_chat_file_path:::" + self.aistant_current_chat_file_path)     
