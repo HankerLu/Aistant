@@ -317,13 +317,18 @@ class Aistant_UI_Agent:
 #======================================================================#
 
 #创建并更新单标签的相关数据
+        self.aistant_current_chat_edit_index = 0
         self.aistant_chat_edit_list = []
+
         aistant_chat_edit_container = AistantChatAndEditContainer(self)
         aistant_chat_edit_button = self.ui.pushButton_18
-        aistant_chat_edit_button_container_dict = {'button': aistant_chat_edit_button, 'container': aistant_chat_edit_container}
+        aistant_chat_edit_button.clicked.connect(self.aistant_new_button_clicked_exec)
+        aistant_chat_edit_button.setFont(QtGui.QFont("Microsoft YaHei", 10, QtGui.QFont.Bold))
+
+        aistant_chat_edit_button_container_dict = {'index': self.aistant_current_chat_edit_index, 'button': aistant_chat_edit_button, 'container': aistant_chat_edit_container}
+
         self.aistant_chat_edit_list.append(aistant_chat_edit_button_container_dict)
         
-        self.aistant_current_chat_edit_index = 0
         self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages = self.aistant_chat_history_message
 
     #析构函数
@@ -831,21 +836,45 @@ class Aistant_UI_Agent:
         print("aistant_ui_get_textEdit", self.ui.textEdit.toPlainText())
         return self.ui.textEdit.toPlainText()
 
-#创建一个新的进程
+    def aistant_new_button_clicked_exec(self):
+        print("aistant_new_button_clicked_exec")
+        # 获取被点击的button
+        button = self.ui.page.sender()
+        for item in self.aistant_chat_edit_list:
+            if item['button'] == button:
+                print("aistant_new_button_clicked_exec. button:", item['button'].text())
+                # 将按钮字体设置为粗体
+                item['button'].setFont(QtGui.QFont("Microsoft YaHei", 10, QtGui.QFont.Bold))
+                self.aistant_current_chat_edit_index = item['index']
+                self.aistant_chat_ui_output_update()
+            else:
+                item['button'].setFont(QtGui.QFont("Microsoft YaHei", 9, QtGui.QFont.Normal))
+
+                # print("aistant_new_button_clicked_exec else. ")
+
+        # for container in self.aistant_chat_edit_list:
+        #     if container.button.isChecked():
+        #         container.button.setChecked(False) 
+
+#创建一个新的窗口
     def create_new_chat_and_editor_window_exec(self):
-        print("create_new_chat_and_editor_window_exec")
+        new_index = len(self.aistant_chat_edit_list)
+        print("create_new_chat_and_editor_window_exec. index:", new_index)
         new_button = QtWidgets.QPushButton(self.ui.page)
         container_num = len(self.aistant_chat_edit_list) + 1
         text_title_of_new_button = '主题' + str(container_num)
         new_button.setText(text_title_of_new_button)
+        new_button.clicked.connect(self.aistant_new_button_clicked_exec)
+        # 非粗体
+        new_button.setFont(QtGui.QFont("Microsoft YaHei", 9, QtGui.QFont.Normal))
         #将新的button添加到horizontalLayout_7中的倒数第二个位置
         self.ui.horizontalLayout_7.insertWidget(self.ui.horizontalLayout_7.count() - 1, new_button)
 
         new_container = AistantChatAndEditContainer(self)
-        aistant_chat_edit_button_container_dict = {'button': new_button, 'container': new_container}
+        aistant_chat_edit_button_container_dict = {'index': new_index, 'button': new_button, 'container': new_container}
         self.aistant_chat_edit_list.append(aistant_chat_edit_button_container_dict)
         
-        self.aistant_current_chat_edit_index = 0
+        # self.aistant_current_chat_edit_index = 0
 
 
 # 恢复默认设置
