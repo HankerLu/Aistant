@@ -76,7 +76,7 @@ class AistantChatAndEditContainer:
     def __init__(self, parent=None):
         print("AistantChatAndEditContainer init.")
 
-        self.single_title_text = ""
+        self.title_text = "None"
 
         self.chat_input_text = ""
         self.chat_input_background_color = "rgb(255,255,255)"
@@ -125,6 +125,9 @@ class Aistant_UI_Agent:
 
         self.chat_textedit_streamer = Writer()
         self.chat_textedit_streamer.write_signal.connect(self.aistant_chat_textedit_stream_update)
+
+        self.title_lineedit_writer = Writer()
+        self.title_lineedit_writer.write_signal.connect(self.aistant_title_lineedit_set_txt)
 
         font = QtGui.QFont()
         font.setPointSize(12)
@@ -365,6 +368,7 @@ class Aistant_UI_Agent:
         sys_setting = {"role": "system", "content": "你是一个总结师，你可以总结出一句话来描述我提供给你的内容,但不要超过10字。我提供的内容包括两个部分，一是聊天内容，\
                        二是编辑器内容。如果聊天内容为空或者编辑器内容为空，那么对应的部分就不需要提供。你需要以‘聊天内容；编辑内容’的格式来回答我。"}
         output_text = self.aistant_openai_api_req_with_sys(sys_setting, total_text)
+        self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].title_text = output_text
         print(output_text)
         return output_text
         
@@ -706,6 +710,9 @@ class Aistant_UI_Agent:
         cursor.setPosition(len(self.ui.textEdit_3.toPlainText()))
         self.ui.textEdit_3.setTextCursor(cursor)
 
+    def aistant_title_lineedit_set_txt(self, content):
+        self.ui.lineEdit_3.setText(content)
+
 #callback release
 # 发送消息
     def chat_core_button_submit_exec(self):
@@ -842,11 +849,21 @@ class Aistant_UI_Agent:
         button = self.ui.page.sender()
         for item in self.aistant_chat_edit_list:
             if item['button'] == button:
+                if self.aistant_current_chat_edit_index == item['index']:
+                    print("click the same button.")
+                    return
                 print("aistant_new_button_clicked_exec. button:", item['button'].text())
-                # 将按钮字体设置为粗体
                 item['button'].setFont(QtGui.QFont("Microsoft YaHei", 10, QtGui.QFont.Bold))
-                self.aistant_current_chat_edit_index = item['index']
-                self.aistant_chat_ui_output_update()
+
+                #以下为保存现场
+                self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].title_text = self.ui.lineEdit_3.text()
+                self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].editor_content = self.ui.textEdit_2.toPlainText()
+                #以下为恢复现场
+                self.aistant_current_chat_edit_index = item['index'] # 更新索引
+                
+                self.aistant_chat_ui_output_update() # 更新对话窗口
+                self.title_lineedit_writer.write_to_display_widget(item['container'].title_text) # 更新标题
+                self.ui.textEdit_2.setPlainText(item['container'].editor_content) # 更新编辑器内容
             else:
                 item['button'].setFont(QtGui.QFont("Microsoft YaHei", 9, QtGui.QFont.Normal))
 
