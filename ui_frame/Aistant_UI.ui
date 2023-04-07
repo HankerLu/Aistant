@@ -123,9 +123,16 @@
                    </widget>
                   </item>
                   <item>
+                   <widget class="QPushButton" name="pushButton">
+                    <property name="text">
+                     <string>撤回</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
                    <widget class="QPushButton" name="pushButton_5">
                     <property name="text">
-                     <string>取消</string>
+                     <string>停止</string>
                     </property>
                    </widget>
                   </item>
@@ -167,16 +174,9 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="pushButton">
-                  <property name="text">
-                   <string>撤回</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
                  <widget class="QPushButton" name="pushButton_7">
                   <property name="text">
-                   <string>清空</string>
+                   <string>清空对话</string>
                   </property>
                  </widget>
                 </item>

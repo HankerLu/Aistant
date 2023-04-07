@@ -26,6 +26,7 @@ from enum import Enum
 import threading
 import time
 import logging
+import re
 
 load_widget.hide()
 
@@ -333,6 +334,14 @@ class Aistant_UI_Agent:
         self.aistant_chat_edit_list.append(aistant_chat_edit_button_container_dict)
         
         self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages = self.aistant_chat_history_message
+
+#         tbl_content = """
+# | Name | Age | Gender |
+# |------|-----|--------|
+# | John | 25  | Male   |
+# | Jane | 30  | Female |
+# """
+#         self.aistant_insert_table_into_content(self.ui.textEdit_2.textCursor(), tbl_content)
 
     #析构函数
     def __del__(self):
@@ -696,6 +705,9 @@ class Aistant_UI_Agent:
         # self.ui.textEdit.clear()
         self.ui.textEdit_3.setText(txt_out)
         # self.ui.textEdit_3.setLineWrapMode(QtWidgets.QTextEdit.FixedPixelWidth)
+        
+        self.aistant_insert_table_into_content(self.ui.textEdit_2.textCursor(), txt_out)
+
         textedit_bar = self.ui.textEdit_3.verticalScrollBar()
         textedit_bar.setValue(textedit_bar.maximum())
         print("aistant_chat_textedit_set_txt: ", textedit_bar.maximum())
@@ -1510,6 +1522,62 @@ class Aistant_UI_Agent:
 
     def aistant_ui_teminate_chat_core(self, chat_core_teminate_cb):
         self.chat_core_teminate_callback = chat_core_teminate_cb
+
+    def aistant_ui_rendering_output(self, content):
+        print("aistant_ui_rendering_output")
+
+    def aistant_insert_table_into_content(self, cursor, table_content):
+        # 正则表达式匹配Markdown表格
+        table_regex = re.compile(r'\|(.+)\|')
+        table_matches = table_regex.findall(table_content)
+
+        # 提取表格数据
+        table_data = []
+        for row in table_matches:
+            # 检查 roll 中除了空格，'|','-'之外是否还有其他字符
+            roll_without_whitespace = row.replace(' ', '').replace('|', '').replace('-', '')
+            if not roll_without_whitespace:
+                print('row is meaningless')
+                continue
+            table_data.append([cell.strip() for cell in row.split('|') if cell.strip()])
+
+        # text = '----'
+        # #检测text中是否除了'-'之外还有其他字符
+        # if not text.strip('-'):
+        #     print('text is all dashes')
+        # else:
+        #     print('text is not all dashes')
+
+        # 输出行数和列数
+        num_rows = len(table_data)
+        if num_rows == 0:
+            return
+
+        try:
+            num_cols = len(table_data[0])
+            if num_cols == 0:
+                return
+        except IndexError:
+            return
+
+        print(f"Table has {num_rows} rows and {num_cols} columns.")
+        print("aistant_insert_table_from_content")
+        # Set the padding and spacing
+        fmt = QtGui.QTextTableFormat()
+        fmt.setCellPadding(10)
+        fmt.setCellSpacing(0)
+        table = cursor.insertTable(num_rows, num_cols, fmt)
+        row_id = 0
+        for row in table_data:
+            col_id = 0
+            for cell in row:
+                table.cellAt(row_id, col_id).firstCursorPosition().insertText(cell)
+                col_id += 1
+            row_id += 1
+        # fmt.set
+        # Inser the new table
+        # col = 2
+        # row = 2
 
 
 if __name__ == "__main__":
