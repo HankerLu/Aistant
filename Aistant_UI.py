@@ -396,7 +396,7 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Aistant v3.3 @奂奇"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Aistant v3.4"))
         self.pushButton_18.setText(_translate("MainWindow", "主题1"))
         self.label_9.setText(_translate("MainWindow", "主题："))
         self.pushButton_13.setText(_translate("MainWindow", "自动生成"))
