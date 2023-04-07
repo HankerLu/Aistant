@@ -379,7 +379,7 @@ class Aistant_UI_Agent:
         if title_text == '':
             self.statusbar_writer.write_signal.emit('主题为空，无法同步')
             return
-        self.ui.pushButton_18.setText(title_text)
+        self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['button'].setText(title_text)
 
     def aistant_encrypt_toggle(self):
         if self.aistant_password_mode == True:
