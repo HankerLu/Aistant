@@ -1041,7 +1041,11 @@ class Aistant_UI_Agent:
         self.aistant_s_menu_shortcut = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_F1), self.ui.textEdit_2)
         # self.aistant_s_menu_shortcut = QtWidgets.QShortcut('Ctrl+Space', self.ui.textEdit_2)
         self.aistant_s_menu_shortcut.activated.connect(self.aistant_show_smart_menu)
-        self.aistant_s_menu_shortcut.setContext
+        # self.aistant_s_menu_shortcut.setContext
+
+        self.aisatnt_s_menu_stop_shortcut = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Escape), self.ui.textEdit_2)
+        self.aisatnt_s_menu_stop_shortcut.activated.connect(self.aistant_stop_smart_menu)
+
         self.aistant_smart_menu = QtWidgets.QMenu(self.ui.textEdit_2)
         self.aistant_smart_action_query = QtWidgets.QAction('询问', self.ui.textEdit_2)
         self.aistant_smart_action_summarize = QtWidgets.QAction('总结', self.ui.textEdit_2)
@@ -1050,7 +1054,7 @@ class Aistant_UI_Agent:
         self.aistant_smart_action_improve = QtWidgets.QAction('改进', self.ui.textEdit_2)
         #增加中英互译选项
         self.aistant_smart_action_translate = QtWidgets.QAction('翻译', self.ui.textEdit_2)
-
+        
         self.aistant_smart_menu.addAction(self.aistant_smart_action_query)
         self.aistant_smart_menu.addAction(self.aistant_smart_action_summarize)
         self.aistant_smart_menu.addAction(self.aistant_smart_action_explain)
@@ -1100,6 +1104,10 @@ class Aistant_UI_Agent:
         self.aistant_smart_action_improve.triggered.connect(self.aistant_smart_improve_trig)
 
         self.aistant_smart_action_translate.triggered.connect(self.aistant_smart_translate_trig)
+
+        #智能菜单openai函数控制标志位
+        self.aistant_smart_menu_working_flag = True
+
 # 弹出智能菜单
     def aistant_show_smart_menu(self):
         # 显示弹出菜单
@@ -1108,6 +1116,11 @@ class Aistant_UI_Agent:
         cursor_y = self.ui.textEdit_2.cursorRect().bottom()
         cursor_position = self.ui.textEdit_2.mapToGlobal(QtCore.QPoint(cursor_x, cursor_y))
         self.aistant_smart_menu.exec_(cursor_position)
+
+# 停止智能菜单输出
+    def aistant_stop_smart_menu(self):
+        print("aistant_stop_smart_menu.")
+        self.aistant_smart_menu_working_flag = False
 
 # 智能菜单->询问
     # 更新界面
@@ -1285,6 +1298,9 @@ class Aistant_UI_Agent:
                     # self.aistant_improve_thread.signal.emit(single_msg)
                     self.aistant_editor_writer.write_signal.emit(single_msg)
                     print(single_msg)
+                    if self.aistant_smart_menu_working_flag == False:
+                        print('aistant_smart_menu_working_flag is False, break.')
+                        break
             except Exception as e:
                 pass
             #-----------------------------------#
@@ -1308,13 +1324,17 @@ class Aistant_UI_Agent:
             # self.timer.start(1000)
             # self.timer_count = 0
             self.statusbar_writer.write_signal.emit('智能编辑完成。')
-            return ''
             
         except Exception as e:
-            logging.info("aistant_editor_openai_api_req error")
-            print("aistant_editor_openai_api_req error", e)
+            logging.info("aistant_stream_openai_api_req error")
+            print("aistant_stream_openai_api_req error", e)
             self.statusbar_writer.write_signal.emit('智能编辑请求异常，请重试。')
-            return ''
+        
+        if self.aistant_smart_menu_working_flag == False:
+            self.aistant_smart_menu_working_flag = True
+            self.statusbar_writer.write_signal.emit('智能编辑已停止。')
+        return ''
+        
 
 # 调用 OPENAI API
     def aistant_editor_openai_api_req(self, requester, prompt_in):
