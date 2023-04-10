@@ -2,7 +2,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject, pyqtSignal,QThread
 from PyQt5.QtWidgets import QFileDialog, QShortcut
-from PyQt5.QtGui import QTextCharFormat, QColor
+from PyQt5.QtGui import QTextCharFormat, QColor, QTextOption
 from PyQt5.Qt import Qt
 import sys
 import json
@@ -1043,6 +1043,9 @@ class Aistant_UI_Agent:
         self.aistant_s_menu_shortcut.activated.connect(self.aistant_show_smart_menu)
         # self.aistant_s_menu_shortcut.setContext
 
+        self.aistant_s_menu_recover_format_shortcut = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_F2), self.ui.textEdit_2) 
+        self.aistant_s_menu_recover_format_shortcut.activated.connect(self.aistant_editor_default_format)
+
         self.aisatnt_s_menu_stop_shortcut = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Escape), self.ui.textEdit_2)
         self.aisatnt_s_menu_stop_shortcut.activated.connect(self.aistant_stop_smart_menu)
 
@@ -1116,6 +1119,15 @@ class Aistant_UI_Agent:
         cursor_y = self.ui.textEdit_2.cursorRect().bottom()
         cursor_position = self.ui.textEdit_2.mapToGlobal(QtCore.QPoint(cursor_x, cursor_y))
         self.aistant_smart_menu.exec_(cursor_position)
+
+# 编辑器恢复默认格式
+    def aistant_editor_default_format(self):
+        print("aistant_editor_default_format.")
+        # 将textedit2内的所有文本都恢复默认格式
+        cursor = self.ui.textEdit_2.textCursor()
+        cursor.select(QtGui.QTextCursor.Document)
+        cursor.setCharFormat(QtGui.QTextCharFormat())
+        self.ui.textEdit_2.setTextCursor(cursor)
 
 # 停止智能菜单输出
     def aistant_stop_smart_menu(self):
