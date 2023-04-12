@@ -93,6 +93,7 @@ class AistantChatAndEditContainer:
         self.editor_content = ""
         self.editor_background_color = "rgb(255,255,255)"
 
+        self.aistant_chat_save_path = ''
 
 
 # 连接操作：
@@ -298,9 +299,6 @@ class Aistant_UI_Agent:
         self.editor_req_stream_res = None
         self.aistant_chat_stream_update_enable = True
 
-#当前加载或保存的对话文件的路径
-        self.aistant_current_chat_file_path = ''
-
 #增加一个保存对话输出内容的含有key-value的字典
         self.aistant_chat_output_content_key_value = []
 
@@ -334,6 +332,9 @@ class Aistant_UI_Agent:
         self.aistant_chat_edit_list.append(aistant_chat_edit_button_container_dict)
         
         self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages = self.aistant_chat_history_message
+
+#当前加载或保存的对话文件的路径
+        self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].aistant_chat_save_path = ''
 
 #         tbl_content = """
 # | Name | Age | Gender |
@@ -1469,8 +1470,8 @@ class Aistant_UI_Agent:
     def aistant_ui_save_current_chat_exec(self):
         print("aistant_ui_save_current_chat_exec")
         local_save_file_path = ''
-        if self.aistant_current_chat_file_path != '':
-            local_save_file_path = self.aistant_current_chat_file_path
+        if self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].aistant_chat_save_path != '':
+            local_save_file_path = self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].aistant_chat_save_path
             print("local_save_file_path exist")
         else:
             local_save_file_path, _ = QFileDialog.getSaveFileName(self.ui.stackedWidget, "保存对话", "", "文本文件 (*.txt);;所有文件 (*)")
@@ -1489,7 +1490,7 @@ class Aistant_UI_Agent:
                 #TypeError: dump() missing 1 required positional argument: 'fp'
                 #TypeError: write() argument must be str, not bytes
                 json.dump(self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages, file)
-                self.aistant_current_chat_file_path = filename
+                self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].aistant_chat_save_path = filename
                 self.statusbar_writer.write_signal.emit('对话已保存。')
                 
     #加载对话
@@ -1530,8 +1531,8 @@ class Aistant_UI_Agent:
                     load_dict = json.loads(str_load)
                     self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].single_chat_history_messages = load_dict
                     self.aistant_chat_ui_output_update()
-                    self.aistant_current_chat_file_path = filename
-                    print("aistant_current_chat_file_path:::" + self.aistant_current_chat_file_path)     
+                    self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].aistant_chat_save_path = filename
+                    print("self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].aistant_chat_save_path:::" + self.aistant_chat_edit_list[self.aistant_current_chat_edit_index]['container'].aistant_chat_save_path)     
                 except:
                     print('load origin content exception')
                     self.aistant_ui_update_statusbar_txt("加载对话失败，文件格式异常")
