@@ -166,7 +166,7 @@ class Ui_MainWindow(object):
         self.scrollArea_2.setWidgetResizable(True)
         self.scrollArea_2.setObjectName("scrollArea_2")
         self.scrollAreaWidgetContents_2 = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 532, 453))
+        self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 1252, 1011))
         self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
         self.verticalLayout_7 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout_7.setObjectName("verticalLayout_7")
@@ -410,29 +410,7 @@ class Ui_MainWindow(object):
         self.pushButton_16.setText(_translate("MainWindow", "另存为.."))
         self.pushButton_17.setText(_translate("MainWindow", "同步编辑"))
         self.pushButton_7.setText(_translate("MainWindow", "清空对话"))
-        self.label_10.setText(_translate("MainWindow", "1.双击 chatgpt_bot_v2.0.exe 打开，软件加载稍慢，请耐心等一下\n"
-"\n"
-"2.需要你提供一下OPEN_API_KEY。 每次打开软件后，把KEY粘贴到 \'API_KEY\' 按钮上面的输入框中，然后点击API_KEY就行。\n"
-"\n"
-"3.每次在 \'发送\' 按钮上的对话框输入问题就行，点击发送，稍等片刻就能得到响应（另外从3月2日晚开始，需要科学上网了）。\n"
-"\n"
-"4.点击“发送”之后，底部倒数第二行会提示“请求中”，表示正在获取回答，如果长时间一直在这个状态没反应的话，请检查网络状态。\n"
-"\n"
-"5.“清空对话”按钮用于重置对话。\n"
-"\n"
-"6.“取消请求”按钮用于中止当前的提问请求，但不会清空对话。\n"
-"\n"
-"7.“保存对话”按钮用于保存当前显示的对话内容于你指定的路径下。\n"
-"\n"
-"8.windows7貌似上运行有些问题，我还在解决，如果你发现一样的情况可以跟我反应一下。 \n"
-"\n"
-"9.开发时间仓促，可能有BUG, 另外还有一些新功能待加入。如果你有想法和建议，或者是反馈BUG， 可以加我微信 LHP437348250 沟通或者B站上私信我。\n"
-"\n"
-"============================================================\n"
-"关于第2个步骤：\n"
-"\n"
-"可以在windows系统上增加一个OPENAI_API_KEY的环境变量，在右边的“值”中加入你的密钥（不要带双引号），就不需要每次打开软件都需要设置API_KEY了。\n"
-" 更多问题加我微信LHP437348250 或者 B站上私信留言。"))
+        self.label_10.setText(_translate("MainWindow", "使用说明 中文 英文"))
         self.pushButton_2.setText(_translate("MainWindow", "恢复默认设置"))
         self.label_7.setText(_translate("MainWindow", "功能：对话基本设置"))
         self.label.setText(_translate("MainWindow", "对话模型"))
