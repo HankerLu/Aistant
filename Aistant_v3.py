@@ -2,21 +2,21 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QObject, pyqtSignal,QThread
 from PyQt5.QtWidgets import QFileDialog, QShortcut
-from PyQt5.QtGui import QTextCharFormat, QColor, QTextOption
+from PyQt5.QtGui import QTextCharFormat, QColor,  QPixmap, QPalette, QBrush
 from PyQt5.Qt import Qt
 import sys
 import json
-#增加一个基于pyqt5的启动加载界面
-load_app = QtWidgets.QApplication(sys.argv)
-#启动加载图片为8666753_message_circle_chat_icon.ico
-load_widget = QtWidgets.QWidget()
-# load_widget.setWindowFlags(Qt.FramelessWindowHint)
-load_widget.setWindowOpacity(0.5)
-load_widget.setFixedSize(200, 200)
-load_widget.move(500, 300)
-# load_widget.setStyleSheet("background-image:url(./8666753_message_circle_chat_icon.ico);")#这句代码没有显示出来，不知道为什么
-# load_widget.setStyleSheet("background-image:url(./8666753_message_circle_chat_icon.ico);")
-load_widget.show()
+# #增加一个基于pyqt5的启动加载界面
+# load_app = QtWidgets.QApplication(sys.argv)
+# #启动加载图片为8666753_message_circle_chat_icon.ico
+# load_widget = QtWidgets.QWidget()
+# # load_widget.setWindowFlags(Qt.FramelessWindowHint)
+# load_widget.setWindowOpacity(0.5)
+# load_widget.setFixedSize(200, 200)
+# load_widget.move(500, 300)
+# # load_widget.setStyleSheet("background-image:url(./8666753_message_circle_chat_icon.ico);")#这句代码没有显示出来，不知道为什么
+# # load_widget.setStyleSheet("background-image:url(./8666753_message_circle_chat_icon.ico);")
+# load_widget.show()
 
 import Aistant_UI
 import Aistant_setting_manage
@@ -28,7 +28,7 @@ import time
 import logging
 import re
 
-load_widget.hide()
+# load_widget.hide()
 
 logging.basicConfig(filename='aistant.log', level=logging.INFO)
 
@@ -120,8 +120,6 @@ class Aistant_UI_Agent:
         self.ui.action_10.triggered.connect(self.action_chat_setting_exec)
         self.ui.action_8.triggered.connect(self.action_chat_help_exec)
 
-        # self.mainwin.setStyleSheet("background-color: rgb(230,255,255);")
-
         self.chat_textedit_writer = Writer()
         self.chat_textedit_writer.write_signal.connect(self.aistant_chat_textedit_set_txt)
 
@@ -134,13 +132,12 @@ class Aistant_UI_Agent:
         font = QtGui.QFont()
         font.setPointSize(12)
         self.ui.textEdit.setFont(font)
-        self.ui.textEdit.setStyleSheet("background-color: rgb(255,192,203);")
+        # self.ui.textEdit.setStyleSheet("background-color: rgb(255,192,203);")
 
         textbrowser_format = QTextCharFormat()
         textbrowser_format.setForeground(QColor(31, 31, 31))
         self.ui.textEdit_3.setFont(font)
-        self.ui.textEdit_3.setStyleSheet("background-color: rgb(255,255,204);")
-        # self.ui.textEdit_3.setStyleSheet("background-color: rgb(173,216,230);")
+        # self.ui.textEdit_3.setStyleSheet("background-color: rgb(255,255,204);")
         self.ui.textEdit_3.setCurrentCharFormat(textbrowser_format)  # 应用高亮格式
 
 
@@ -262,7 +259,7 @@ class Aistant_UI_Agent:
 
         self.aistant_editor_ai_model = 'text-davinci-003'
 
-        self.ui.textEdit_2.setStyleSheet("background-color: rgb(200, 255, 190);")
+        # self.ui.textEdit_2.setStyleSheet("background-color: rgb(200, 255, 190);")
 
         # self.filename = ''
 
@@ -304,6 +301,15 @@ class Aistant_UI_Agent:
 
 #增加一个对话输出的分割线
         self.aistant_chat_output_divider = '\n\n-----------------------------------\n'
+
+        # 设置背景图片
+        palette = QPalette()
+        pixmap = QPixmap("background.jpg")
+        palette.setBrush(self.mainwin.backgroundRole(), QBrush(pixmap))
+        self.mainwin.setPalette(palette)
+        
+        self.ui.toolBar.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.ui.toolBar_2.setStyleSheet("background-color: rgb(255, 255, 255);")
 #=========================对话后端=======================================#
         print(" Aistant Aistant_Chat_Server init.")
         self.aistant_role_content_update()
