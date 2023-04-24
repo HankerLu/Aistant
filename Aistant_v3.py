@@ -132,12 +132,12 @@ class Aistant_UI_Agent:
         font = QtGui.QFont()
         font.setPointSize(12)
         self.ui.textEdit.setFont(font)
-        # self.ui.textEdit.setStyleSheet("background-color: rgb(255,192,203);")
+        self.ui.textEdit.setStyleSheet("background-color: rgb(255,192,203);")
 
         textbrowser_format = QTextCharFormat()
         textbrowser_format.setForeground(QColor(31, 31, 31))
         self.ui.textEdit_3.setFont(font)
-        # self.ui.textEdit_3.setStyleSheet("background-color: rgb(255,255,204);")
+        self.ui.textEdit_3.setStyleSheet("background-color: rgb(255,255,204);")
         self.ui.textEdit_3.setCurrentCharFormat(textbrowser_format)  # 应用高亮格式
 
 
@@ -259,7 +259,7 @@ class Aistant_UI_Agent:
 
         self.aistant_editor_ai_model = 'text-davinci-003'
 
-        # self.ui.textEdit_2.setStyleSheet("background-color: rgb(200, 255, 190);")
+        self.ui.textEdit_2.setStyleSheet("background-color: rgb(200, 255, 190);")
 
         # self.filename = ''
 
@@ -302,14 +302,15 @@ class Aistant_UI_Agent:
 #增加一个对话输出的分割线
         self.aistant_chat_output_divider = '\n\n-----------------------------------\n'
 
-        # 设置背景图片
-        palette = QPalette()
-        pixmap = QPixmap("background.jpg")
-        palette.setBrush(self.mainwin.backgroundRole(), QBrush(pixmap))
-        self.mainwin.setPalette(palette)
+        self.mainwin_origin_palette = self.mainwin.palette()
         
         self.ui.toolBar.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.ui.toolBar_2.setStyleSheet("background-color: rgb(255, 255, 255);")
+
+#背景图片设置
+        self.ui.pushButton_20.clicked.connect(self.aistant_recover_background_image_exec)
+        self.ui.pushButton_21.clicked.connect(self.aistant_set_background_image_exec)
+
 #=========================对话后端=======================================#
         print(" Aistant Aistant_Chat_Server init.")
         self.aistant_role_content_update()
@@ -1618,6 +1619,21 @@ class Aistant_UI_Agent:
         # col = 2
         # row = 2
 
+#设置背景图片
+    def aistant_recover_background_image_exec(self):
+        print("aistant_recover_background_image_exec")
+        #remove  mainwin's palette
+        self.mainwin.setPalette(self.mainwin_origin_palette)
+
+
+    def aistant_set_background_image_exec(self, image_path):
+        print("aistant_set_background_image_exec")
+        # 设置背景图片
+        palette = QPalette()
+        pixmap = QPixmap("background.jpg")
+        palette.setBrush(self.mainwin.backgroundRole(), QBrush(pixmap))
+        self.mainwin.setPalette(palette)
+        # self.mainwin.setAutoFillBackground(True)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
